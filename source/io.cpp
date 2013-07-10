@@ -71,7 +71,7 @@ double simulate_set (double parameters[]) {
 		exit(EXIT_PIPE_WRITE_ERROR);
 	}
 	
-	return (double)score / max_score;
+	return 1 - ((double)score / max_score);
 }
 
 void write_pipe (int fd, double parameters[]) {

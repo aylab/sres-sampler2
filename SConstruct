@@ -29,10 +29,10 @@ elif ARGUMENTS.get('debug', 0):
 	link_flags = ''
 elif ARGUMENTS.get('mpi', 0):
 	compile_flags = '-Wall -O2 -lsres -lm -lstdc++'
-	link_flags = '-i_dynamic'
+	link_flags = '-L lib'
 else:
 	compile_flags = '-Wall -O2'
-	link_flags = ''
+	link_flags = '-L lib'
 
 env = Environment(CXX=compiler)
 env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)

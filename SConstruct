@@ -16,6 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+if ARGUMENTS.get('mpi', 0):
+	compiler = 'mpicxx'
+else:
+	compiler = 'g++'
+
 if ARGUMENTS.get('profiling', 0):
 	compile_flags = '-Wall -O2 -pg'
 	link_flags = '-pg'
@@ -26,6 +31,6 @@ else:
 	compile_flags = '-Wall -O2'
 	link_flags = ''
 
-env = Environment(CXX='g++')
+env = Environment(CXX=compiler)
 env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)
 env.Program(target='sres-sampler', source=['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/io.cpp', 'source/ESES.c', 'source/ESSRSort.c', 'source/sharefunc.c'])

@@ -35,8 +35,9 @@ double simulate_set (double parameters[]) {
 		exit(EXIT_PIPE_CREATE_ERROR);
 	}
 	
-	store_pipe(ip, ip.num_sim_args - 4, pipes[0]);
-	store_pipe(ip, ip.num_sim_args - 2, pipes[1]);
+	char** sim_args = copy_args(ip.sim_args, ip.num_sim_args);
+	store_pipe(sim_args, ip.num_sim_args - 4, pipes[0]);
+	store_pipe(sim_args, ip.num_sim_args - 2, pipes[1]);
 	
 	pid_t pid = fork();
 	if (pid == -1) {
@@ -70,6 +71,11 @@ double simulate_set (double parameters[]) {
 		term->failed_pipe_read();
 		exit(EXIT_PIPE_WRITE_ERROR);
 	}
+	
+	for (int i = 0; sim_args[i] != NULL; i++) {
+		free(sim_args[i]);
+	}
+	free(sim_args);
 	
 	return 1 - ((double)score / max_score);
 }

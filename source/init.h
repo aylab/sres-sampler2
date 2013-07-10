@@ -27,7 +27,8 @@ void free_terminal();
 void accept_input_params(int, char**, input_params&);
 void ensure_nonempty(const char*, const char*);
 void init_sim_args(input_params&);
-void store_pipe(input_params&, int, int);
+char** copy_args(char**, int);
+void store_pipe(char**, int, int);
 
 
 #endif

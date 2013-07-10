@@ -27,8 +27,12 @@ using namespace std;
 terminal* term;
 
 char* copy_str (const char* str) {
-	char* newstr = (char*)mallocate(sizeof(char) * strlen(str) + 1);
-	return strcpy(newstr, str);
+	if (str == NULL) {
+		return NULL;
+	} else {
+		char* newstr = (char*)mallocate(sizeof(char) * (strlen(str) + 1));
+		return strcpy(newstr, str);
+	}
 }
 
 void init_terminal () {
@@ -158,10 +162,18 @@ void init_sim_args (input_params& ip) {
 	}
 }
 
-void store_pipe (input_params& ip, int index, int pipe) {
-	free(ip.sim_args[index]);
+char** copy_args (char** args, int num_args) {
+	char** new_args = (char**)mallocate(sizeof(char*) * num_args);
+	for (int i = 0; i < num_args; i++) {
+		new_args[i] = copy_str(args[i]);
+	}
+	return new_args;
+}
+
+void store_pipe (char** args, int index, int pipe) {
+	free(args[index]);
 	int int_size = log10(pipe > 0 ? pipe : 1) + 1;
-	ip.sim_args[index] = (char*)mallocate(sizeof(char) * (int_size + 1));
-	sprintf(ip.sim_args[index], "%d", pipe);
+	args[index] = (char*)mallocate(sizeof(char) * (int_size + 1));
+	sprintf(args[index], "%d", pipe);
 }
 

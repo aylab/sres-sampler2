@@ -28,8 +28,8 @@ elif ARGUMENTS.get('debug', 0):
 	compile_flags = '-Wall -O2 -g'
 	link_flags = ''
 elif ARGUMENTS.get('mpi', 0):
-	compile_flags = '-Wall -O2 -i_dynamic -lm'
-	link_flags = ''
+	compile_flags = '-Wall -O2 -lm'
+	link_flags = '-i_dynamic'
 else:
 	compile_flags = '-Wall -O2'
 	link_flags = ''

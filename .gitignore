@@ -2,3 +2,5 @@
 *~
 .sconsign.dblite
 sres-sampler
+input.*
+output.*

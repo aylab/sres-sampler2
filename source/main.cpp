@@ -32,11 +32,6 @@ extern terminal* term;
 input_params ip;
 
 int main (int argc, char** argv) {
-	for (int i = 0; i < argc; i++) {
-		cerr << argv[i] << " ";
-	}
-	cerr << endl;
-	exit(0);
 	init_terminal();
 	accept_input_params(argc, argv, ip);
 	init_sim_args(ip);

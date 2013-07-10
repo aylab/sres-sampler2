@@ -118,6 +118,9 @@ struct terminal {
 
 // Stores all of the input parameters passed via command-line
 struct input_params {
+	int argc; // The number of arguments passed into the program
+	char** argv; // The list of arguments passed into the program
+	
 	int pop_parents; // The population of parent simulations to use each generation, default=30
 	int pop_children; // The population of child simulations to use each generation, default=200
 	int generations; // The number of generations to run before returning results, default=1

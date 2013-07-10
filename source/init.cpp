@@ -48,6 +48,9 @@ void free_terminal () {
 }
 
 void accept_input_params (int num_args, char** args, input_params& ip) {
+	ip.argc = num_args;
+	ip.argv = args;
+	
 	if (num_args > 1) { // if arguments were given and each argument option is followed by a value
 		for (int i = 1; i < num_args; i += 2) { // iterate through each argument pair
 			char* option = args[i];

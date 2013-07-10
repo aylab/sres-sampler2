@@ -27,6 +27,9 @@ if ARGUMENTS.get('profiling', 0):
 elif ARGUMENTS.get('debug', 0):
 	compile_flags = '-Wall -O2 -g'
 	link_flags = ''
+elif ARGUMENTS.get('mpi', 0):
+	compile_flags = '-Wall -O2 -lsres -lm -lstdc++'
+	link_flags = ''
 else:
 	compile_flags = '-Wall -O2'
 	link_flags = ''

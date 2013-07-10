@@ -23,11 +23,13 @@ along with this program.	If not, see <http://www.gnu.org/licenses/>.
 #include "ESES.h"
 
 #include "sres.h"
+#include "macros.h"
+#include "io.h"
 
 void init_sres (input_params& ip, sres_params& sp) {
 	int es = esDefESSlash;
 	int constraint = 0;
-	int dim = 27;
+	int dim = num_dims;
 	int miu = ip.pop_parents;
 	int lambda = ip.pop_children;
 	int gen = ip.generations;
@@ -86,18 +88,7 @@ void free_sres (sres_params& sp) {
 }
 
 void fitness (double* parameters, double* score, double* constraints) {
-	int pipes[2];
-	if (pipe(pipes) == -1) {
-		// pipe error
-	}
-	pid_t pid = fork();
-	if (pid == -1) {
-		// fork error
-	} else if (pid == 0) {
-		if (execv() == -1) {
-			// exec error
-		}
-	}
+	*score = simulate_set(parameters);
 }
 
 double transform (double x) {

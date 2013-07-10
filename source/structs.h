@@ -76,6 +76,11 @@ struct terminal {
 		cout << this->red << "Not enough memory!" << this->reset << endl;
 	}
 	
+	// Used to indicate the program couldn't create a pipe
+	void failed_pipe_create () {
+		cout << this->red << "Couldn't create a pipe!" << this->reset << endl;
+	}
+	
 	// Used to indicate the program couldn't read from a pipe
 	void failed_pipe_read () {
 		cout << this->red << "Couldn't read from the pipe!" << this->reset << endl;
@@ -84,6 +89,21 @@ struct terminal {
 	// Used to indicate the program couldn't read from a pipe
 	void failed_pipe_write () {
 		cout << this->red << "Couldn't write to the pipe!" << this->reset << endl;
+	}
+	
+	// Used to indicate the program couldn't fork a child process
+	void failed_fork () {
+		cout << this->red << "Couldn't fork a child process!" << this->reset << endl;
+	}
+	
+	// Used to indicate the program couldn't execute an external program
+	void failed_exec () {
+		cout << this->red << "Couldn't execute an external program!" << this->reset << endl;
+	}
+	
+	// Used to indicate a child process encountered an error and did not exit properly
+	void failed_child () {
+		cout << this->red << "A child process encountered an error!" << this->reset << endl;
 	}
 	
 	ostream& verbose () {
@@ -104,6 +124,7 @@ struct input_params {
 	int seed; // The seed used in the evolutionary strategy, default=current UNIX time
 	
 	char** sim_args; // Arguments to be passed to the simulation
+	int num_sim_args; // The number of arguments to be passed to the simulation
 	
 	bool verbose; // Whether or not the program is verbose, i.e. prints many messages about program and simulation state
 	bool quiet; // Whether or not the program is quiet, i.e. redirects cout to /dev/null
@@ -116,6 +137,7 @@ struct input_params {
 		this->generations = 1;
 		this->seed = time(0);
 		this->sim_args = NULL;
+		this->num_sim_args = 0;
 		this->null_stream = new ofstream("/dev/null");
 	}
 	

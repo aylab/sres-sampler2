@@ -21,10 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "structs.h"
 
+char* copy_str(const char*);
 void init_terminal();
 void free_terminal();
 void accept_input_params(int, char**, input_params&);
 void ensure_nonempty(const char*, const char*);
+void init_sim_args(input_params&);
+void store_pipe(input_params&, int, int);
+
 
 #endif
 

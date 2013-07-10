@@ -28,4 +28,4 @@ else:
 
 env = Environment(CXX='g++')
 env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)
-env.Program(target='sres-sampler', source=['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/ESES.c', 'source/ESSRSort.c', 'source/sharefunc.c'])
+env.Program(target='sres-sampler', source=['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/io.cpp', 'source/ESES.c', 'source/ESSRSort.c', 'source/sharefunc.c'])

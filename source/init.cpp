@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cmath>
+
 #include "init.h"
 #include "macros.h"
 #include "main.h"
@@ -23,6 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 terminal* term;
+
+char* copy_str (const char* str) {
+	char* newstr = (char*)mallocate(sizeof(char) * strlen(str) + 1);
+	return strcpy(newstr, str);
+}
 
 void init_terminal () {
 	term = new terminal();
@@ -84,14 +91,20 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				}
 			} else if (strcmp(option, "-a") == 0 || strcmp(option, "--arguments") == 0) {
 				ensure_nonempty(option, value);
-				int num_sim_args = num_args - i;
-				ip.sim_args = (char**)mallocate(sizeof(char*) * (num_sim_args + 1));
 				++i;
-				for (int j = 0; j < num_sim_args; j++) {
+				ip.num_sim_args = num_args - i + 6;
+				ip.sim_args = (char**)mallocate(sizeof(char*) * (ip.num_sim_args));
+				ip.sim_args[0] = copy_str("deterministic");
+				for (int j = 1; j < ip.num_sim_args - 5; j++) {
 					ip.sim_args[j] = (char*)mallocate(sizeof(char) * (strlen(args[i]) + 1));
-					sprintf(ip.sim_args[j], "%s", args[i]);
+					sprintf(ip.sim_args[j], "%s", args[i + j - 1]);
 				}
-				ip.sim_args[num_sim_args] = NULL;
+				ip.sim_args[ip.num_sim_args - 5] = copy_str("--pipe-in");
+				ip.sim_args[ip.num_sim_args - 4] = copy_str("0");
+				ip.sim_args[ip.num_sim_args - 3] = copy_str("--pipe-out");
+				ip.sim_args[ip.num_sim_args - 2] = copy_str("0");
+				ip.sim_args[ip.num_sim_args - 1] = NULL;
+				i = num_args;
 			} else if (strcmp(option, "-c") == 0 || strcmp(option, "--no-color") == 0) {
 				strcpy(term->blue, "");
 				strcpy(term->red, "");
@@ -129,5 +142,23 @@ void ensure_nonempty (const char* flag, const char* arg) {
 		sprintf(message, "Missing the argument for the '%s' flag.", flag);
 		usage(message);
 	}
+}
+
+void init_sim_args (input_params& ip) {
+	if (ip.num_sim_args == 0) {
+		ip.num_sim_args = 6;
+		ip.sim_args = (char**)mallocate(sizeof(char*) * 6);
+		ip.sim_args[0] = copy_str("deterministic");
+		for (int i = 1; i < 6; i++) {
+			ip.sim_args[i] = NULL;
+		}
+	}
+}
+
+void store_pipe (input_params& ip, int index, int pipe) {
+	free(ip.sim_args[index]);
+	int int_size = log10(pipe > 0 ? pipe : 1) + 1;
+	ip.sim_args[index] = (char*)mallocate(sizeof(char) * (int_size + 1));
+	sprintf(ip.sim_args[index], "%d", pipe);
 }
 

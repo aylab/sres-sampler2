@@ -33,7 +33,7 @@ input_params ip;
 
 int main (int argc, char** argv) {
 	init_terminal();
-	accept_input_params(argc, argv, ip);
+	accept_input_params(&argc, &argv, ip);
 	init_sim_args(ip);
 	sres_params sp;
 	init_sres(ip, sp);

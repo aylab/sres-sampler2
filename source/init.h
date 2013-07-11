@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 char* copy_str(const char*);
 void init_terminal();
 void free_terminal();
-void accept_input_params(int, char**, input_params&);
+void accept_input_params(int*, char***, input_params&);
 void ensure_nonempty(const char*, const char*);
 void init_sim_args(input_params&);
 char** copy_args(char**, int);

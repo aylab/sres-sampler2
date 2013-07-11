@@ -90,6 +90,12 @@ void ESInitial(int *argc, char ***argv,   \
   unsigned int outseed;
   int myid, numprocs;
 
+  printf("hi!\n");
+  printf("%d: ", *argc);
+  int i;
+  for (i = 0; i < *argc; i++) {
+  	printf("%s ", (*argv)[i]);
+  }
   MPI_Init(argc, argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &myid);
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);

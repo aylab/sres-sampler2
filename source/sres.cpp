@@ -51,7 +51,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 		lb[i] = 0;
 		ub[i] = 0;
 	}
-	if (dims == 27) {
+	if (dim == 27) {
 		lb[0] = 30,		ub[0] = 65;
 		lb[1] = 30,		ub[1] = 65;
 		lb[2] = 30,		ub[2] = 65;
@@ -79,7 +79,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 		lb[24] = 150,	ub[24] = 900;
 		lb[25] = 150,	ub[25] = 900;
 		lb[26] = 200,	ub[26] = 800;
-	} else if (dims == 45) {
+	} else if (dim == 45) {
 		lb[0] = 30,		ub[0] = 65;
 		lb[1] = 30,		ub[1] = 65;
 		lb[2] = 30,		ub[2] = 65;
@@ -126,7 +126,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 		lb[43] = 150,	ub[43] = 900;
 		lb[44] = 200,	ub[44] = 800;
 	} else {
-		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dims << ") is correct or add ranges to sres.cpp." << term->reset << endl;
+		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
 	}
 	
 	ESInitial(&ip.argc, &ip.argv, ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));

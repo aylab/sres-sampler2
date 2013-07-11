@@ -30,7 +30,7 @@ along with this program.	If not, see <http://www.gnu.org/licenses/>.
 void init_sres (input_params& ip, sres_params& sp) {
 	int es = esDefESSlash;
 	int constraint = 0;
-	int dim = num_dims;
+	int dim = ip.num_dims;
 	int miu = ip.pop_parents;
 	int lambda = ip.pop_children;
 	int gen = ip.generations;
@@ -47,33 +47,87 @@ void init_sres (input_params& ip, sres_params& sp) {
 	
 	double* lb = (double*)mallocate(sizeof(double) * dim);
 	double* ub = (double*)mallocate(sizeof(double) * dim);
-	lb[0] = 30, ub[0] = 65;
-	lb[1] = 30, ub[1] = 65;
-	lb[2] = 30, ub[2] = 65;
-	lb[3] = 30, ub[3] = 65;
-	lb[4] = 0.1, ub[4] = 0.46;
-	lb[5] = 0.1, ub[5] = 0.46;
-	lb[6] = 0.1, ub[6] = 0.46;
-	lb[7] = 0.1, ub[7] = 0.46;
-	lb[8] = 10, ub[8] = 60;
-	lb[9] = 10, ub[9] = 60;
-	lb[10] = 10, ub[10] = 60;
-	lb[11] = 20, ub[11] = 60;
-	lb[12] = 0.11, ub[12] = 0.35;
-	lb[13] = 0.11, ub[13] = 0.35;
-	lb[14] = 0.11, ub[14] = 0.35;
-	lb[15] = 0.07, ub[15] = 0.35;
-	lb[16] = 8, ub[16] = 12;
-	lb[17] = 8, ub[17] = 12;
-	lb[18] = 0, ub[18] = 0;
-	lb[19] = 6, ub[19] = 12;
-	lb[20] = 0.4, ub[20] = 2;
-	lb[21] = 0.4, ub[21] = 2;
-	lb[22] = 0.4, ub[22] = 2;
-	lb[23] = 10, ub[23] = 25;
-	lb[24] = 150, ub[24] = 900;
-	lb[25] = 150, ub[25] = 900;
-	lb[26] = 200, ub[26] = 800;
+	for (int i = 0; i < dim; i++) {
+		lb[i] = 0;
+		ub[i] = 0;
+	}
+	if (dims == 27) {
+		lb[0] = 30,		ub[0] = 65;
+		lb[1] = 30,		ub[1] = 65;
+		lb[2] = 30,		ub[2] = 65;
+		lb[3] = 30,		ub[3] = 65;
+		lb[4] = 0.1,	ub[4] = 0.46;
+		lb[5] = 0.1,	ub[5] = 0.46;
+		lb[6] = 0.1,	ub[6] = 0.46;
+		lb[7] = 0.1,	ub[7] = 0.46;
+		lb[8] = 10,		ub[8] = 60;
+		lb[9] = 10,		ub[9] = 60;
+		lb[10] = 10,	ub[10] = 60;
+		lb[11] = 20,	ub[11] = 60;
+		lb[12] = 0.11,	ub[12] = 0.35;
+		lb[13] = 0.11,	ub[13] = 0.35;
+		lb[14] = 0.11,	ub[14] = 0.35;
+		lb[15] = 0.07,	ub[15] = 0.35;
+		lb[16] = 8,		ub[16] = 12;
+		lb[17] = 8,		ub[17] = 12;
+		lb[18] = 0,		ub[18] = 0;
+		lb[19] = 6,		ub[19] = 12;
+		lb[20] = 0.4,	ub[20] = 2;
+		lb[21] = 0.4,	ub[21] = 2;
+		lb[22] = 0.4,	ub[22] = 2;
+		lb[23] = 10,	ub[23] = 25;
+		lb[24] = 150,	ub[24] = 900;
+		lb[25] = 150,	ub[25] = 900;
+		lb[26] = 200,	ub[26] = 800;
+	} else if (dims == 45) {
+		lb[0] = 30,		ub[0] = 65;
+		lb[1] = 30,		ub[1] = 65;
+		lb[2] = 30,		ub[2] = 65;
+		lb[3] = 30,		ub[3] = 65;
+		lb[4] = 0.1,	ub[4] = 0.46;
+		lb[5] = 0.1,	ub[5] = 0.46;
+		lb[6] = 0.1,	ub[6] = 0.46;
+		lb[7] = 0.1,	ub[7] = 0.46;
+		lb[8] = 10,		ub[8] = 60;
+		lb[9] = 10,		ub[9] = 60;
+		lb[10] = 10,	ub[10] = 60;
+		lb[11] = 20,	ub[11] = 60;
+		lb[12] = 0.11,	ub[12] = 0.35;
+		lb[13] = 0.11,	ub[13] = 0.35;
+		lb[14] = 0.11,	ub[14] = 0.35;
+		lb[15] = 0.07,	ub[15] = 0.35;
+		lb[16] = 0.0003,ub[16] = 0.03;
+		lb[17] = 0.0003,ub[17] = 0.03;
+		lb[18] = 0.0003,ub[18] = 0.03;
+		lb[19] = 0.0003,ub[19] = 0.03;
+		lb[20] = 0.0003,ub[20] = 0.03;
+		lb[21] = 0.0003,ub[21] = 0.03;
+		lb[22] = 0.003,	ub[22] = 0.3;
+		lb[23] = 0.003,	ub[23] = 0.3;
+		lb[24] = 0.003,	ub[24] = 0.3;
+		lb[25] = 0.003,	ub[25] = 0.3;
+		lb[26] = 0.003,	ub[26] = 0.3;
+		lb[27] = 0.003,	ub[27] = 0.3;
+		lb[28] = 0.11,	ub[28] = 0.35;
+		lb[29] = 0.11,	ub[29] = 0.35;
+		lb[30] = 0.11,	ub[30] = 0.35;
+		lb[31] = 0.11,	ub[31] = 0.35;
+		lb[32] = 0.11,	ub[32] = 0.35;
+		lb[33] = 0.11,	ub[33] = 0.35;
+		lb[34] = 8,		ub[34] = 12;
+		lb[35] = 8,		ub[35] = 12;
+		lb[36] = 0,		ub[36] = 0;
+		lb[37] = 6,		ub[37] = 12;
+		lb[38] = 0.4,	ub[38] = 2;
+		lb[39] = 0.4,	ub[39] = 2;
+		lb[40] = 0.4,	ub[40] = 2;
+		lb[41] = 10,	ub[41] = 25;
+		lb[42] = 150,	ub[42] = 900;
+		lb[43] = 150,	ub[43] = 900;
+		lb[44] = 200,	ub[44] = 800;
+	} else {
+		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dims << ") is correct or add ranges to sres.cpp." << term->reset << endl;
+	}
 	
 	ESInitial(&ip.argc, &ip.argv, ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 }

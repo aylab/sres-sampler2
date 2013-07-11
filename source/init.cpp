@@ -72,7 +72,13 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			 3) usage(true) prints the usage information with an error message while usage(false) prints it without one
 			*/
 			
-			if (strcmp(option, "-P") == 0 || strcmp(option, "--parent-population") == 0) {
+			if (strcmp(option, "-d") == 0 || strcmp(option, "--dimensions") == 0) {
+				ensure_nonempty(option, value);
+				ip.num_dims = atoi(value);
+				if (ip.num_dims < 1) {
+					usage("The simulation must include a positive number of dimensions. Set -d or --dimensions to at least 1.");
+				}
+			} else if (strcmp(option, "-P") == 0 || strcmp(option, "--parent-population") == 0) {
 				ensure_nonempty(option, value);
 				ip.pop_parents = atoi(value);
 				if (ip.pop_parents < 1) {

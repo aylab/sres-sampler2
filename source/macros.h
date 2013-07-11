@@ -19,8 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef MACROS_H
 #define MACROS_H
 
-#define num_dims 27 // The number of dimensions to use
-
 // Exit statuses
 #define EXIT_SUCCESS			0
 #define EXIT_MEMORY_ERROR		1

@@ -50,6 +50,7 @@ void usage (const char* message) {
 		cout << term->red << message << term->reset << endl << endl;
 	}
 	cout << "Usage: [-option [value]]. . . [--option [value]]. . ." << endl;
+	cout << "-d, --dimensions        [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=27" << endl;
 	cout << "-P, --parent-population [int]        : the population of parent simulations to use each generation, min=1, default=30" << endl;
 	cout << "-p, --child-population  [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
 	cout << "-g, --generations       [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;

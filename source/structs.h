@@ -123,6 +123,7 @@ struct input_params {
 	int argc; // The number of arguments passed into the program
 	char** argv; // The list of arguments passed into the program
 	
+	int num_dims; // The number of dimensions (i.e. rate parameters) to explore, default=27
 	int pop_parents; // The population of parent simulations to use each generation, default=30
 	int pop_children; // The population of child simulations to use each generation, default=200
 	int generations; // The number of generations to run before returning results, default=1
@@ -138,6 +139,7 @@ struct input_params {
 	ofstream* null_stream; // A stream to /dev/null that cout is redirected to if quiet mode is set
 	
 	input_params () {
+		this->num_dims = 27;
 		this->pop_parents = 30;
 		this->pop_children = 200;
 		this->generations = 1;

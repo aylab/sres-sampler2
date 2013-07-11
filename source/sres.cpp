@@ -155,7 +155,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	
 	ESInitial(
 	#if defined(OPEN_MPI)
-		&(ip.argc), &(ip.argv),
+		x, &(ip.argv),
 	#endif
 		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 }

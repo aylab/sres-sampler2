@@ -153,6 +153,10 @@ void init_sres (input_params& ip, sres_params& sp) {
 	printf("<%x, %x>\n", x, ip.seed);
 	fflush(NULL);
 	
+	#if defined(OPEN_MPI)
+		cerr << "woooo" << endl;
+		exit(0);
+	#endif
 	ESInitial(
 	#if defined(OPEN_MPI)
 		x, &(ip.argv),

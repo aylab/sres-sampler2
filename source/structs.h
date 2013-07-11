@@ -25,10 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ESES.h"
 
-#include "init.h"
 #include "memory.h"
 
 using namespace std;
+
+char* copy_str(const char*);
 
 // Stores values and shortcut functions for coloring terminal output and printing common messages (set -c or --no-color to disable colors)
 struct terminal {

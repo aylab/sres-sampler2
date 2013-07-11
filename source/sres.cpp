@@ -146,6 +146,13 @@ void init_sres (input_params& ip, sres_params& sp) {
 	fflush(NULL);
 	printf("<%s>\n", ip.argv[0]);
 	fflush(NULL);
+	
+	int* x = &(ip.argc);
+	printf("sanity:\n");
+	fflush(NULL);
+	printf("<%d> ", *x);
+	fflush(NULL);
+	
 	ESInitial(
 	#if defined(OPEN_MPI)
 		&(ip.argc), &(ip.argv),

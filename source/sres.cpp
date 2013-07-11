@@ -27,6 +27,8 @@ along with this program.	If not, see <http://www.gnu.org/licenses/>.
 #include "macros.h"
 #include "io.h"
 
+extern terminal* term;
+
 void init_sres (input_params& ip, sres_params& sp) {
 	int es = esDefESSlash;
 	int constraint = 0;

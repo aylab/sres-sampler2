@@ -83,7 +83,7 @@ double simulate_set (double parameters[]) {
 void write_pipe (int fd, double parameters[]) {
 	write_pipe_int(fd, ip.num_dims);
 	write_pipe_int(fd, 1);
-	if (write(fd, parameters, sizeof(double) * num_dims) == -1) {
+	if (write(fd, parameters, sizeof(double) * ip.num_dims) == -1) {
 		term->failed_pipe_write();
 		exit(EXIT_PIPE_WRITE_ERROR);
 	}

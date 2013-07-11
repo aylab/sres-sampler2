@@ -141,7 +141,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	}
 	
 	#if OPEN_MPI == 1
-		!
+		???
 	#endif
 	
 	ESInitial(

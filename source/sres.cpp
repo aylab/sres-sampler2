@@ -142,7 +142,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	
 	cerr << ip.argc << ": ";
 	for (int i = 0; i < ip.argc; i++) {
-		cerr << ip.argv << " ";
+		cerr << ip.argv[i] << " ";
 	}
 	cerr << endl;
 	ESInitial(

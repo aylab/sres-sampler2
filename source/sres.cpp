@@ -48,7 +48,6 @@ void init_sres (input_params& ip, sres_params& sp) {
 	int retry = 0;
 	sp.pf = essrDefPf;
 	
-	cerr << 0 << endl;
 	sp.trsfm = (ESfcnTrsfm*)mallocate(sizeof(ESfcnTrsfm) * dim);
 	for (int i = 0; i < dim; i++) {
 		sp.trsfm[i] = transform;
@@ -62,7 +61,6 @@ void init_sres (input_params& ip, sres_params& sp) {
 		lb[i] = 0;
 		ub[i] = 0;
 	}
-	cerr << 1 << endl;
 	
 	if (dim == 27) {
 		lb[0] = 30,		ub[0] = 65;
@@ -141,14 +139,12 @@ void init_sres (input_params& ip, sres_params& sp) {
 	} else {
 		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
 	}
-	cerr << 2 << endl;
 	
 	ESInitial(
 	#if defined(OPEN_MPI)
 		&ip.argc, &ip.argv,
 	#endif
 		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
-	cerr << 3 << endl;
 }
 
 void run_sres (sres_params& sp) {

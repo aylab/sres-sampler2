@@ -124,8 +124,8 @@ struct terminal {
 
 // Stores all of the input parameters passed via command-line
 struct input_params {
-	int* argc; // A pointer to the number of arguments passed into the program
-	char*** argv; // A pointer to the list of arguments passed into the program
+	int argc; // The number of arguments passed into the program
+	char** argv; // The list of arguments passed into the program
 	
 	int num_dims; // The number of dimensions (i.e. rate parameters) to explore, default=27
 	int pop_parents; // The population of parent simulations to use each generation, default=30

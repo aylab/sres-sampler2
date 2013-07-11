@@ -51,16 +51,16 @@ void free_terminal () {
 	delete term;
 }
 
-void accept_input_params (int* num_args, char*** args, input_params& ip) {
+void accept_input_params (int num_args, char** args, input_params& ip) {
 	ip.argc = num_args;
 	ip.argv = args;
 	
-	if (*num_args > 1) { // if arguments were given and each argument option is followed by a value
-		for (int i = 1; i < *num_args; i += 2) { // iterate through each argument pair
-			char* option = (*args)[i];
+	if (num_args > 1) { // if arguments were given and each argument option is followed by a value
+		for (int i = 1; i < num_args; i += 2) { // iterate through each argument pair
+			char* option = args[i];
 			char* value;
-			if (i < *num_args - 1) {
-				value = (*args)[i + 1];
+			if (i < num_args - 1) {
+				value = args[i + 1];
 			} else {
 				value = NULL;
 			}
@@ -109,11 +109,11 @@ void accept_input_params (int* num_args, char*** args, input_params& ip) {
 			} else if (strcmp(option, "-a") == 0 || strcmp(option, "--arguments") == 0) {
 				ensure_nonempty(option, value);
 				++i;
-				ip.num_sim_args = *num_args - i + 6;
+				ip.num_sim_args = num_args - i + 6;
 				ip.sim_args = (char**)mallocate(sizeof(char*) * (ip.num_sim_args));
 				ip.sim_args[0] = copy_str("deterministic");
 				for (int j = 1; j < ip.num_sim_args - 5; j++) {
-					char* arg = (*args)[i + j - 1];
+					char* arg = args[i + j - 1];
 					ip.sim_args[j] = (char*)mallocate(sizeof(char) * (strlen(arg) + 1));
 					sprintf(ip.sim_args[j], "%s", arg);
 				}
@@ -122,7 +122,7 @@ void accept_input_params (int* num_args, char*** args, input_params& ip) {
 				ip.sim_args[ip.num_sim_args - 3] = copy_str("--pipe-out");
 				ip.sim_args[ip.num_sim_args - 2] = copy_str("0");
 				ip.sim_args[ip.num_sim_args - 1] = NULL;
-				i = *num_args;
+				i = num_args;
 			} else if (strcmp(option, "-c") == 0 || strcmp(option, "--no-color") == 0) {
 				term->blue = copy_str("");
 				term->red = copy_str("");

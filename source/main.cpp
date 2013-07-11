@@ -32,12 +32,18 @@ extern terminal* term;
 input_params ip;
 
 int main (int argc, char** argv) {
+	cerr << 0 << endl;
 	init_terminal();
+	cerr << 1 << endl;
 	accept_input_params(argc, argv, ip);
+	cerr << 2 << endl;
 	init_sim_args(ip);
+	cerr << 3 << endl;
 	sres_params sp;
 	init_sres(ip, sp);
+	cerr << 4 << endl;
 	run_sres(sp);
+	cerr << 5 << endl;
 	free_sres(sp);
 	free_terminal();
 	return 0;

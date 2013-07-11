@@ -19,7 +19,7 @@ along with this program.	If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>
 #include <stdio.h>
 
-#if defined(OPEN_MPI)
+#if defined(MPI)
 	#include "../libsres-mpi/sharefunc.h"
 	#include "../libsres-mpi/ESSRSort.h"
 	#include "../libsres-mpi/ESES.h"
@@ -140,12 +140,8 @@ void init_sres (input_params& ip, sres_params& sp) {
 		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
 	}
 	
-	#if OPEN_MPI == 1
-		???
-	#endif
-	
 	ESInitial(
-	#if defined(OPEN_MPI)
+	#if defined(MPI)
 		&(ip.argc), &(ip.argv),
 	#endif
 		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));

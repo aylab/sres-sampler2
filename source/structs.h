@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <fstream>
 
-#if defined(OPEN_MPI)
+#if defined(MPI)
 	#include "../libsres-mpi/ESES.h"
 #else
 	#include "../libsres/ESES.h"

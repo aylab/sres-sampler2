@@ -28,6 +28,8 @@ if ARGUMENTS.get('profiling', 0):
 	link_flags += '-pg'
 elif ARGUMENTS.get('debug', 0):
 	compile_flags += '-g'
+elif ARGUMENTS.get('mpi', 0):
+	compile_flags += '-D MPI'
 
 env = Environment(CXX=compiler)
 env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)

@@ -150,7 +150,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	int* x = &(ip.argc);
 	printf("sanity:\n");
 	fflush(NULL);
-	printf("<%d> ", *x);
+	printf("<%x, %d>\n", x, *x);
 	fflush(NULL);
 	
 	ESInitial(

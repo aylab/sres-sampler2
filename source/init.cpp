@@ -113,8 +113,9 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				ip.sim_args = (char**)mallocate(sizeof(char*) * (ip.num_sim_args));
 				ip.sim_args[0] = copy_str("deterministic");
 				for (int j = 1; j < ip.num_sim_args - 5; j++) {
-					ip.sim_args[j] = (char*)mallocate(sizeof(char) * (strlen(args[i]) + 1));
-					sprintf(ip.sim_args[j], "%s", args[i + j - 1]);
+					char* arg = args[i + j - 1];
+					ip.sim_args[j] = (char*)mallocate(sizeof(char) * (strlen(arg) + 1));
+					sprintf(ip.sim_args[j], "%s", arg);
 				}
 				ip.sim_args[ip.num_sim_args - 5] = copy_str("--pipe-in");
 				ip.sim_args[ip.num_sim_args - 4] = copy_str("0");
@@ -123,9 +124,9 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				ip.sim_args[ip.num_sim_args - 1] = NULL;
 				i = num_args;
 			} else if (strcmp(option, "-c") == 0 || strcmp(option, "--no-color") == 0) {
-				strcpy(term->blue, "");
-				strcpy(term->red, "");
-				strcpy(term->reset, "");
+				term->blue = copy_str("");
+				term->red = copy_str("");
+				term->reset = copy_str("");
 				i--;
 			} else if (strcmp(option, "-v") == 0 || strcmp(option, "--verbose") == 0) {
 				if (!ip.verbose) {

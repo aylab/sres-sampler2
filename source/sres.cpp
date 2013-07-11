@@ -48,17 +48,20 @@ void init_sres (input_params& ip, sres_params& sp) {
 	int retry = 0;
 	sp.pf = essrDefPf;
 	
-	ESfcnTrsfm* trsfm = (ESfcnTrsfm*)mallocate(sizeof(ESfcnTrsfm) * dim);
+	sp.trsfm = (ESfcnTrsfm*)mallocate(sizeof(ESfcnTrsfm) * dim);
 	for (int i = 0; i < dim; i++) {
-		trsfm[i] = transform;
+		sp.trsfm[i] = transform;
 	}
 	
-	double* lb = (double*)mallocate(sizeof(double) * dim);
-	double* ub = (double*)mallocate(sizeof(double) * dim);
+	sp.lb = (double*)mallocate(sizeof(double) * dim);
+	sp.ub = (double*)mallocate(sizeof(double) * dim);
+	double* lb = sp.lb;
+	double* ub = sp.ub;
 	for (int i = 0; i < dim; i++) {
 		lb[i] = 0;
 		ub[i] = 0;
 	}
+	
 	if (dim == 27) {
 		lb[0] = 30,		ub[0] = 65;
 		lb[1] = 30,		ub[1] = 65;
@@ -138,9 +141,9 @@ void init_sres (input_params& ip, sres_params& sp) {
 	}
 	
 	#if defined(OPEN_MPI)
-		ESInitial(&ip.argc, &ip.argv, ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+		ESInitial(&ip.argc, &ip.argv, ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 	#else
-		ESInitial(ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+		ESInitial(ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 	#endif
 }
 
@@ -151,6 +154,9 @@ void run_sres (sres_params& sp) {
 }
 
 void free_sres (sres_params& sp) {
+	free(sp.trsfm);
+	free(sp.lb);
+	free(sp.ub);
 	ESDeInitial(sp.param, sp.population, sp.stats);
 }
 

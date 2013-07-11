@@ -157,7 +157,7 @@ struct input_params {
 	~input_params () {
 		free(this->sim_path);
 		if (this->sim_args != NULL) {
-			for (int i = 0; this->sim_args[i] != NULL; i++) {
+			for (int i = 0; i < this->num_sim_args; i++) {
 				free(this->sim_args[i]);
 			}
 			free(sim_args);
@@ -172,12 +172,18 @@ struct sres_params {
 	ESPopulation* population;
 	ESStatistics* stats;
 	double pf;
+	ESfcnTrsfm* trsfm;
+	double* lb;
+	double* ub;
 	
 	sres_params () {
 		this->param = NULL;
 		this->population = NULL;
 		this->stats = NULL;
 		this->pf = 0;
+		this->trsfm = NULL;
+		this->lb = NULL;
+		this->ub = NULL;
 	}
 };
 

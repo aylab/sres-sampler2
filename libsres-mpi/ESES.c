@@ -90,9 +90,9 @@ void ESInitial(int *argc, char ***argv,   \
   unsigned int outseed;
   int myid, numprocs;
 
-  printf("hi\n");
-  printf("%d\n", *argc);
-  printf("%s", argv[0]);
+  printf("after:\n");
+  printf("<%d> ", *argc);
+  printf("<%s>\n", argv[0]);
   exit(0);
   MPI_Init(argc, argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &myid);

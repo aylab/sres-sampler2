@@ -19,9 +19,15 @@ along with this program.	If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>
 #include <stdio.h>
 
-#include "sharefunc.h"
-#include "ESSRSort.h"
-#include "ESES.h"
+#if defined(OPEN_MPI)
+	#include "../libsres-mpi/sharefunc.h"
+	#include "../libsres-mpi/ESSRSort.h"
+	#include "../libsres-mpi/ESES.h"
+#else
+	#include "../libsres/sharefunc.h"
+	#include "../libsres/ESSRSort.h"
+	#include "../libsres/ESES.h"
+#endif
 
 #include "sres.h"
 #include "macros.h"
@@ -131,7 +137,11 @@ void init_sres (input_params& ip, sres_params& sp) {
 		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
 	}
 	
-	ESInitial(&ip.argc, &ip.argv, ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	#if defined(OPEN_MPI)
+		ESInitial(&ip.argc, &ip.argv, ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	#else
+		ESInitial(ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	#endif
 }
 
 void run_sres (sres_params& sp) {

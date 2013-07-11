@@ -21,16 +21,20 @@ if ARGUMENTS.get('mpi', 0):
 else:
 	compiler = 'g++'
 
+compile_flags = '-Wall -O2 '
+link_flags = ''
 if ARGUMENTS.get('profiling', 0):
-	compile_flags = '-Wall -O2 -pg'
-	link_flags = '-pg'
+	compile_flags += '-pg'
+	link_flags += '-pg'
 elif ARGUMENTS.get('debug', 0):
-	compile_flags = '-Wall -O2 -g'
-	link_flags = ''
-else:
-	compile_flags = '-Wall -O2'
-	link_flags = ''
+	compile_flags += '-g'
 
 env = Environment(CXX=compiler)
 env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)
-env.Program(target='sres-sampler', source=['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/io.cpp', 'libsres/ESES.c', 'libsres/ESSRSort.c', 'libsres/sharefunc.c'])
+
+sources = ['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/io.cpp']
+if ARGUMENTS.get('mpi', 0):
+	sources += ['libsres-mpi/ESES.c', 'libsres-mpi/ESSRSort.c', 'libsres-mpi/sharefunc.c']
+else:
+	sources += ['libsres/ESES.c', 'libsres/ESSRSort.c', 'libsres/sharefunc.c']
+env.Program(target='sres-sampler', source=sources)

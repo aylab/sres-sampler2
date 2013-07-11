@@ -1,5 +1,6 @@
 /*********************************************************************
  ** Stochastic Ranking Evolution Strategy                           **
+ ** with MPI                                                        **
  ** (miu,lambda)-Evolution Strategy                                 **
  **                                                                 **
  ** For ACADEMIC RESEARCH, this is licensed with GPL license        **
@@ -18,8 +19,7 @@
  ** MA 02111-1307, USA.                                             **
  **                                                                 **
  ** Author: Xinglai Ji (jix1@ornl.gov)                              **
- ** Date:   Mar 2, 2005; Mar 3, 2005; Mar 4, 2005; Mar 7, 2005;     **
- **         Mar 8, 2005; Mar 10, 2005; Mar 21, 2005; Mar 22, 2005;  **
+ ** Date:   Apr 5, 2005;                                            **
  ** Organization: Oak Ridge National Laboratory                     **
  ** Reference:                                                      **
  **   1. Thomas P. Runarsson and Xin Yao. 2000. Stochastic Ranking  **
@@ -29,6 +29,8 @@
  **      in Constrained Evolutionary Optimization. IEEE             **
  **      Transactions on Systems, Man and Cybernetics -- Part C:    **
  **      Applications and Reviews. 35(2):233-243.                   **
+ **   3. MPICH                                                      **
+ **      http://www-unix.mcs.anl.gov/mpi/mpich/                     **
  *********************************************************************/
 
 #ifdef __cplusplus
@@ -154,9 +156,11 @@ typedef struct
 
 /*********************************************************************
  ** initialize: parameters,populations and random seed              **
- ** ESInitial(seed, param,trsfm, fg,es,constraint,dim,ub,lb,miu,    **
+ ** ESInitial( argc, argv,                                          **
+ **            seed, param,trsfm, fg,es,constraint,dim,ub,lb,miu,   **
  **            lambda,gen, gamma, alpha, varphi, retry,             **
  **             population, stats)                                  **
+ ** argc,argv: args from cmd line, for MPI                          **
  ** seed: random seed, usually esDefSeed=0 (pid*time)               **
  ** outseed: seed value assigned , for next use                     **
  ** param: point to parameter                                       **
@@ -182,10 +186,15 @@ typedef struct
  ** population: point to this population                            **
  ** stats: point to statistics                                      **
  **                                                                 **
+ ** Initialize MPI                                                  **
+ ** processors >=2, print seed if master                            **
+ **                                                                 **
  ** ESDeInitial(param,populationi,stats)                            **
  ** free param and population                                       **
+ ** finalize MPI                                                    **
  *********************************************************************/
-void ESInitial(unsigned int, ESParameter**, ESfcnTrsfm *,   \
+void ESInitial(int *, char ***,  \
+               unsigned int, ESParameter**, ESfcnTrsfm *,   \
                ESfcnFG,int, int,int,double*,double*,int,int,int,  \
                double, double, double, int,  \
                ESPopulation**, ESStatistics**);
@@ -300,9 +309,12 @@ void ESPrintStat(ESStatistics *, ESParameter *);
  ** stepwise evolution                                              **
  ** ESStep(population, param, stats, pf)                            **
  **                                                                 **
+ ** Master:                                                         **
  ** -> Stochastic ranking -> sort population based on ranking index **
- ** -> Mutate (recalculate f/g/phi) -> do statistics analysis on    **
+ ** -> send op to other processors  -> do statistics analysis on    **
  ** this generation -> print statistics information                 **
+ ** Slave:                                                          **
+ ** recalculate f/g/phi -> curgen+1                                 **
  *********************************************************************/
 void ESStep(ESPopulation *, ESParameter *, ESStatistics *, double);
 
@@ -344,9 +356,11 @@ void ESSelectPopulation(ESPopulation *, ESParameter *);
  ** exponential smoothing                                           **
  ** sp(miu->lambda): sp = sp_ + alpha * (sp - sp_)                  **
  **                                                                 **
- ** re-calculate f/g/phi                                            **
+ ** Master: send op to other processors                             **
+ ** Slave:  re-calculate f/g/phi                                    **
  *********************************************************************/
 void ESMutate(ESPopulation *, ESParameter *);
+void ESMPIMutate(ESPopulation *, ESParameter *);
 
 #endif
 

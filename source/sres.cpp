@@ -75,7 +75,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	lb[25] = 150, ub[25] = 900;
 	lb[26] = 200, ub[26] = 800;
 	
-	ESInitial(ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	ESInitial(&ip.argc, &ip.argv, ip.seed, &(sp.param), trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 }
 
 void run_sres (sres_params& sp) {

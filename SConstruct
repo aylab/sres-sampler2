@@ -27,13 +27,10 @@ if ARGUMENTS.get('profiling', 0):
 elif ARGUMENTS.get('debug', 0):
 	compile_flags = '-Wall -O2 -g'
 	link_flags = ''
-elif ARGUMENTS.get('mpi', 0):
-	compile_flags = '-Wall -O2 -lsres -lm -lstdc++'
-	link_flags = '-L lib'
 else:
 	compile_flags = '-Wall -O2'
-	link_flags = '-L lib'
+	link_flags = ''
 
 env = Environment(CXX=compiler)
 env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)
-env.Program(target='sres-sampler', source=['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/io.cpp', 'source/ESES.c', 'source/ESSRSort.c', 'source/sharefunc.c'])
+env.Program(target='sres-sampler', source=['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/io.cpp', 'libsres/ESES.c', 'libsres/ESSRSort.c', 'libsres/sharefunc.c'])

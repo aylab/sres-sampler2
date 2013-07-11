@@ -91,7 +91,9 @@ void ESInitial(int *argc, char ***argv,   \
   int myid, numprocs;
 
   printf("after:\n");
+  fflush(NULL);
   printf("<%d> ", *argc);
+  fflush(NULL);
   printf("<%s>\n", argv[0]);
   exit(0);
   MPI_Init(argc, argv);

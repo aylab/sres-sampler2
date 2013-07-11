@@ -37,6 +37,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "sharefunc.h"
 #include "ESSRSort.h"
 #include "ESES.h"
@@ -89,20 +90,19 @@ void ESInitial(int *argc, char ***argv,   \
   unsigned int outseed;
   int myid, numprocs;
 
-  printf("0\n");
+  printf("%d: ", argc);
+  for (int i = 0; i < argc; i++) {
+  	printf("%s ", argv[i]);
+  }
   MPI_Init(argc, argv);
-  printf("1\n");
   MPI_Comm_rank(MPI_COMM_WORLD, &myid);
-  printf("2\n");
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-  printf("3\n");
   if(numprocs < 2)
   {
     printf("Requiring at least 2 processes!\n");
     exit(1);
   }
 
-  printf("4\n");
   ShareSeed(seed, &outseed);
   ESInitialParam(param, trsfm, fg, es, outseed,constraint, dim, ub, lb,   \
                  miu, lambda, gen, gamma, alpha, varphi, retry);

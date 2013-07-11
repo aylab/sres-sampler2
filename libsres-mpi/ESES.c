@@ -94,7 +94,7 @@ void ESInitial(int *argc, char ***argv,   \
   fflush(NULL);
   printf("<%d> ", *argc);
   fflush(NULL);
-  printf("<%s>\n", argv[0]);
+  printf("<%s>\n", (*argv)[0]);
   exit(0);
   MPI_Init(argc, argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &myid);

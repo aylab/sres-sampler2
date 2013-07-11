@@ -89,20 +89,20 @@ void ESInitial(int *argc, char ***argv,   \
   unsigned int outseed;
   int myid, numprocs;
 
-  cerr << 0 << endl;
+  printf("0\n");
   MPI_Init(argc, argv);
-  cerr << 1 << endl;
+  printf("1\n");
   MPI_Comm_rank(MPI_COMM_WORLD, &myid);
-  cerr << 2 << endl;
+  printf("2\n");
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-  cerr << 3 << endl;
+  printf("3\n");
   if(numprocs < 2)
   {
     printf("Requiring at least 2 processes!\n");
     exit(1);
   }
 
-  cerr << 4 << endl;
+  printf("4\n");
   ShareSeed(seed, &outseed);
   ESInitialParam(param, trsfm, fg, es, outseed,constraint, dim, ub, lb,   \
                  miu, lambda, gen, gamma, alpha, varphi, retry);

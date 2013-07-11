@@ -140,8 +140,12 @@ void init_sres (input_params& ip, sres_params& sp) {
 		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
 	}
 	
-	cerr << "before:" << endl;
-	cerr << "<" << ip.argc << "> <" << ip.argv[0] << ">" << endl;
+	printf("before:\n");
+	fflush(NULL);
+	printf("<%d> ", ip.argc);
+	fflush(NULL);
+	printf("<%s>\n", ip.argv[0]);
+	fflush(NULL);
 	ESInitial(
 	#if defined(OPEN_MPI)
 		&(ip.argc), &(ip.argv),

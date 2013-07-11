@@ -90,6 +90,7 @@ void ESInitial(int *argc, char ***argv,   \
   unsigned int outseed;
   int myid, numprocs;
 
+  exit(0);
   printf("hi!\n");
   printf("%d: ", *argc);
   int i;

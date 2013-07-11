@@ -45,7 +45,7 @@ double simulate_set (double parameters[]) {
 		exit(EXIT_FORK_ERROR);
 	}
 	if (pid == 0) {
-		if (execv("../sogen-deterministic/deterministic", sim_args) == -1) {
+		if (execv("~/sogen-deterministic/deterministic", sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
 		}

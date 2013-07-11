@@ -92,7 +92,7 @@ void ESInitial(int *argc, char ***argv,   \
 
   printf("after:\n");
   fflush(NULL);
-  printf("<%d> ", *argc);
+  printf("<%d> ", argc);
   fflush(NULL);
   printf("<%s>\n", (*argv)[0]);
   exit(0);

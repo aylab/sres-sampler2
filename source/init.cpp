@@ -96,6 +96,10 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				if (ip.seed <= 0) {
 					usage("The seed to generate random numbers must be a positive integer. Set -s or --seed to at least 1.");
 				}
+			} else if (strcmp(option, "-f") == 0 || strcmp(option, "--simulation") == 0) {
+				ensure_nonempty(option, value);
+				free(ip.sim_path);
+				ip.sim_path = copy_str(value);
 			} else if (strcmp(option, "-a") == 0 || strcmp(option, "--arguments") == 0) {
 				ensure_nonempty(option, value);
 				++i;

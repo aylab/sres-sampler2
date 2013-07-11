@@ -126,6 +126,7 @@ struct input_params {
 	int generations; // The number of generations to run before returning results, default=1
 	int seed; // The seed used in the evolutionary strategy, default=current UNIX time
 	
+	char* sim_path; // The relative filename of the simulation executable
 	char** sim_args; // Arguments to be passed to the simulation
 	int num_sim_args; // The number of arguments to be passed to the simulation
 	
@@ -139,15 +140,17 @@ struct input_params {
 		this->pop_children = 200;
 		this->generations = 1;
 		this->seed = time(0);
+		this->sim_path = copy_str("deterministic");
 		this->sim_args = NULL;
 		this->num_sim_args = 0;
 		this->null_stream = new ofstream("/dev/null");
 	}
 	
 	~input_params () {
-		if (sim_args != NULL) {
-			for (int i = 0; sim_args[i] != NULL; i++) {
-				free(sim_args[i]);
+		free(this->sim_path);
+		if (this->sim_args != NULL) {
+			for (int i = 0; this->sim_args[i] != NULL; i++) {
+				free(this->sim_args[i]);
 			}
 			free(sim_args);
 		}

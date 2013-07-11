@@ -54,6 +54,7 @@ void usage (const char* message) {
 	cout << "-p, --child-population  [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
 	cout << "-g, --generations       [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;
 	cout << "-s, --seed              [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
+	cout << "-f, --simulation        [filename]   : the relative filename of the simulation executable, default=deterministic" << endl;
 	cout << "-a, --arguments         [N/A]        : every argument following this will be sent to the deterministic simulation" << endl;
 	cout << "-c, --no-color          [N/A]        : disable coloring the terminal output, default=unused" << endl;
 	cout << "-v, --verbose           [N/A]        : print detailed messages about the program state" << endl;

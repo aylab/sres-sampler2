@@ -77,7 +77,7 @@ double simulate_set (double parameters[]) {
 	}
 	free(sim_args);
 	
-	if (score == 98 && abs(parameters[0] - 51.538465) < 0.001) {
+	if (score == 98 && (parameters[0] - 51.538465 < 0.001 || 51.538465 - parameters[0] < 0.001)) {
 		cerr << "parameters: ";
 		for (int i = 0; i < 45; i++) {
 			cerr << parameters[i] << ",";

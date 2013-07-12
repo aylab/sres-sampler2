@@ -77,6 +77,7 @@ double simulate_set (double parameters[]) {
 	}
 	free(sim_args);
 	
+	cerr << "score: " << (double)score << " / " << max_score << endl;
 	return 1 - ((double)score / max_score);
 }
 

@@ -29,7 +29,7 @@ extern terminal* term;
 extern input_params ip;
 
 double simulate_set (double parameters[]) {
-	cerr << "simulating set" << endl;
+	cout << "simulating set" << endl;
 	int pipes[2];
 	if (pipe(pipes) == -1) {
 		term->failed_pipe_create();
@@ -78,7 +78,7 @@ double simulate_set (double parameters[]) {
 	}
 	free(sim_args);
 	
-	cerr << "score: " << (double)score << " / " << max_score << endl;
+	cout << "score: " << (double)score << " / " << max_score << endl;
 	return 1 - ((double)score / max_score);
 }
 

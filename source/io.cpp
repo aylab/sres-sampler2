@@ -45,11 +45,11 @@ double simulate_set (double parameters[]) {
 		exit(EXIT_FORK_ERROR);
 	}
 	if (pid == 0) {
-		cerr << "sim args: ";
+		cout << "sim args: ";
 		for (int i = 0; i < ip.num_sim_args; i++) {
-			cerr << sim_args[i] << " ";
+			cout << sim_args[i] << " ";
 		}
-		cerr << endl;
+		cout << endl;
 		if (execv(ip.sim_path, sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);

@@ -29,7 +29,7 @@ extern terminal* term;
 extern input_params ip;
 
 double simulate_set (double parameters[]) {
-	cerr "simulating set" << endl;
+	cerr << "simulating set" << endl;
 	int pipes[2];
 	if (pipe(pipes) == -1) {
 		term->failed_pipe_create();

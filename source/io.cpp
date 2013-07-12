@@ -45,11 +45,6 @@ double simulate_set (double parameters[]) {
 		exit(EXIT_FORK_ERROR);
 	}
 	if (pid == 0) {
-		cout << "sim args: ";
-		for (int i = 0; i < ip.num_sim_args; i++) {
-			cout << sim_args[i] << " ";
-		}
-		cout << endl;
 		if (execv(ip.sim_path, sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
@@ -82,6 +77,7 @@ double simulate_set (double parameters[]) {
 	}
 	free(sim_args);
 	
+	cerr << "score: " << (double)score << " / " << max_score << " (" << parameters[0] << ")" << endl;
 	return 1 - ((double)score / max_score);
 }
 

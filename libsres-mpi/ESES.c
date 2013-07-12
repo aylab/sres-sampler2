@@ -362,13 +362,13 @@ void ESPrintOp(ESIndividual *indvdl, ESParameter *param)
 
   if(trsfm == NULL)
     for(i=0; i<dim; i++)
-      printf("\t%.30f", indvdl->op[i]);
+      printf("\t%f", indvdl->op[i]);
   else
     for(i=0; i<dim; i++)
       if(trsfm[i] == NULL)
-        printf("\t%.30f", indvdl->op[i]);
+        printf("\t%f", indvdl->op[i]);
       else
-        printf("\t%.30f", (trsfm[i])(indvdl->op[i]));
+        printf("\t%f", (trsfm[i])(indvdl->op[i]));
 
   return;
 }

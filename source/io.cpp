@@ -80,10 +80,6 @@ double simulate_set (double parameters[]) {
 	return 1 - ((double)score / max_score);
 }
 
-double abs (double val) {
-	return val >= 0 ? val : -val;
-}
-
 void write_pipe (int fd, double parameters[]) {
 	write_pipe_int(fd, ip.num_dims);
 	write_pipe_int(fd, 1);

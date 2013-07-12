@@ -24,7 +24,6 @@ void write_pipe(int, double[]);
 void write_pipe_int(int, int);
 void read_pipe(int, int*, int*);
 void read_pipe_int(int, int*);
-double abs(double);
 
 #endif
 

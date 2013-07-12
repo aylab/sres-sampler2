@@ -29,7 +29,6 @@ extern terminal* term;
 extern input_params ip;
 
 double simulate_set (double parameters[]) {
-	cout << "simulating set" << endl;
 	int pipes[2];
 	if (pipe(pipes) == -1) {
 		term->failed_pipe_create();
@@ -46,6 +45,11 @@ double simulate_set (double parameters[]) {
 		exit(EXIT_FORK_ERROR);
 	}
 	if (pid == 0) {
+		cerr << "sim args: ";
+		for (int i = 0; i < ip.num_sim_args; i++) {
+			cerr << sim_args[i] << " ";
+		}
+		cerr << endl;
 		if (execv(ip.sim_path, sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
@@ -78,7 +82,6 @@ double simulate_set (double parameters[]) {
 	}
 	free(sim_args);
 	
-	cout << "score: " << (double)score << " / " << max_score << endl;
 	return 1 - ((double)score / max_score);
 }
 

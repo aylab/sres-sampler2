@@ -30,13 +30,13 @@ extern input_params ip;
 
 double simulate_set (double parameters[]) {
 	int pipes[2];
-	if (pipe(pipes) == -1) {
+	if (pipe(pipes) == -1) { // (AAy: ??? What does this part of the code do?)
 		term->failed_pipe_create();
 		exit(EXIT_PIPE_CREATE_ERROR);
 	}
 	
-	char** sim_args = copy_args(ip.sim_args, ip.num_sim_args);
-	store_pipe(sim_args, ip.num_sim_args - 4, pipes[0]);
+	char** sim_args = copy_args(ip.sim_args, ip.num_sim_args); // (AAy: ??? Initialize the ES method)
+	store_pipe(sim_args, ip.num_sim_args - 4, pipes[0]); // (AAy: ??? Why is this -4?)
 	store_pipe(sim_args, ip.num_sim_args - 2, pipes[1]);
 	
 	pid_t pid = fork();

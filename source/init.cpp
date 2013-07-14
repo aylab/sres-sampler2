@@ -22,11 +22,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "macros.h"
 #include "main.h"
 
-using namespace std;
+using namespace std; 
 
-terminal* term;
+terminal* term; 
 
-char* copy_str (const char* str) {
+char* copy_str (const char* str) { 
 	if (str == NULL) {
 		return NULL;
 	} else {

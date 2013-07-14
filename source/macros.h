@@ -22,9 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Exit statuses
 #define EXIT_SUCCESS			0
 #define EXIT_MEMORY_ERROR		1
-#define EXIT_PIPE_CREATE_ERROR	2
-#define EXIT_PIPE_READ_ERROR	3
-#define EXIT_PIPE_WRITE_ERROR	4
+#define EXIT_PIPE_CREATE_ERROR		2
+#define EXIT_PIPE_READ_ERROR		3
+#define EXIT_PIPE_WRITE_ERROR		4
 #define EXIT_FORK_ERROR			5
 #define EXIT_EXEC_ERROR			6
 #define EXIT_CHILD_ERROR		7

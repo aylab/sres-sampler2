@@ -140,31 +140,31 @@ void init_sres (input_params& ip, sres_params& sp) {
 		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
 	}
 	
-	ESInitial(
+	ESInitial( // (AAy: ??? Initialize the ES method)
 	#if defined(MPI)
 		&(ip.argc), &(ip.argv),
 	#endif
 		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 }
 
-void run_sres (sres_params& sp) {
+void run_sres (sres_params& sp) { // (AAy: ??? Run the SRES method)
 	while (sp.stats->curgen < sp.param->gen) {
 		ESStep(sp.population, sp.param, sp.stats, sp.pf);
 	}
 }
 
-void free_sres (sres_params& sp) {
+void free_sres (sres_params& sp) { // (AAy: ??? Free SRES arguments)
 	free(sp.trsfm);
 	free(sp.lb);
 	free(sp.ub);
 	ESDeInitial(sp.param, sp.population, sp.stats);
 }
 
-void fitness (double* parameters, double* score, double* constraints) {
+void fitness (double* parameters, double* score, double* constraints) { // (AAy: ??? fitness function)
 	*score = simulate_set(parameters);
 }
 
-double transform (double x) {
+double transform (double x) { // (AAy: ??? What is this code doing?)
 	return x;
 }
 

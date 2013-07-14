@@ -23,13 +23,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <fstream>
 
-#if defined(MPI)
-	#include "../libsres-mpi/ESES.h"
+#if defined(MPI) // (AAy: ??? How does this statement work?)
+	#include "../libsres-mpi/ESES.h" 
 #else
 	#include "../libsres/ESES.h"
 #endif
 
-#include "memory.h"
+#include "memory.h" // (AAy: ??? Include memory.h header file)
 
 using namespace std;
 
@@ -48,10 +48,10 @@ struct terminal {
 	char* reset;
 	
 	// Verbose stream
-	streambuf* verbose_streambuf;
+	streambuf* verbose_streambuf; // (AAy: ??? To silence the output?)
 	ostream* verbose_stream;
 	
-	terminal () {
+	terminal () { // (AAy: ??? Terminal color and verbose settings)
 		this->code_blue = "\x1b[34m";
 		this->code_red = "\x1b[31m";
 		this->code_reset = "\x1b[0m";
@@ -143,7 +143,7 @@ struct input_params {
 	ofstream* null_stream; // A stream to /dev/null that cout is redirected to if quiet mode is set
 	
 	input_params () {
-		this->num_dims = 27;
+		this->num_dims = 27; 
 		this->pop_parents = 30;
 		this->pop_children = 200;
 		this->generations = 1;
@@ -154,7 +154,7 @@ struct input_params {
 		this->null_stream = new ofstream("/dev/null");
 	}
 	
-	~input_params () {
+	~input_params () {  // (AAy: ??? Destructor)
 		free(this->sim_path);
 		if (this->sim_args != NULL) {
 			for (int i = 0; i < this->num_sim_args; i++) {

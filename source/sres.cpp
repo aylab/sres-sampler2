@@ -49,6 +49,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	sp.pf = essrDefPf;
 	
 	sp.trsfm = (ESfcnTrsfm*)mallocate(sizeof(ESfcnTrsfm) * dim);
+	
 	for (int i = 0; i < dim; i++) {
 		sp.trsfm[i] = transform;
 	}
@@ -160,7 +161,7 @@ void free_sres (sres_params& sp) { // (AAy: ??? Free SRES arguments)
 	ESDeInitial(sp.param, sp.population, sp.stats);
 }
 
-void fitness (double* parameters, double* score, double* constraints) { // (AAy: ??? fitness function)
+void fitness (double* parameters, double* score, double* constraints) { // (AAy: ??? Fitness function)
 	*score = simulate_set(parameters);
 }
 

@@ -33,10 +33,10 @@ input_params ip;
 
 int main (int argc, char** argv) {
 	init_terminal();
-	accept_input_params(argc, argv, ip);
-	init_sim_args(ip);
-	sres_params sp;
-	init_sres(ip, sp);
+	accept_input_params(argc, argv, ip); // (AAy: ??? Accept input arguments from the user)
+	init_sim_args(ip); // (AAy: ??? Accept input arguments from the user)
+	sres_params sp; // (AAy: ??? Initialize a parameter called sp of type sres_params)
+	init_sres(ip, sp); 
 	run_sres(sp);
 	free_sres(sp);
 	free_terminal();

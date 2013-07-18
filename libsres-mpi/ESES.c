@@ -530,13 +530,12 @@ void ESPrintStat(ESStatistics *stats, ESParameter *param)
 {
   
   printf("current generation: %d, best generation: %d, best fitness: %f\nbestindividual:",  \
-          stats->curgen,stats->bestgen,stats->bestindvdl->f,  \
-          stats->bestindvdl->phi);
+          stats->curgen,stats->bestgen,stats->bestindvdl->f);
   ESPrintOp(stats->bestindvdl, param);
   printf("\n");
-  printf("      variance:");
+  /*printf("      variance:");
   ESPrintSp(stats->bestindvdl, param);
-  printf("\n");
+  printf("\n");*/
   fflush(NULL);
 
   return;

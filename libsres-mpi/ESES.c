@@ -101,14 +101,14 @@ void ESInitial(int *argc, char ***argv,   \
 
   ShareSeed(seed, &outseed);
   printf("0");
-  flush(NULL);
+  fflush(NULL);
   ESInitialParam(param, trsfm, fg, es, outseed,constraint, dim, ub, lb,   \
                  miu, lambda, gen, gamma, alpha, varphi, retry);
   printf("1");
-  flush(NULL);
+  fflush(NULL);
   ESInitialPopulation(population, (*param));
   printf("2");
-  flush(NULL);
+  fflush(NULL);
   ESInitialStat(stats, (*population), (*param));
 
   if(myid == 0)

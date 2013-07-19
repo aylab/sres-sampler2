@@ -100,12 +100,15 @@ void ESInitial(int *argc, char ***argv,   \
   }
 
   ShareSeed(seed, &outseed);
-  cerr << 0 << endl;
+  printf("0");
+  flush(NULL);
   ESInitialParam(param, trsfm, fg, es, outseed,constraint, dim, ub, lb,   \
                  miu, lambda, gen, gamma, alpha, varphi, retry);
-  cerr << 1 << endl;
+  printf("1");
+  flush(NULL);
   ESInitialPopulation(population, (*param));
-  cerr << 2 << endl;
+  printf("2");
+  flush(NULL);
   ESInitialStat(stats, (*population), (*param));
 
   if(myid == 0)

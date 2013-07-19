@@ -235,7 +235,6 @@ void ESInitialPopulation(ESPopulation **population, ESParameter *param)
 
   eslambda = param->eslambda;
 
-  printf("esinitialpopulation 0\n");fflush(NULL);
   (*population) = (ESPopulation *)ShareMallocM1c(sizeof(ESPopulation));
   (*population)->member = NULL;
   (*population)->f = NULL;
@@ -249,11 +248,9 @@ void ESInitialPopulation(ESPopulation **population, ESParameter *param)
 
   (*population)->index = ShareMallocM1i(eslambda);
 
-  printf("esinitialpopulation 1\n");fflush(NULL);
   for(i=0; i<eslambda; i++)
   {
     (*population)->member[i] = NULL;
-    printf("esinitialpopulation 2-%d\n", i);fflush(NULL);
     ESInitialIndividual(&((*population)->member[i]), param);
     (*population)->index[i] = i;
     (*population)->f[i] = (*population)->member[i]->f;
@@ -330,16 +327,13 @@ void ESInitialIndividual(ESIndividual **indvdl, ESParameter *param)
     (*indvdl)->sp[i] = (ub[i] - lb[i])/sqrt(dim);
   }
 
-  printf("esinitialindividual 0\n");fflush(NULL);
   fg((*indvdl)->op, &((*indvdl)->f), (*indvdl)->g);
-  printf("esinitialpopulation 1\n");fflush(NULL);
   (*indvdl)->phi = 0.0;
   for(i=0; i<constraint; i++)
   {
     if((*indvdl)->g[i] > 0.0)
       (*indvdl)->phi += ((*indvdl)->g[i])*((*indvdl)->g[i]);
   }
-  printf("esinitialpopulation 2\n");fflush(NULL);
 
   return;
 }

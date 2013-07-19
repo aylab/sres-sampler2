@@ -73,9 +73,9 @@ double simulate_set (double parameters[]) {
 	}
 	
 	for (int i = 0; sim_args[i] != NULL; i++) {
-		free(sim_args[i]);
+		mfree(sim_args[i]);
 	}
-	free(sim_args);
+	mfree(sim_args);
 	
 	return 1 - ((double)score / max_score);
 }

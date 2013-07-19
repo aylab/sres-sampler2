@@ -221,9 +221,9 @@ void run_sres (sres_params& sp) { // (AAy: ??? Run the SRES method)
 }
 
 void free_sres (sres_params& sp) { // (AAy: ??? Free SRES arguments)
-	free(sp.trsfm);
-	free(sp.lb);
-	free(sp.ub);
+	mfree(sp.trsfm);
+	mfree(sp.lb);
+	mfree(sp.ub);
 	ESDeInitial(sp.param, sp.population, sp.stats);
 }
 

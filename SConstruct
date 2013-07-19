@@ -24,12 +24,14 @@ else:
 compile_flags = '-Wall -O2 '
 link_flags = ''
 if ARGUMENTS.get('profiling', 0):
-	compile_flags += '-pg'
+	compile_flags += '-pg '
 	link_flags += '-pg'
 elif ARGUMENTS.get('debug', 0):
-	compile_flags += '-g'
+	compile_flags += '-g '
 elif ARGUMENTS.get('mpi', 0):
-	compile_flags += '-D MPI'
+	compile_flags += '-D MPI '
+if ARGUMENTS.get('memtrack', 0):
+	compile_flags += '-D MEMTRACK'
 
 env = Environment(CXX=compiler)
 env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)

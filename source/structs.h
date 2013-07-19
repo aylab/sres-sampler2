@@ -62,9 +62,9 @@ struct terminal {
 	}
 	
 	~terminal () {
-		free(this->blue);
-		free(this->red);
-		free(this->reset);
+		mfree(this->blue);
+		mfree(this->red);
+		mfree(this->reset);
 		delete verbose_stream;
 	}
 	
@@ -155,12 +155,12 @@ struct input_params {
 	}
 	
 	~input_params () {  // (AAy: ??? Destructor)
-		free(this->sim_path);
+		mfree(this->sim_path);
 		if (this->sim_args != NULL) {
 			for (int i = 0; i < this->num_sim_args; i++) {
-				free(this->sim_args[i]);
+				mfree(this->sim_args[i]);
 			}
-			free(sim_args);
+			mfree(sim_args);
 		}
 		delete this->null_stream;
 	}

@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include "sharefunc.h"
 
+#include "../source/memory.h"
+
 /*********************************************************************
  ** uniform random                                                  **
  ** double ShareRand(min,max)                                       **
@@ -156,7 +158,7 @@ void ShareNormalRandVec(double *s, int n, double mean, double dev)
 char * ShareMallocM1c(int size)
 {
   char *s = NULL;
-  if( (s=(char*)calloc(size, sizeof(char))) == NULL )
+  if( (s=(char*)callocate(size, sizeof(char))) == NULL )
   {
     printf("char * malloc error!\n");
     exit(1);
@@ -170,7 +172,7 @@ char * ShareReallocM1c(char *s, int size)
     s = ShareMallocM1c(size);
     return s;
   }
-  if( (s = (char *)realloc(s, size*sizeof(char))) == NULL )
+  if( (s = (char *)reallocate(s, size*sizeof(char))) == NULL )
   {
     printf("char * realloc error!");
     exit(1);
@@ -180,7 +182,7 @@ char * ShareReallocM1c(char *s, int size)
 void ShareFreeM1c(char *s)
 {
   if(s)
-    free((void *)s);
+    mfree((void *)s);
   return;
 }
 
@@ -198,7 +200,7 @@ char ** ShareMallocM2c(int size1, int size2)
   int i;
   char **s = NULL;
 
-  if( (s = (char **)calloc(size1,sizeof(char *))) == NULL )
+  if( (s = (char **)callocate(size1,sizeof(char *))) == NULL )
   {
     printf("char ** malloc error!\n");
     exit(1);
@@ -215,7 +217,7 @@ char ** ShareReallocM2c(char **s, int size1, int size2)
 {
   int i;
                                                                                 
-  if( (s = (char **)realloc(s, size1*sizeof(char *))) == NULL )
+  if( (s = (char **)reallocate(s, size1*sizeof(char *))) == NULL )
   {
     printf("char ** realloc error!");
     exit(1);
@@ -236,7 +238,7 @@ void ShareFreeM2c(char **s, int size)
     return;
   for(i=0; i<size; i++)
     ShareFreeM1c(s[i]);
-  free((void *)s);
+  mfree((void *)s);
 
   return;
 }
@@ -248,7 +250,7 @@ void ShareFreeM2c(char **s, int size)
 int * ShareMallocM1i(int size)
 {
   int *s = NULL;
-  if( (s=(int*)calloc(size, sizeof(int))) == NULL )
+  if( (s=(int*)callocate(size, sizeof(int))) == NULL )
   {
     printf("int * malloc error!\n");
     exit(1);
@@ -263,7 +265,7 @@ int * ShareMallocM1i(int size)
 void ShareFreeM1i(int *s)
 {
   if(s)
-    free((void *)s);
+    mfree((void *)s);
   return;
 }
 
@@ -274,7 +276,7 @@ void ShareFreeM1i(int *s)
 double * ShareMallocM1d(int size)
 {
   double *s = NULL;
-  if( (s=(double*)calloc(size, sizeof(double))) == NULL )
+  if( (s=(double*)callocate(size, sizeof(double))) == NULL )
   {
     printf("double * malloc error!\n");
     exit(1);
@@ -289,7 +291,7 @@ double * ShareMallocM1d(int size)
 void ShareFreeM1d(double *s)
 {
   if(s)
-    free((void *)s);
+    mfree((void *)s);
   return;
 }
 
@@ -305,7 +307,7 @@ double **ShareMallocM2d(int size1, int size2)
   int i;
   double **s = NULL;
 
-  if( (s=(double **)calloc(size1, sizeof(double *))) == NULL)
+  if( (s=(double **)callocate(size1, sizeof(double *))) == NULL)
   {
     printf("double ** malloc error!\n");
     exit(1);
@@ -327,7 +329,7 @@ void ShareFreeM2d(double **s, int size)
     return;
   for(i=0; i<size; i++)
     ShareFreeM1d(s[i]);
-  free((void *)s); 
+  mfree((void *)s); 
 
   return;
 }
@@ -344,7 +346,7 @@ double ***ShareMallocM3d(int size1, int size2, int size3)
   int i;
   double ***s = NULL;
 
-  if( (s=(double ***)calloc(size1, sizeof(double **))) == NULL)
+  if( (s=(double ***)callocate(size1, sizeof(double **))) == NULL)
   {
     printf("double *** malloc error!\n");
     exit(1);
@@ -366,7 +368,7 @@ void ShareFreeM3d(double ***s, int size1, int size2)
     return;
   for(i=0; i<size1; i++)
     ShareFreeM2d(s[i], size2);
-  free((void *)s); 
+  mfree((void *)s); 
 
   return;
 }

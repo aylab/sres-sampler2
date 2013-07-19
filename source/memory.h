@@ -19,9 +19,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include <cstdlib>
+#include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void* mallocate(size_t);
+void* callocate(size_t, size_t);
+void* reallocate(void*, size_t);
+void mfree(void*);
+#ifdef __cplusplus
+}
+#endif
+#if defined(MEMTRACK)
+	void print_heap_usage();
+#endif
 
 #endif
 

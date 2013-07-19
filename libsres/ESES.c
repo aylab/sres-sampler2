@@ -495,14 +495,13 @@ void ESDoStat(ESStatistics *stats, ESPopulation *population,   \
 void ESPrintStat(ESStatistics *stats, ESParameter *param)
 {
   
-  printf("gen=%d,dt=%d,bestgen=%d,bestfitness=%f,phi=%f,\nbestindividual=",  \
-          stats->curgen,stats->dt,stats->bestgen,stats->bestindvdl->f,  \
-          stats->bestindvdl->phi);
+  printf("current generation: %d, best generation: %d, best fitness: %f\nbest individual:",  \
+          stats->curgen,stats->bestgen,stats->bestindvdl->f);
   ESPrintOp(stats->bestindvdl, param);
   printf("\n");
-  printf("      variance=");
+  /*printf("      variance=");
   ESPrintSp(stats->bestindvdl, param);
-  printf("\n");
+  printf("\n");*/
   fflush(NULL);
 
   return;

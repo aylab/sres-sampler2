@@ -104,7 +104,7 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				}
 			} else if (strcmp(option, "-f") == 0 || strcmp(option, "--simulation") == 0) {
 				ensure_nonempty(option, value);
-				free(ip.sim_path);
+				mfree(ip.sim_path);
 				ip.sim_path = copy_str(value);
 			} else if (strcmp(option, "-a") == 0 || strcmp(option, "--arguments") == 0) {
 				ensure_nonempty(option, value);
@@ -182,9 +182,15 @@ char** copy_args (char** args, int num_args) {
 }
 
 void store_pipe (char** args, int index, int pipe) {
-	free(args[index]);
+	mfree(args[index]);
 	int int_size = log10(pipe > 0 ? pipe : 1) + 1;
 	args[index] = (char*)mallocate(sizeof(char) * (int_size + 1));
 	sprintf(args[index], "%d", pipe);
+}
+
+void reset_cout (input_params& ip) {
+	if (ip.quiet) {
+		cout.rdbuf(ip.cout_orig);
+	}
 }
 

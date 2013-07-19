@@ -29,7 +29,7 @@ void ensure_nonempty(const char*, const char*);
 void init_sim_args(input_params&);
 char** copy_args(char**, int);
 void store_pipe(char**, int, int);
-
+void reset_cout(input_params&);
 
 #endif
 

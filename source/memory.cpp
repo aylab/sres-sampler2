@@ -108,15 +108,16 @@ static void print_mem_amount (size_t mem) {
 	static size_t kB = 1024;
 	static size_t MB = square(1024);
 	static size_t GB = cube(1024);
+	double dmem = mem;
 	
 	if (mem > GB) {
-		cout << mem / GB << " GB";
+		cout << dmem / GB << " GB";
 	} else if (mem > MB) {
-		cout << mem / MB << " MB";
+		cout << dmem / MB << " MB";
 	} else if (mem > kB) {
-		cout << mem / kB << " kB";
+		cout << dmem / kB << " kB";
 	} else {
-		cout << mem << " B";
+		cout << dmem << " B";
 	}
 	cout << endl;
 }

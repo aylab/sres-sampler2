@@ -25,6 +25,7 @@ char* copy_str(const char*);
 void init_terminal();
 void free_terminal();
 void accept_input_params(int, char**, input_params&);
+bool option_set(const char*, const char*, const char*);
 void ensure_nonempty(const char*, const char*);
 void init_sim_args(input_params&);
 char** copy_args(char**, int);

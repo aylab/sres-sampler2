@@ -72,41 +72,41 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			 3) usage(true) prints the usage information with an error message while usage(false) prints it without one
 			*/
 			
-			if (strcmp(option, "-d") == 0 || strcmp(option, "--dimensions") == 0) {
+			if (option_set(option, "-d", "--dimensions")) {
 				ensure_nonempty(option, value);
 				ip.num_dims = atoi(value);
 				if (ip.num_dims < 1) {
 					usage("The simulation must include a positive number of dimensions. Set -d or --dimensions to at least 1.");
 				}
-			} else if (strcmp(option, "-P") == 0 || strcmp(option, "--parent-population") == 0) {
+			} else if (option_set(option, "-P", "--parent-population")) {
 				ensure_nonempty(option, value);
 				ip.pop_parents = atoi(value);
 				if (ip.pop_parents < 1) {
 					usage("The parent population must be at least one simulation. Set -P or --parent-population to at least 1.");
 				}
-			} else if (strcmp(option, "-p") == 0 || strcmp(option, "--child-population") == 0) {
+			} else if (option_set(option, "-p", "--child-population")) {
 				ensure_nonempty(option, value);
 				ip.pop_children = atoi(value);
 				if (ip.pop_children < 1) {
 					usage("The child population must be at least one simulation. Set -p or --child-population to at least 1.");
 				}
-			} else if (strcmp(option, "-g") == 0 || strcmp(option, "--generations") == 0) {
+			} else if (option_set(option, "-g", "--generations")) {
 				ensure_nonempty(option, value);
 				ip.generations = atoi(value);
 				if (ip.generations < 1) {
 					usage("The population must exist for at least one generation. Set -g or --generations to at least 1.");
 				}
-			} else if (strcmp(option, "-s") == 0 || strcmp(option, "--seed") == 0) {
+			} else if (option_set(option, "-s", "--seed")) {
 				ensure_nonempty(option, value);
 				ip.seed = atof(value);
 				if (ip.seed <= 0) {
 					usage("The seed to generate random numbers must be a positive integer. Set -s or --seed to at least 1.");
 				}
-			} else if (strcmp(option, "-f") == 0 || strcmp(option, "--simulation") == 0) {
+			} else if (option_set(option, "-f", "--simulation")) {
 				ensure_nonempty(option, value);
 				mfree(ip.sim_path);
 				ip.sim_path = copy_str(value);
-			} else if (strcmp(option, "-a") == 0 || strcmp(option, "--arguments") == 0) {
+			} else if (option_set(option, "-a", "--arguments")) {
 				ensure_nonempty(option, value);
 				++i;
 				ip.num_sim_args = num_args - i + 6;
@@ -123,17 +123,17 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				ip.sim_args[ip.num_sim_args - 2] = copy_str("0");
 				ip.sim_args[ip.num_sim_args - 1] = NULL;
 				i = num_args;
-			} else if (strcmp(option, "-c") == 0 || strcmp(option, "--no-color") == 0) {
+			} else if (option_set(option, "-c", "--no-color")) {
 				term->blue = copy_str("");
 				term->red = copy_str("");
 				term->reset = copy_str("");
 				i--;
-			} else if (strcmp(option, "-v") == 0 || strcmp(option, "--verbose") == 0) {
+			} else if (option_set(option, "-v", "--verbose")) {
 				if (!ip.verbose) {
 					ip.verbose = true;
 				}
 				i--;
-			} else if (strcmp(option, "-q") == 0 || strcmp(option, "--quiet") == 0) {
+			} else if (option_set(option, "-q", "--quiet")) {
 				if (!ip.quiet) {
 					ip.quiet = true;
 					ip.cout_orig = cout.rdbuf();
@@ -141,10 +141,10 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 					term->set_verbose_streambuf(ip.null_stream->rdbuf());
 				}
 				i--;
-			} else if (strcmp(option, "-h") == 0 || strcmp(option, "--help") == 0) {
+			} else if (option_set(option, "-h", "--help")) {
 				usage("");
 				i--;
-			} else if (strcmp(option, "-l") == 0 || strcmp(option, "--licensing") == 0) { 
+			} else if (option_set(option, "-l", "--licensing")) { 
 				licensing();
 				i--;
 			} else {
@@ -152,6 +152,10 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			}
 		}
 	}
+}
+
+inline bool option_set (const char* option, const char* short_name, const char* long_name) {
+	return strcmp(option, short_name) == 0 || strcmp(option, long_name) == 0;
 }
 
 void ensure_nonempty (const char* flag, const char* arg) {

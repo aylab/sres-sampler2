@@ -228,7 +228,6 @@ void free_sres (sres_params& sp) {
 }
 
 void fitness (double* parameters, double* score, double* constraints) {
-	cerr << 0 << endl;
 	*score = simulate_set(parameters);
 }
 

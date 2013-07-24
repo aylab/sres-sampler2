@@ -798,6 +798,7 @@ void ESMutate(ESPopulation * population, ESParameter *param)
     if(j==numprocs)
       j=1;
     MPI_Send(population->member[i]->op,dim,MPI_DOUBLE,j,i,MPI_COMM_WORLD);
+    MPI_Recv(population->member[i]->op,dim,MPI_DOUBLE,j,i,MPI_COMM_WORLD,&status);
   }
   gfphi = ShareMallocM1d(2+constraint);
   for(l=1; l<numprocs; l++)

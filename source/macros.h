@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EXIT_EXEC_ERROR			6
 #define EXIT_CHILD_ERROR		7
 #define EXIT_INPUT_ERROR		8
+#define EXIT_FILE_ERROR			9
 
 // Macros for commonly used functions small enough to inject directly into the code
 #define square(x) ((x) * (x))

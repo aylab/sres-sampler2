@@ -114,6 +114,7 @@ void fitness (double* parameters, double* score, double* constraints) {
 	} else {
 		parameters[2] = 300;
 	}
+	cerr << "params: " << parameters[0] << " " << parameters[1] << " " << parameters[2] << endl;
 	*score = simulate_set(parameters);
 }
 

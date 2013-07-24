@@ -28,25 +28,30 @@ extern terminal* term;
 #endif
 
 void* mallocate (size_t size) {
-	void* block;
-	#if defined(MEMTRACK)
-		block = malloc(sizeof(size_t) + size);
-	#else
-		block = malloc(size);
-	#endif
-	if (block == NULL) {
-		term->no_memory();
+	if (size > 0) {
+		void* block;
+		#if defined(MEMTRACK)
+			block = malloc(sizeof(size_t) + size);
+		#else
+			block = malloc(size);
+		#endif
+		if (block == NULL) {
+			term->no_memory();
+			exit(EXIT_MEMORY_ERROR);
+		}
+		#if defined(MEMTRACK)
+			heap_current += size;
+			heap_total += size;
+			size_t* sizeblock = (size_t*)block;
+			*sizeblock = size;
+			return (void*)(sizeblock + 1);
+		#else
+			return block;
+		#endif
+	} else {
+		cout << term->red << "The specified amount of memory to allocate (" << size << " B) must be a positive integer!" << term->reset << endl;
 		exit(EXIT_MEMORY_ERROR);
 	}
-	#if defined(MEMTRACK)
-		heap_current += size;
-		heap_total += size;
-		size_t* sizeblock = (size_t*)block;
-		*sizeblock = size;
-		return (void*)(sizeblock + 1);
-	#else
-		return block;
-	#endif
 }
 
 void* callocate (size_t elements, size_t size) {

@@ -109,18 +109,20 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			} else if (option_set(option, "-a", "--arguments")) {
 				ensure_nonempty(option, value);
 				++i;
-				ip.num_sim_args = num_args - i + 6;
+				ip.num_sim_args = num_args - i + 8;
 				ip.sim_args = (char**)mallocate(sizeof(char*) * (ip.num_sim_args));
 				ip.sim_args[0] = copy_str("deterministic");
-				for (int j = 1; j < ip.num_sim_args - 5; j++) {
+				for (int j = 1; j < ip.num_sim_args - 7; j++) {
 					char* arg = args[i + j - 1];
 					ip.sim_args[j] = (char*)mallocate(sizeof(char) * (strlen(arg) + 1));
 					sprintf(ip.sim_args[j], "%s", arg);
 				}
-				ip.sim_args[ip.num_sim_args - 5] = copy_str("--pipe-in");
+				ip.sim_args[ip.num_sim_args - 7] = copy_str("--pipe-in");
+				ip.sim_args[ip.num_sim_args - 6] = copy_str("0");
+				ip.sim_args[ip.num_sim_args - 5] = copy_str("--pipe-out");
 				ip.sim_args[ip.num_sim_args - 4] = copy_str("0");
-				ip.sim_args[ip.num_sim_args - 3] = copy_str("--pipe-out");
-				ip.sim_args[ip.num_sim_args - 2] = copy_str("0");
+				ip.sim_args[ip.num_sim_args - 3] = copy_str("--gradients-file");
+				ip.sim_args[ip.num_sim_args - 2] = NULL;
 				ip.sim_args[ip.num_sim_args - 1] = NULL;
 				i = num_args;
 			} else if (option_set(option, "-c", "--no-color")) {
@@ -168,10 +170,10 @@ void ensure_nonempty (const char* flag, const char* arg) {
 
 void init_sim_args (input_params& ip) {
 	if (ip.num_sim_args == 0) {
-		ip.num_sim_args = 6;
-		ip.sim_args = (char**)mallocate(sizeof(char*) * 6);
+		ip.num_sim_args = 8;
+		ip.sim_args = (char**)mallocate(sizeof(char*) * ip.num_sim_args);
 		ip.sim_args[0] = copy_str("deterministic");
-		for (int i = 1; i < 6; i++) {
+		for (int i = 1; i < ip.num_sim_args; i++) {
 			ip.sim_args[i] = NULL;
 		}
 	}

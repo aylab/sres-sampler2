@@ -36,7 +36,7 @@ int main (int argc, char** argv) {
 	accept_input_params(argc, argv, ip);
 	init_sim_args(ip);
 	sres_params sp;
-	init_sres(ip, sp); 
+	init_sres(ip, sp);
 	run_sres(sp);
 	free_sres(sp);
 	#if defined(MEMTRACK)

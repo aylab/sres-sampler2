@@ -319,7 +319,11 @@ void ESInitialIndividual(ESIndividual **indvdl, ESParameter *param)
 
   (*indvdl)->op = ShareMallocM1d(dim);
   (*indvdl)->sp = ShareMallocM1d(dim);
-  (*indvdl)->g = ShareMallocM1d(constraint);
+  if (constraint > 0) {
+    (*indvdl)->g = ShareMallocM1d(constraint);
+  } else {
+    (*indvdl)->g = NULL;
+  }
 
   for(i=0; i<dim; i++)
   {

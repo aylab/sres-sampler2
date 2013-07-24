@@ -882,7 +882,7 @@ void ESMPIMutate(ESPopulation *population, ESParameter *param)
       continue;
     MPI_Recv(op, dim, MPI_DOUBLE, 0,i,MPI_COMM_WORLD,&status);
     param->fg(op, &(gfphi[l][constraint]),gfphi[l]);
-    MPI_Send(gfphi[l], dim, MPI_DOUBLE, 0,i,MPI_COMM_WORLD);
+    MPI_Send(op, dim, MPI_DOUBLE, 0,i,MPI_COMM_WORLD);
     gfphi[l][constraint+1] = 0.0;
     for(k=0;k<constraint;k++)
     {

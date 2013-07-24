@@ -69,6 +69,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 		lb[2] = 5,	ub[2] = 300;
 	} else {
 		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
+		exit(EXIT_INPUT_ERROR);
 	}
 	
 	ESInitial(

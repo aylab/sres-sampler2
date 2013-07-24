@@ -52,7 +52,7 @@ double simulate_set (double parameters[]) {
 	}
 	int pid_strlen = log10(child_pid > 0 ? child_pid : 1) + 1;
 	char* grad_fname = (char*)mallocate(sizeof(char) * (strlen("input-.gradients") + pid_strlen + 1));
-	sprintf(grad_fname, "input-%d.gradients", pid);
+	sprintf(grad_fname, "input-%d.gradients", child_pid);
 	
 	if (pid == 0) {
 		char** sim_args = copy_args(ip.sim_args, ip.num_sim_args);

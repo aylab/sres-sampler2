@@ -232,7 +232,6 @@ void ESInitialPopulation(ESPopulation **population, ESParameter *param)
     (*population)->f[i] = (*population)->member[i]->f;
     (*population)->phi[i] = (*population)->member[i]->phi;
   }
-  printf("2 params: %lf %lf %lf\n", (*population)->member[0]->op[0], (*population)->member[0]->op[1], (*population)->member[0]->op[2]);
 
   return;
 }
@@ -309,7 +308,6 @@ void ESInitialIndividual(ESIndividual **indvdl, ESParameter *param)
   }
 
   fg((*indvdl)->op, &((*indvdl)->f), (*indvdl)->g);
-  printf("1 params: %lf %lf %lf\n", (*indvdl)->op[0], (*indvdl)->op[1], (*indvdl)->op[2]);
   (*indvdl)->phi = 0.0;
   for(i=0; i<constraint; i++)
   {
@@ -542,7 +540,6 @@ void ESStep(ESPopulation *population, ESParameter *param,   \
   ESSelectPopulation(population, param);
 
   ESMutate(population, param);
-  printf("2 params: %lf %lf %lf\n", population->member[0]->op[0], population->member[0]->op[1], population->member[0]->op[2]);    
 
   ESDoStat(stats, population, param);
 
@@ -751,7 +748,6 @@ void ESMutate(ESPopulation * population, ESParameter *param)
   {
     indvdl = population->member[i];
     fg(indvdl->op, &(indvdl->f), indvdl->g);
-    printf("1 params: %lf %lf %lf\n", indvdl->op[0], indvdl->op[1], indvdl->op[2]);
     indvdl->phi = 0.0;
     for(j=0; j<constraint; j++)
     {

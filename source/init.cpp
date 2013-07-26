@@ -16,7 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cmath>
+/*
+init.cpp contains initialization functions used before any simulations start.
+*/
+
+#include <cmath> // Needed for log10
 
 #include "init.h"
 #include "macros.h"
@@ -24,8 +28,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std; 
 
-terminal* term; 
+terminal* term; // The global terminal struct
 
+/* copy_str copies the given string, allocating enough memory for the new string
+	parameters:
+		str: the string to copy
+	returns: a pointer to the new string
+	notes:
+	todo:
+*/
 char* copy_str (const char* str) { 
 	if (str == NULL) {
 		return NULL;
@@ -35,28 +46,47 @@ char* copy_str (const char* str) {
 	}
 }
 
+/* init_terminal creates and initializes a new terminal struct
+	parameters:
+	returns: nothing
+	notes:
+	todo:
+*/
 void init_terminal () {
-	term = new terminal();
-	if (term->blue == NULL || term->red == NULL || term->reset == NULL) {
-		term->no_memory();
-		exit(EXIT_MEMORY_ERROR);
+	if (term != NULL) {
+		delete term;
 	}
-	strcpy(term->blue, term->code_blue);
-	strcpy(term->red, term->code_red);
-	strcpy(term->reset, term->code_reset);
+	term = new terminal();
 }
 
+/* free_terminal frees the terminal from memory and resets the terminal text color to its default value
+	parameters:
+	returns: nothing
+	notes:
+	todo:
+*/
 void free_terminal () {
 	cout << term->reset;
 	delete term;
 }
 
+/* accept_input_params fills the given input_params with values from the given command-line arguments
+	parameters:
+		num_args: the number of command-line arguments (i.e. argc)
+		args: the array of command-line arguments (i.e. argv)
+		ip: the program's input parameters
+	returns: nothing
+	notes:
+		Ensure the usage function's message in main.cpp matches the arguments this function accepts whenever editing or adding command-line argument acceptance.
+	todo:
+*/
 void accept_input_params (int num_args, char** args, input_params& ip) {
+	// Store the program's command-line arguments for MPI
 	ip.argc = num_args;
 	ip.argv = args;
 	
-	if (num_args > 1) { // if arguments were given and each argument option is followed by a value
-		for (int i = 1; i < num_args; i += 2) { // iterate through each argument pair
+	if (num_args > 1) { // If arguments were given (the 0th argument is the program name)
+		for (int i = 1; i < num_args; i += 2) { // Iterate through each argument pair (if an argument does not have an accompanying value, i-- should be called when found)
 			char* option = args[i];
 			char* value;
 			if (i < num_args - 1) {
@@ -65,13 +95,7 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				value = NULL;
 			}
 			
-			/*
-			 Check for each possible argument option and overrides the default value for each specified option. If the option isn't recognized or the value given for an option doesn't appear valid then the usage information for the program is printed with an error message and no simulations are run. The code should be fairly self-explanatory with a few exceptions:
-			 1) atoi converts a string to an integer, atof converts a string to a floating point number (i.e. rational)
-			 2) strings should always be compared using strcmp, not ==, and strcmp returns 0 if the two strings match
-			 3) usage(true) prints the usage information with an error message while usage(false) prints it without one
-			*/
-			
+			// Accept command-line arguments in both short and long form
 			if (option_set(option, "-d", "--dimensions")) {
 				ensure_nonempty(option, value);
 				ip.num_dims = atoi(value);
@@ -148,27 +172,68 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				licensing();
 				i--;
 			} else {
-				usage("One of the given command-line arguments is not a valid option. Please check that every argument matches one available in the following usage information.");
+				const char* message_0 = "'";
+				const char* message_1 = "' is not a valid option! Please check that every argument matches one available in the following usage information.";
+				char* message = (char*)mallocate(sizeof(char) * (strlen(message_0) + strlen(option) + strlen(message_1) + 1));
+				sprintf(message, "%s%s%s", message_0, option, message_1);
+				usage(message);
 			}
 		}
 	}
 }
 
+/* option_set checks if the given string matches either given version (short or long) of an option
+	parameters:
+		option: the string to check
+		short_name: the short version of the option
+		long_name: the long version of the option
+	returns: true if the string matches a version, false otherwise
+	notes:
+	todo:
+*/
 inline bool option_set (const char* option, const char* short_name, const char* long_name) {
 	return strcmp(option, short_name) == 0 || strcmp(option, long_name) == 0;
 }
 
-void ensure_nonempty (const char* flag, const char* arg) {
+/* ensure_nonempty ensures that an option that should have an associated value has one or exits with an error
+	parameters:
+		option: the option to check
+		arg: the value to check for
+	returns: nothing
+	notes:
+	todo:
+*/
+void ensure_nonempty (const char* option, const char* arg) {
 	if (arg == NULL) {
-		char* message = (char*)mallocate(strlen("Missing the argument for the '' flag.") + strlen(flag) + 1);
-		sprintf(message, "Missing the argument for the '%s' flag.", flag);
+		char* message = (char*)mallocate(strlen("Missing the argument for the '' option.") + strlen(option) + 1);
+		sprintf(message, "Missing the argument for the '%s' option.", option);
 		usage(message);
 	}
 }
 
+/* init_verbosity sets the verbose stream to /dev/null if verbose mode is not enabled
+	parameters:
+		ip: the program's input parameters
+	returns: nothing
+	notes:
+	todo:
+*/
+void init_verbosity (input_params& ip) {
+	if (!ip.verbose) {
+		term->set_verbose_streambuf(ip.null_stream->rdbuf());
+	}
+}
+
+/* init_sim_args initializes the arguments to be passed into every simulation
+	parameters:
+		ip: the program's input parameters
+	returns: nothing
+	notes:
+	todo:
+*/
 void init_sim_args (input_params& ip) {
-	if (ip.num_sim_args == 0) {
-		ip.num_sim_args = 6;
+	if (ip.num_sim_args == 0) { // If the arguments were not initialized in accept_input_params (i.e. the user did not specify simulation arguments with -a or --arguments)
+		ip.num_sim_args = 6; // "deterministic --pipe-in x --pipe-out y" takes 5 terms and the final NULL element makes the sum 6
 		ip.sim_args = (char**)mallocate(sizeof(char*) * 6);
 		ip.sim_args[0] = copy_str("deterministic");
 		for (int i = 1; i < 6; i++) {
@@ -177,6 +242,14 @@ void init_sim_args (input_params& ip) {
 	}
 }
 
+/* copy_args copies the given array of arguments
+	parameters:
+		args: the array of arguments to copy
+		num_args: the number of elements in the array of arguments
+	returns: the new array of arguments
+	notes:
+	todo:
+*/
 char** copy_args (char** args, int num_args) {
 	char** new_args = (char**)mallocate(sizeof(char*) * num_args);
 	for (int i = 0; i < num_args; i++) {
@@ -185,13 +258,29 @@ char** copy_args (char** args, int num_args) {
 	return new_args;
 }
 
+/* store_pipe stores the given pipe file descriptor into the given index in the array of arguments
+	parameters:
+		args: the array of arguments
+		index: the index in the array to place the pipe file descriptor
+		pipe: the file descriptor of the pipe
+	returns: nothing
+	notes:
+	todo:
+*/
 void store_pipe (char** args, int index, int pipe) {
 	mfree(args[index]);
-	int int_size = log10(pipe > 0 ? pipe : 1) + 1;
+	int int_size = log10(pipe > 0 ? pipe : 1) + 1; // How many bytes the ASCII representation of pipe takes
 	args[index] = (char*)mallocate(sizeof(char) * (int_size + 1));
 	sprintf(args[index], "%d", pipe);
 }
 
+/* reset_cout resets the cout buffer to its original stream if quiet mode was on and cout was therefore redirected to /dev/null
+	parameters:
+		ip: the program's input parameters
+	returns: nothing
+	notes:
+	todo:
+*/
 void reset_cout (input_params& ip) {
 	if (ip.quiet) {
 		cout.rdbuf(ip.cout_orig);

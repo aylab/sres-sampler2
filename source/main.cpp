@@ -16,8 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cstdio>
-#include <cstdlib>
+/*
+main.cpp contains the main, usage, and licensing functions.
+Avoid putting functions in main.cpp that could be put in a more specific file.
+*/
 
 #include "main.h"
 #include "macros.h"
@@ -27,17 +29,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-extern terminal* term;
+extern terminal* term; // Declared in init.cpp
 
-input_params ip;
+input_params ip; // libSRES does not allow additional parameters to be passed into the fitness function so to pass non-libSRES data to each simulation ip must be global
 
+/* main is called when the program is run and performs all program functionality
+	parameters:
+		argc: the number of command-line arguments
+		argv: the array of command-line arguments
+	returns: 0 on success, a positive integer on failure
+	notes:
+		Main should only delegate functionality; let the functions it calls handle specific tasks. This keeps the function looking clean and helps maintain the program structure.
+	todo:
+*/
 int main (int argc, char** argv) {
+	// Initialize the program's terminal functionality and input parameters
 	init_terminal();
 	accept_input_params(argc, argv, ip);
+	init_verbosity(ip);
 	init_sim_args(ip);
+	
+	// Initialize libSRES
 	sres_params sp;
 	init_sres(ip, sp);
+	
+	// Run libSRES
 	run_sres(sp);
+	
+	// Free used memory, wrap up libSRES, etc.
 	free_sres(sp);
 	#if defined(MEMTRACK)
 		print_heap_usage();
@@ -47,10 +66,20 @@ int main (int argc, char** argv) {
 	return 0;
 }
 
+/* usage prints the usage information and, optionally, an error message and then exits
+	parameters:
+		message: an error message to print before the usage information (set message to NULL or "\0" to not print any error)
+	returns: nothing
+	notes:
+		This function exits after printing the usage information.
+		Note that accept_input_params in init.cpp handles actual command-line input and that this information should be updated according to that function.
+	todo:
+		TODO somehow free memory even with the abrupt exit
+*/
 void usage (const char* message) {
 	cout << endl;
-	bool error = strlen(message) != 0;
-	if (error) {
+	bool error = message != NULL && message[0] != '\0';
+	if (error) { // if there is an error message to print then print it
 		cout << term->red << message << term->reset << endl << endl;
 	}
 	cout << "Usage: [-option [value]]. . . [--option [value]]. . ." << endl;
@@ -74,13 +103,19 @@ void usage (const char* message) {
 	}
 }
 
+/* licensing prints the program's copyright and licensing information and then exits
+	parameters:
+	returns: nothing
+	notes:
+	todo:
+*/
 void licensing () {
 	cout << endl;
 	cout << "Stochastically ranked evolutionary strategy sampler for zebrafish segmentation" << endl;
 	cout << "Copyright (C) 2013 Ahmet Ay (aay@colgate.edu), Jack Holland (jholland@colgate.edu), Adriana Sperlea (asperlea@colgate.edu), Sebastian Sangervasi (ssangervasi@colgate.edu)" << endl;
 	cout << "This program comes with ABSOLUTELY NO WARRANTY" << endl;
 	cout << "This is free software, and you are welcome to redistribute it under certain conditions;" << endl;
-	cout << "You can use this code and modify it as you wish under the condition that you refer to the article: ???" << endl;
+	cout << "You can use this code and modify it as you wish under the condition that you refer to the article: \"Short-lived Her proteins drive robust synchronized oscillations in the zebrafish segmentation clock\" (Development 2013 140:3244-3253; doi:10.1242/dev.093278)" << endl;
 	cout << endl;
 	exit(EXIT_SUCCESS);
 }

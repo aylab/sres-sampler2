@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+main.h contains function declarations for main.cpp.
+*/
+
 #ifndef MAIN_H
 #define MAIN_H
 

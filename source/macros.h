@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+macros.h contains every constant and macro function used in the program.
+*/
+
 #ifndef MACROS_H
 #define MACROS_H
 

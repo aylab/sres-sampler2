@@ -16,26 +16,35 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+structs.h contains every struct used in the program.
+*/
+
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#include <cstring>
-#include <iostream>
-#include <fstream>
+#include <cstring> // Needed for strlen, strcpy, strcmp
+#include <iostream> // Needed for cout
+#include <fstream> // Needed for ofstream
 
-#if defined(MPI) // (AAy: ??? How does this statement work?)
+// libSRES has different files for MPI and non-MPI versions
+#if defined(MPI)
 	#include "../libsres-mpi/ESES.h" 
 #else
 	#include "../libsres/ESES.h"
 #endif
 
-#include "memory.h" // (AAy: ??? Include memory.h header file)
+#include "memory.h"
 
 using namespace std;
 
-char* copy_str(const char*);
+char* copy_str(const char*); // init.h cannot be included because it requires this file, structs.h, creating a cyclical dependency; therefore, copy_str, declared in init.h, must be declared in this file as well in order to use it here
 
-// Stores values and shortcut functions for coloring terminal output and printing common messages (set -c or --no-color to disable colors)
+/* terminal contains colors, streams, and common messages for terminal output
+	notes:
+		There should be only one instance of terminal at any time.
+	todo:
+*/
 struct terminal {
 	// Escape codes
 	const char* code_blue;
@@ -48,16 +57,16 @@ struct terminal {
 	char* reset;
 	
 	// Verbose stream
-	streambuf* verbose_streambuf; // (AAy: ??? To silence the output?)
+	streambuf* verbose_streambuf;
 	ostream* verbose_stream;
 	
-	terminal () { // (AAy: ??? Terminal color and verbose settings)
+	terminal () {
 		this->code_blue = "\x1b[34m";
 		this->code_red = "\x1b[31m";
 		this->code_reset = "\x1b[0m";
-		this->blue = (char*)mallocate(strlen(this->code_blue) + 1);
-		this->red = (char*)mallocate(strlen(this->code_red) + 1);
-		this->reset = (char*)mallocate(strlen(this->code_reset) + 1);
+		this->blue = copy_str(this->code_blue);
+		this->red = copy_str(this->code_red);
+		this->reset = copy_str(this->code_reset);
 		this->verbose_stream = new ostream(cout.rdbuf());
 	}
 	
@@ -68,75 +77,87 @@ struct terminal {
 		delete verbose_stream;
 	}
 	
-	// Used to indicate a process is done
+	// Indicates a process is done (pass terminal->verbose() into this function to print only with verbose mode on)
 	void done (ostream& stream) {
 		stream << this->blue << "Done" << this->reset << endl;
 	}
 	
+	// Indicates a task is done
 	void done () {
 		done(cout);
 	}
 	
-	// Used to indicate the program is out of memory
+	// Indicates the program is out of memory
 	void no_memory () {
 		cout << this->red << "Not enough memory!" << this->reset << endl;
 	}
 	
-	// Used to indicate the program couldn't create a pipe
+	// Indicates the program couldn't create a pipe
 	void failed_pipe_create () {
 		cout << this->red << "Couldn't create a pipe!" << this->reset << endl;
 	}
 	
-	// Used to indicate the program couldn't read from a pipe
+	// Indicates the program couldn't read from a pipe
 	void failed_pipe_read () {
 		cout << this->red << "Couldn't read from the pipe!" << this->reset << endl;
 	}
 	
-	// Used to indicate the program couldn't read from a pipe
+	// Indicates the program couldn't read from a pipe
 	void failed_pipe_write () {
 		cout << this->red << "Couldn't write to the pipe!" << this->reset << endl;
 	}
 	
-	// Used to indicate the program couldn't fork a child process
+	// Indicates the program couldn't fork a child process
 	void failed_fork () {
 		cout << this->red << "Couldn't fork a child process!" << this->reset << endl;
 	}
 	
-	// Used to indicate the program couldn't execute an external program
+	// Indicates the program couldn't execute an external program
 	void failed_exec () {
 		cout << this->red << "Couldn't execute an external program!" << this->reset << endl;
 	}
 	
-	// Used to indicate a child process encountered an error and did not exit properly
+	// Indicates a child process encountered an error and did not exit properly
 	void failed_child () {
 		cout << this->red << "A child process encountered an error!" << this->reset << endl;
 	}
 	
+	// Returns the verbose stream that prints only when verbose mode is on
 	ostream& verbose () {
 		return *(this->verbose_stream);
 	}
 	
+	// Sets the stream buffer for verbose mode
 	void set_verbose_streambuf (streambuf* sb) {
 		this->verbose_stream->rdbuf(sb);
 		this->verbose_streambuf = this->verbose_stream->rdbuf();
 	}
 };
 
-// Stores all of the input parameters passed via command-line
+/* input_params contains all of the program's input parameters (i.e. the given command-line arguments) as well as data associated with them
+	notes:
+		There should be only one instance of input_params at any time.
+		Variables should be initialized to the values indicated in the usage information.
+	todo:
+*/
 struct input_params {
+	// Command-line arguments
 	int argc; // The number of arguments passed into the program
 	char** argv; // The list of arguments passed into the program
 	
+	// libSRES parameters
 	int num_dims; // The number of dimensions (i.e. rate parameters) to explore, default=27
 	int pop_parents; // The population of parent simulations to use each generation, default=30
 	int pop_children; // The population of child simulations to use each generation, default=200
 	int generations; // The number of generations to run before returning results, default=1
 	int seed; // The seed used in the evolutionary strategy, default=current UNIX time
 	
+	// Simulation parameters
 	char* sim_path; // The relative filename of the simulation executable
 	char** sim_args; // Arguments to be passed to the simulation
 	int num_sim_args; // The number of arguments to be passed to the simulation
 	
+	// Output stream data
 	bool verbose; // Whether or not the program is verbose, i.e. prints many messages about program and simulation state
 	bool quiet; // Whether or not the program is quiet, i.e. redirects cout to /dev/null
 	streambuf* cout_orig; // cout's original buffer to be restored at program completion
@@ -154,7 +175,7 @@ struct input_params {
 		this->null_stream = new ofstream("/dev/null");
 	}
 	
-	~input_params () {  // (AAy: ??? Destructor)
+	~input_params () {
 		mfree(this->sim_path);
 		if (this->sim_args != NULL) {
 			for (int i = 0; i < this->num_sim_args; i++) {
@@ -166,7 +187,11 @@ struct input_params {
 	}
 };
 
-// Stores SRES structs and variables
+/* sres_params contains parameters that libSRES requires
+	notes:
+		Excuse the awful variable names. They are named according to libSRES conventions for the sake of consistency.
+	todo:
+*/
 struct sres_params {
 	ESParameter* param;
 	ESPopulation* population;

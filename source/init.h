@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+init.h contains function declarations for init.cpp.
+*/
+
 #ifndef INIT_H
 #define INIT_H
 
@@ -27,6 +31,7 @@ void free_terminal();
 void accept_input_params(int, char**, input_params&);
 bool option_set(const char*, const char*, const char*);
 void ensure_nonempty(const char*, const char*);
+void init_verbosity(input_params&);
 void init_sim_args(input_params&);
 char** copy_args(char**, int);
 void store_pipe(char**, int, int);

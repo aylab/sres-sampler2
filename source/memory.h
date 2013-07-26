@@ -16,11 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+memory.h contains function declarations for memory.cpp
+*/
+
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include <stdlib.h>
+#include <stdlib.h> // Needed for size_t
 
+// These memory functions have been added to the libSRES code, which is compiled as C code, so 'extern "C"' must be added to prevent C++'s signature mangling from hiding the names from C
 #ifdef __cplusplus
 extern "C" {
 #endif

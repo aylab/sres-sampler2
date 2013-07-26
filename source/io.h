@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+io.h contains function declarations for io.cpp.
+*/
+
 #ifndef IO_H
 #define IO_H
 

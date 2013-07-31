@@ -31,9 +31,11 @@ void free_terminal();
 void accept_input_params(int, char**, input_params&);
 bool option_set(const char*, const char*, const char*);
 void ensure_nonempty(const char*, const char*);
+void check_input_params(input_params&);
 void init_verbosity(input_params&);
 void init_sim_args(input_params&);
 char** copy_args(char**, int);
+void read_ranges(input_params&, input_data&, sres_params&);
 void store_pipe(char**, int, int);
 void reset_cout(input_params&);
 

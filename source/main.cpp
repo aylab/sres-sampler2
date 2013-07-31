@@ -46,11 +46,16 @@ int main (int argc, char** argv) {
 	// Initialize the program's terminal functionality and input parameters
 	init_terminal();
 	accept_input_params(argc, argv, ip);
+	check_input_params(ip);
 	init_verbosity(ip);
 	init_sim_args(ip);
 	
-	// Initialize libSRES
+	// Read the specified input files
+	input_data ranges_data(ip.ranges_file);
+	
+	// Initialize libSRES and the ranges it will use
 	sres_params sp;
+	read_ranges(ip, ranges_data, sp);
 	init_sres(ip, sp);
 	
 	// Run libSRES
@@ -79,16 +84,17 @@ int main (int argc, char** argv) {
 void usage (const char* message) {
 	cout << endl;
 	bool error = message != NULL && message[0] != '\0';
-	if (error) { // if there is an error message to print then print it
+	if (error) {
 		cout << term->red << message << term->reset << endl << endl;
 	}
 	cout << "Usage: [-option [value]]. . . [--option [value]]. . ." << endl;
-	cout << "-d, --dimensions        [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=27" << endl;
+	cout << "-r, --range-file        [filename]   : the relative filename of the ranges file, default=none" << endl;
+	cout << "-f, --simulation        [filename]   : the relative filename of the simulation executable, default=deterministic" << endl;
+	cout << "-d, --dimensions        [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=45" << endl;
 	cout << "-P, --parent-population [int]        : the population of parent simulations to use each generation, min=1, default=30" << endl;
 	cout << "-p, --child-population  [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
 	cout << "-g, --generations       [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;
 	cout << "-s, --seed              [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
-	cout << "-f, --simulation        [filename]   : the relative filename of the simulation executable, default=deterministic" << endl;
 	cout << "-a, --arguments         [N/A]        : every argument following this will be sent to the deterministic simulation" << endl;
 	cout << "-c, --no-color          [N/A]        : disable coloring the terminal output, default=unused" << endl;
 	cout << "-v, --verbose           [N/A]        : print detailed messages about the program state" << endl;

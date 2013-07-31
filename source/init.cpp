@@ -25,6 +25,7 @@ init.cpp contains initialization functions used before any simulations start.
 #include "init.h"
 #include "macros.h"
 #include "main.h"
+#include "io.h"
 
 using namespace std; 
 
@@ -96,7 +97,13 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			}
 			
 			// Accept command-line arguments in both short and long form
-			if (option_set(option, "-d", "--dimensions")) {
+			if (option_set(option, "-r", "--ranges-file")) {
+				ensure_nonempty(option, value);
+				store_filename(&(ip.ranges_file), value);
+			} else if (option_set(option, "-f", "--simulation")) {
+				ensure_nonempty(option, value);
+				store_filename(&(ip.sim_file), value);
+			} else if (option_set(option, "-d", "--dimensions")) {
 				ensure_nonempty(option, value);
 				ip.num_dims = atoi(value);
 				if (ip.num_dims < 1) {
@@ -126,10 +133,6 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				if (ip.seed <= 0) {
 					usage("The seed to generate random numbers must be a positive integer. Set -s or --seed to at least 1.");
 				}
-			} else if (option_set(option, "-f", "--simulation")) {
-				ensure_nonempty(option, value);
-				mfree(ip.sim_path);
-				ip.sim_path = copy_str(value);
 			} else if (option_set(option, "-a", "--arguments")) {
 				ensure_nonempty(option, value);
 				++i;
@@ -211,6 +214,20 @@ void ensure_nonempty (const char* option, const char* arg) {
 	}
 }
 
+/* check_input_params checks that the given command-line arguments are semantically valid
+	parameters:
+		ip: the program's input parameters
+	returns: nothing
+	notes:
+		Since command-line arguments may be given in any order, it is impossible to check certain requirements immediately after an argument is read. This function is called after accept_input_params and therefore has access to every argument.
+	todo:
+*/
+void check_input_params (input_params& ip) {
+	if (ip.ranges_file == NULL) {
+		usage("A ranges file must be specified! Set the ranges file with -r or --ranges-file.");
+	}
+}
+
 /* init_verbosity sets the verbose stream to /dev/null if verbose mode is not enabled
 	parameters:
 		ip: the program's input parameters
@@ -256,6 +273,22 @@ char** copy_args (char** args, int num_args) {
 		new_args[i] = copy_str(args[i]);
 	}
 	return new_args;
+}
+
+/* read_ranges fills in the sres_params struct with ranges from the given ranges file
+	parameters:
+		ip: the program's input parameters
+		ranges_data: the input_data for the ranges input file
+		sp: parameters required by libSRES to put the ranges in
+	returns: nothing
+	notes:
+	todo:
+*/
+void read_ranges (input_params& ip, input_data& ranges_data, sres_params& sp) {
+	read_file(&ranges_data);
+	sp.lb = (double*)mallocate(sizeof(double) * ip.num_dims); // Lower bounds
+	sp.ub = (double*)mallocate(sizeof(double) * ip.num_dims); // Upper bounds
+	parse_ranges_file(ranges_data.buffer, ip, sp);
 }
 
 /* store_pipe stores the given pipe file descriptor into the given index in the array of arguments

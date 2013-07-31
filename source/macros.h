@@ -26,13 +26,14 @@ macros.h contains every constant and macro function used in the program.
 // Exit statuses
 #define EXIT_SUCCESS			0
 #define EXIT_MEMORY_ERROR		1
-#define EXIT_PIPE_CREATE_ERROR	2
-#define EXIT_PIPE_READ_ERROR	3
-#define EXIT_PIPE_WRITE_ERROR	4
-#define EXIT_FORK_ERROR			5
-#define EXIT_EXEC_ERROR			6
-#define EXIT_CHILD_ERROR		7
-#define EXIT_INPUT_ERROR		8
+#define EXIT_FILE_READ_ERROR	2
+#define EXIT_PIPE_CREATE_ERROR	3
+#define EXIT_PIPE_READ_ERROR	4
+#define EXIT_PIPE_WRITE_ERROR	5
+#define EXIT_FORK_ERROR			6
+#define EXIT_EXEC_ERROR			7
+#define EXIT_CHILD_ERROR		8
+#define EXIT_INPUT_ERROR		9
 
 // Macros for commonly used functions small enough to inject directly into the code
 #define square(x) ((x) * (x))

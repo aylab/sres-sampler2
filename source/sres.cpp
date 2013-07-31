@@ -70,17 +70,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 		sp.trsfm[i] = transform;
 	}
 	
-	// Initialize parameter ranges for each version of the simulation
-	sp.lb = (double*)mallocate(sizeof(double) * dim); // Lower bounds
-	sp.ub = (double*)mallocate(sizeof(double) * dim); // Upper bounds
-	double* lb = sp.lb;
-	double* ub = sp.ub;
-	for (int i = 0; i < dim; i++) {
-		lb[i] = 0;
-		ub[i] = 0;
-	}
-	
-	if (dim == 27) { // Corresponding deterministic branch: nodimers
+	/*if (dim == 27) { // Corresponding deterministic branch: nodimers
 		lb[0] = 30,		ub[0] = 65;
 		lb[1] = 30,		ub[1] = 65;
 		lb[2] = 30,		ub[2] = 65;
@@ -220,17 +210,14 @@ void init_sres (input_params& ip, sres_params& sp) {
 		lb[62] = 1000,	ub[62] = 9000;
 		lb[63] = 1000,	ub[63] = 9000;
 		lb[64] = 200,	ub[64] = 800;
-	} else { // If a different number of parameters is needed then add more elseif clauses here
-		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
-		exit(EXIT_INPUT_ERROR);
-	}
+	}*/
 	
 	// Call libSRES's initialize function
 	ESInitial(
 	#if defined(MPI) // The MPI version of libSRES requires the program's command-line arguments for MPI initialization
 		&(ip.argc), &(ip.argv),
 	#endif // The non-MPI version of libSREs does not accept the first two arguments of the MPI version
-		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 }
 
 /* run_sres iterates through every specified generation of libSRES

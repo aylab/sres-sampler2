@@ -31,6 +31,114 @@ io.cpp contains functions for input and output of files and pipes. All I/O relat
 extern terminal* term; // Declared in init.cpp
 extern input_params ip; // Declared in main.cpp
 
+/* store_filename stores the given value in the given field
+	parameters:
+		field: a pointer to the filename's field
+		value: the filename to store
+	returns: nothing
+	notes:
+		The previous field value is freed before assigning the new one.
+	todo:
+*/
+void store_filename (char** field, const char* value) {
+	mfree(*field);
+	*field = copy_str(value);
+}
+
+/* read_file takes an input_data struct and stores the contents of the associated file in a string
+	parameters:
+		ifd: the input_data struct to contain the file name, buffer to store the contents, size of the file, and current index
+	returns: nothing
+	notes:
+		The buffer in ifd will be sized large enough to fit the file
+	todo:
+*/
+void read_file (input_data* ifd) {
+	cout << term->blue << "Reading file " << term->reset << ifd->filename << " . . . ";
+	
+	// Open the file for reading
+	FILE* file = fopen(ifd->filename, "r");
+	if (file == NULL) {
+		cout << term->red << "Couldn't open " << ifd->filename << "!" << term->reset << endl;
+		exit(EXIT_FILE_READ_ERROR);
+	}
+	
+	// Seek to the end of the file, grab its size, and then rewind
+	fseek(file, 0, SEEK_END);
+	long size = ftell(file);
+	ifd->size = size;
+	rewind(file);
+	
+	// Allocate enough memory to contain the whole file
+	ifd->buffer = (char*)mallocate(sizeof(char) * size + 1);
+	
+	// Copy the file's contents into the buffer
+	long result = fread(ifd->buffer, 1, size, file);
+	if (result != size) {
+		cout << term->red << "Couldn't read from " << ifd->filename << term->reset << endl;
+		exit(EXIT_FILE_READ_ERROR);
+	}
+	ifd->buffer[size] = '\0';
+	
+	// Close the file
+	if (fclose(file) != 0) {
+		cout << term->red << "Couldn't close " << ifd->filename << term->reset << endl;
+		exit(EXIT_FILE_READ_ERROR);
+	}
+	
+	term->done();
+}
+
+/* parse_ranges_file reads the given buffer and stores every range found in the given ranges array
+	parameters:
+		buffer: the buffer with the ranges to read
+		ip: the program's input parameters
+		sp: parameters required by libSRES with arrays in which to store the lower and upper bounds of each range
+	returns: nothing
+	notes:
+		The buffer should contain one range per line, starting the name of the parameter followed by the bracked enclosed lower and then upper bound optionally followed by comments.
+		e.g. 'msh1 [30, 65] comment'
+		The name of the parameter is so humans can conveniently read the file and has no semantic value to this parser.
+		Blank lines and lines starting with # will be ignored. Anything after the upper bound is ignored.
+	todo:
+*/
+void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
+	int i = 0;
+	int rate = 0;
+	for (; buffer[i] != '\0'; i++) {
+		// Ensure that the number of rates in the given ranges file does not exceed the given number of dimensions
+		if (rate >= ip.num_dims) {
+			cout << term->red << "The number of rates in the given ranges file does not match the given number of dimensions! Please check that the rates file matches the number of dimensions (" << ip.num_dims << ")." << term->reset << endl;
+		exit(EXIT_INPUT_ERROR);
+		}
+		
+		// Ignore lines starting with #
+		while (buffer[i] == '#') {
+			while (buffer[i] != '\n' && buffer[i] != '\0') {i++;}
+			i++;			
+		}
+		
+		// Ignore whitespace before the opening bracket
+		while (buffer[i] != '[' && buffer[i] != '\0') {i++;}
+		if (buffer[i] == '\0') {break;}
+		i++;
+		
+		// Read the bounds
+		sp.lb[rate] = atof(buffer + i);
+		while (buffer[i] != ',') {i++;}
+		i++;
+		sp.ub[rate] = atof(buffer + i);
+		if (sp.lb[rate] < 0 || sp.ub[rate] < 0) { // If the ranges are invalid then set them to 0
+			sp.lb[rate] = 0;
+			sp.ub[rate] = 0;
+		}
+		
+		// Skip any comments until the end of the line
+		while (buffer[i] != '\n' && buffer[i] != '\0') {i++;}
+		rate++;
+	}
+}
+
 /* simulate_set performs the required piping to setup and run a simulation with the given parameters
 	parameters:
 		parameters: the parameters to pass as a parameter set to the simulation
@@ -58,7 +166,7 @@ double simulate_set (double parameters[]) {
 		exit(EXIT_FORK_ERROR);
 	}
 	if (pid == 0) { // The child runs the simulation
-		if (execv(ip.sim_path, sim_args) == -1) {
+		if (execv(ip.sim_file, sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
 		}

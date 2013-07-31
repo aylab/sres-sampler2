@@ -145,15 +145,18 @@ struct input_params {
 	int argc; // The number of arguments passed into the program
 	char** argv; // The list of arguments passed into the program
 	
+	// Input and output files' paths and names (either absolute or relative)
+	char* ranges_file; // The path and name of the parameter ranges file, default=none
+	char* sim_file; // The relative filename of the simulation executable
+	
 	// libSRES parameters
-	int num_dims; // The number of dimensions (i.e. rate parameters) to explore, default=27
+	int num_dims; // The number of dimensions (i.e. rate parameters) to explore, default=45
 	int pop_parents; // The population of parent simulations to use each generation, default=30
 	int pop_children; // The population of child simulations to use each generation, default=200
 	int generations; // The number of generations to run before returning results, default=1
 	int seed; // The seed used in the evolutionary strategy, default=current UNIX time
 	
 	// Simulation parameters
-	char* sim_path; // The relative filename of the simulation executable
 	char** sim_args; // Arguments to be passed to the simulation
 	int num_sim_args; // The number of arguments to be passed to the simulation
 	
@@ -164,19 +167,21 @@ struct input_params {
 	ofstream* null_stream; // A stream to /dev/null that cout is redirected to if quiet mode is set
 	
 	input_params () {
-		this->num_dims = 27; 
+		this->ranges_file = NULL;
+		this->sim_file = copy_str("deterministic");
+		this->num_dims = 45; 
 		this->pop_parents = 30;
 		this->pop_children = 200;
 		this->generations = 1;
 		this->seed = time(0);
-		this->sim_path = copy_str("deterministic");
 		this->sim_args = NULL;
 		this->num_sim_args = 0;
 		this->null_stream = new ofstream("/dev/null");
 	}
 	
 	~input_params () {
-		mfree(this->sim_path);
+		mfree(this->ranges_file);
+		mfree(this->sim_file);
 		if (this->sim_args != NULL) {
 			for (int i = 0; i < this->num_sim_args; i++) {
 				mfree(this->sim_args[i]);
@@ -209,6 +214,29 @@ struct sres_params {
 		this->trsfm = NULL;
 		this->lb = NULL;
 		this->ub = NULL;
+	}
+};
+
+/* input_data contains information for retrieving data from an input file
+	notes:
+		All input files should be read with read_file and an input_data struct, storing their contents in a string buffer.
+	todo:
+*/
+struct input_data {
+	char* filename; // The path and name of the file
+	char* buffer; // A buffer to store the file's contents
+	int size; // The number of bytes the file's contents take up
+	int index; // The current index to access the buffer from
+	
+	explicit input_data (char* filename) {
+		this->filename = filename;
+		this->buffer = NULL;
+		this->size = 0;
+		this->index = 0;
+	}
+	
+	~input_data () {
+		mfree(this->buffer);
 	}
 };
 

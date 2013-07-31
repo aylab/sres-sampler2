@@ -23,6 +23,11 @@ io.h contains function declarations for io.cpp.
 #ifndef IO_H
 #define IO_H
 
+#include "structs.h"
+
+void store_filename(char**, const char*);
+void read_file(input_data*);
+void parse_ranges_file (char*, input_params&, sres_params&);
 double simulate_set(double[]);
 void write_pipe(int, double[]);
 void write_pipe_int(int, int);

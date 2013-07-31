@@ -139,6 +139,31 @@ void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
 	}
 }
 
+/* open_file opens the file with the given name and stores it in the given output file stream
+	parameters:
+		file_pointer: a pointer to the output file stream to open the file with
+		file_name: the path and name of the file to open
+		append: if true, the file will appended to, otherwise any existing data will be overwritten
+	returns: nothing
+	notes:
+	todo:
+*/
+void open_file (ofstream* file_pointer, char* file_name, bool append) {
+	try {
+		if (append) {
+			cout << term->blue << "Opening " << term->reset << file_name << " . . . ";
+			file_pointer->open(file_name, fstream::app);
+		} else {
+			cout << term->blue << "Creating " << term->reset << file_name << " . . . ";
+			file_pointer->open(file_name, fstream::out);
+		}
+	} catch (ofstream::failure) {
+		cout << term->red << "Couldn't write to " << file_name << "!" << term->reset << endl;
+		exit(EXIT_FILE_WRITE_ERROR);
+	}
+	term->done();
+}
+
 /* simulate_set performs the required piping to setup and run a simulation with the given parameters
 	parameters:
 		parameters: the parameters to pass as a parameter set to the simulation
@@ -206,7 +231,18 @@ double simulate_set (double parameters[]) {
 	mfree(sim_args);
 	
 	// libSRES requires scores from 0 to 1 with 0 being a perfect score so convert the simulation's score format into libSRES's
-	return 1 - ((double)score / max_score);
+	double score_final = 1 - ((double)score / max_score);
+	
+	// Print the score if the user specified printing good sets and this set is good enough
+	if (ip.print_good_sets && score_final <= ip.good_set_threshold) {
+		ip.good_sets_stream << parameters[0];
+		for (int i = 1; i < ip.num_dims; i++) {
+			ip.good_sets_stream << "," << parameters[i];
+		}
+		ip.good_sets_stream << "\n";
+	}
+	
+	return score_final;
 }
 
 /* write_pipe writes the given parameter set to the given pipe
@@ -267,6 +303,19 @@ void read_pipe_int (int fd, int* address) {
 	if (read(fd, address, sizeof(int)) == -1) {
 		term->failed_pipe_read();
 		exit(EXIT_PIPE_READ_ERROR);
+	}
+}
+
+/* close_if_open closes the given output file stream if it is open
+	parameters:
+		file: a pointer to the output file stream to close
+	returns: nothing
+	notes:
+	todo:
+*/
+void close_if_open (ofstream& file) {
+	if (file.is_open()) {
+		file.close();
 	}
 }
 

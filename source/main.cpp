@@ -53,6 +53,9 @@ int main (int argc, char** argv) {
 	// Read the specified input files
 	input_data ranges_data(ip.ranges_file);
 	
+	// Create the specified output files
+	create_good_sets_file(ip);
+	
 	// Initialize libSRES and the ranges it will use
 	sres_params sp;
 	read_ranges(ip, ranges_data, sp);
@@ -63,6 +66,7 @@ int main (int argc, char** argv) {
 	
 	// Free used memory, wrap up libSRES, etc.
 	free_sres(sp);
+	delete_files(ip);
 	#if defined(MEMTRACK)
 		print_heap_usage();
 	#endif
@@ -88,19 +92,21 @@ void usage (const char* message) {
 		cout << term->red << message << term->reset << endl << endl;
 	}
 	cout << "Usage: [-option [value]]. . . [--option [value]]. . ." << endl;
-	cout << "-r, --range-file        [filename]   : the relative filename of the ranges file, default=none" << endl;
-	cout << "-f, --simulation        [filename]   : the relative filename of the simulation executable, default=deterministic" << endl;
-	cout << "-d, --dimensions        [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=45" << endl;
-	cout << "-P, --parent-population [int]        : the population of parent simulations to use each generation, min=1, default=30" << endl;
-	cout << "-p, --child-population  [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
-	cout << "-g, --generations       [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;
-	cout << "-s, --seed              [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
-	cout << "-a, --arguments         [N/A]        : every argument following this will be sent to the deterministic simulation" << endl;
-	cout << "-c, --no-color          [N/A]        : disable coloring the terminal output, default=unused" << endl;
-	cout << "-v, --verbose           [N/A]        : print detailed messages about the program state" << endl;
-	cout << "-q, --quiet             [N/A]        : hide the terminal output, default=unused" << endl;
-	cout << "-l, --licensing         [N/A]        : view licensing information (no simulations will be run)" << endl;
-	cout << "-h, --help              [N/A]        : view usage information (i.e. this)" << endl;
+	cout << "-r, --ranges-file        [filename]   : the relative filename of the ranges input file, default=none" << endl;
+	cout << "-f, --simulation         [filename]   : the relative filename of the simulation executable, default=deterministic" << endl;
+	cout << "-o, --print-good-sets    [filename]   : the relative filename of the good sets output file, default=none" << endl;
+	cout << "-G, --good-set-threshold [float]      : the worst score a set must receive to be printed to the good sets file, default=0.0" << endl;
+	cout << "-d, --dimensions         [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=45" << endl;
+	cout << "-P, --parent-population  [int]        : the population of parent simulations to use each generation, min=1, default=30" << endl;
+	cout << "-p, --child-population   [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
+	cout << "-g, --generations        [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;
+	cout << "-s, --seed               [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
+	cout << "-a, --arguments          [N/A]        : every argument following this will be sent to the deterministic simulation" << endl;
+	cout << "-c, --no-color           [N/A]        : disable coloring the terminal output, default=unused" << endl;
+	cout << "-v, --verbose            [N/A]        : print detailed messages about the program state" << endl;
+	cout << "-q, --quiet              [N/A]        : hide the terminal output, default=unused" << endl;
+	cout << "-l, --licensing          [N/A]        : view licensing information (no simulations will be run)" << endl;
+	cout << "-h, --help               [N/A]        : view usage information (i.e. this)" << endl;
 	cout << endl << term->blue << "Example: ./sres-sampler " << term->reset << endl << endl;
 	if (error) {
 		exit(EXIT_INPUT_ERROR);

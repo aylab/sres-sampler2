@@ -28,11 +28,13 @@ io.h contains function declarations for io.cpp.
 void store_filename(char**, const char*);
 void read_file(input_data*);
 void parse_ranges_file (char*, input_params&, sres_params&);
+void open_file(ofstream*, char*, bool);
 double simulate_set(double[]);
 void write_pipe(int, double[]);
 void write_pipe_int(int, int);
 void read_pipe(int, int*, int*);
 void read_pipe_int(int, int*);
+void close_if_open(ofstream&);
 
 #endif
 

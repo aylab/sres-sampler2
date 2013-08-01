@@ -509,7 +509,7 @@ void ESDoStat(ESStatistics *stats, ESPopulation *population,   \
 void ESPrintStat(ESStatistics *stats, ESParameter *param)
 {
   
-  printf("current generation: %d, best generation: %d, best fitness: %f\nbest individual:",  \
+  printf("current generation: %d, best generation: %d, best fitness: %f\nbest individual: ",  \
           stats->curgen,stats->bestgen,stats->bestindvdl->f);
   ESPrintOp(stats->bestindvdl, param);
   printf("\n");

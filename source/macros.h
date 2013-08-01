@@ -23,6 +23,9 @@ macros.h contains every constant and macro function used in the program.
 #ifndef MACROS_H
 #define MACROS_H
 
+// The number of implicit arguments sent to the simulation
+#define num_implicit_sim_args 6
+
 // Exit statuses
 #define EXIT_SUCCESS			0
 #define EXIT_MEMORY_ERROR		1

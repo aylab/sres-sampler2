@@ -31,7 +31,9 @@ using namespace std;
 
 extern terminal* term; // Declared in init.cpp
 
-input_params ip; // libSRES does not allow additional parameters to be passed into the fitness function so to pass non-libSRES data to each simulation ip must be global
+// libSRES does not allow additional parameters to be passed into the fitness function so to pass non-libSRES data to each simulation ip must be global
+input_params ip;
+int printing_precision; // ip cannot be imported into a C file
 
 /* main is called when the program is run and performs all program functionality
 	parameters:
@@ -101,6 +103,7 @@ void usage (const char* message) {
 	cout << "-p, --child-population   [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
 	cout << "-g, --generations        [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;
 	cout << "-s, --seed               [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
+	cout << "-e, --printing-precision [int]        : how many digits of precision parameters should be printed with, min=1, default=6" << endl;
 	cout << "-a, --arguments          [N/A]        : every argument following this will be sent to the deterministic simulation" << endl;
 	cout << "-c, --no-color           [N/A]        : disable coloring the terminal output, default=unused" << endl;
 	cout << "-v, --verbose            [N/A]        : print detailed messages about the program state" << endl;

@@ -167,8 +167,9 @@ struct input_params {
 	int num_sim_args; // The number of arguments to be passed to the simulation
 	
 	// Output stream data
-	bool verbose; // Whether or not the program is verbose, i.e. prints many messages about program and simulation state
-	bool quiet; // Whether or not the program is quiet, i.e. redirects cout to /dev/null
+	int printing_precision; // The number of digits of precision parameters should be printed with, default=6
+	bool verbose; // Whether or not the program is verbose, i.e. prints many messages about program and simulation state, default=false
+	bool quiet; // Whether or not the program is quiet, i.e. redirects cout to /dev/null, default=false
 	streambuf* cout_orig; // cout's original buffer to be restored at program completion
 	ofstream* null_stream; // A stream to /dev/null that cout is redirected to if quiet mode is set
 	
@@ -185,6 +186,10 @@ struct input_params {
 		this->seed = time(0);
 		this->sim_args = NULL;
 		this->num_sim_args = 0;
+		this->printing_precision = 6;
+		this->verbose = false;
+		this->quiet = false;
+		this->cout_orig = NULL;
 		this->null_stream = new ofstream("/dev/null");
 	}
 	

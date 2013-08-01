@@ -30,6 +30,7 @@ init.cpp contains initialization functions used before any simulations start.
 using namespace std; 
 
 terminal* term; // The global terminal struct
+extern int printing_precision; // Declared in main.cpp
 
 /* copy_str copies the given string, allocating enough memory for the new string
 	parameters:
@@ -139,9 +140,15 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				}
 			} else if (option_set(option, "-s", "--seed")) {
 				ensure_nonempty(option, value);
-				ip.seed = atof(value);
+				ip.seed = atoi(value);
 				if (ip.seed <= 0) {
 					usage("The seed to generate random numbers must be a positive integer. Set -s or --seed to at least 1.");
+				}
+			} else if (option_set(option, "-e", "--printing-precision")) {
+				ensure_nonempty(option, value);
+				ip.printing_precision = atoi(value);
+				if (ip.printing_precision < 1) {
+					usage("The printing precision must be a positive integer. Set -e or --printing-precision to at least 1.");
 				}
 			} else if (option_set(option, "-a", "--arguments")) {
 				ensure_nonempty(option, value);
@@ -236,6 +243,7 @@ void check_input_params (input_params& ip) {
 	if (ip.ranges_file == NULL) {
 		usage("A ranges file must be specified! Set the ranges file with -r or --ranges-file.");
 	}
+	printing_precision = ip.printing_precision; // ip cannot be imported into a C file so the printing precision must be its own global
 }
 
 /* init_verbosity sets the verbose stream to /dev/null if verbose mode is not enabled

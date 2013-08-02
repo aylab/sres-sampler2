@@ -199,8 +199,8 @@ void operator delete[] (void* mem) {
 */
 static void print_mem_amount (size_t mem) {
 	static size_t kB = 1024;
-	static size_t MB = square(1024);
-	static size_t GB = cube(1024);
+	static size_t MB = SQUARE(1024);
+	static size_t GB = CUBE(1024);
 	double dmem = mem;
 	
 	if (mem > GB) {

@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include "sharefunc.h"
 
-#include "../source/memory.h"
+#include "../source/memory.hpp"
 
 /*********************************************************************
  ** uniform random                                                  **

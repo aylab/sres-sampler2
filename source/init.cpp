@@ -22,10 +22,11 @@ init.cpp contains initialization functions used before any simulations start.
 
 #include <cmath> // Needed for log10
 
-#include "init.h"
-#include "macros.h"
-#include "main.h"
-#include "io.h"
+#include "init.hpp" // Function declarations
+
+#include "io.hpp"
+#include "macros.hpp"
+#include "main.hpp"
 
 using namespace std; 
 
@@ -153,9 +154,9 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			} else if (option_set(option, "-a", "--arguments")) {
 				ensure_nonempty(option, value);
 				++i;
-				ip.num_sim_args = num_args - i + num_implicit_sim_args;
+				ip.num_sim_args = num_args - i + NUM_IMPLICIT_SIM_ARGS;
 				ip.sim_args = (char**)mallocate(sizeof(char*) * (ip.num_sim_args));
-				for (int j = 1; j < ip.num_sim_args - (num_implicit_sim_args - 1); j++) {
+				for (int j = 1; j < ip.num_sim_args - (NUM_IMPLICIT_SIM_ARGS - 1); j++) {
 					char* arg = args[i + j - 1];
 					ip.sim_args[j] = (char*)mallocate(sizeof(char) * (strlen(arg) + 1));
 					sprintf(ip.sim_args[j], "%s", arg);
@@ -275,8 +276,8 @@ void create_good_sets_file (input_params& ip) {
 */
 void init_sim_args (input_params& ip) {
 	if (ip.num_sim_args == 0) { // If the arguments were not initialized in accept_input_params (i.e. the user did not specify simulation arguments with -a or --arguments)
-		ip.num_sim_args = num_implicit_sim_args; // "deterministic --pipe-in x --pipe-out y" takes 5 terms and the final NULL element makes the sum 6
-		ip.sim_args = (char**)mallocate(sizeof(char*) * num_implicit_sim_args);
+		ip.num_sim_args = NUM_IMPLICIT_SIM_ARGS; // "deterministic --pipe-in x --pipe-out y" takes 5 terms and the final NULL element makes the sum 6
+		ip.sim_args = (char**)mallocate(sizeof(char*) * NUM_IMPLICIT_SIM_ARGS);
 	}
 	
 	// Initialize the implicit arguments

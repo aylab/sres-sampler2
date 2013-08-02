@@ -34,9 +34,10 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 	#include "../libsres/ESES.h"
 #endif
 
-#include "sres.h"
-#include "macros.h"
-#include "io.h"
+#include "sres.hpp" // Function declarations
+
+#include "io.hpp"
+#include "macros.hpp"
 
 extern terminal* term; // Declared in init.cpp
 

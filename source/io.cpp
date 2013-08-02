@@ -23,10 +23,11 @@ io.cpp contains functions for input and output of files and pipes. All I/O relat
 #include <sys/wait.h> // Needed for waitpid
 #include <unistd.h> // Needed for pipe, read, write, close, fork, execv
 
-#include "io.h"
-#include "macros.h"
-#include "structs.h"
-#include "init.h"
+#include "io.hpp" // Function declarations
+
+#include "init.hpp"
+#include "macros.hpp"
+#include "structs.hpp"
 
 extern terminal* term; // Declared in init.cpp
 extern input_params ip; // Declared in main.cpp

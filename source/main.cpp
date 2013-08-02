@@ -21,11 +21,12 @@ main.cpp contains the main, usage, and licensing functions.
 Avoid putting functions in main.cpp that could be put in a more specific file.
 */
 
-#include "main.h"
-#include "macros.h"
-#include "structs.h"
-#include "init.h"
-#include "sres.h"
+#include "main.hpp" // Function declarations
+
+#include "init.hpp"
+#include "macros.hpp"
+#include "sres.hpp"
+#include "structs.hpp"
 
 using namespace std;
 

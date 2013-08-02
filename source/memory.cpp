@@ -21,9 +21,10 @@ memory.cpp contains functions related to memory management. All memory related f
 Many features and functions are enabled only when scons-compiling with 'memtrack=1', which defines the MEMTRACK macro used for memory tracking.
 */
 
-#include "memory.h"
-#include "macros.h"
-#include "structs.h"
+#include "memory.hpp" // Function declarations
+
+#include "macros.hpp"
+#include "structs.hpp"
 
 extern terminal* term; // Declared in init.cpp
 

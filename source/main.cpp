@@ -26,7 +26,6 @@ Avoid putting functions in main.cpp that could be put in a more specific file.
 #include "init.hpp"
 #include "macros.hpp"
 #include "sres.hpp"
-#include "structs.hpp"
 
 using namespace std;
 

@@ -27,7 +27,6 @@ io.cpp contains functions for input and output of files and pipes. All I/O relat
 
 #include "init.hpp"
 #include "macros.hpp"
-#include "structs.hpp"
 
 extern terminal* term; // Declared in init.cpp
 extern input_params ip; // Declared in main.cpp

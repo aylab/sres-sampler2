@@ -37,7 +37,6 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 #include "sres.hpp" // Function declarations
 
 #include "io.hpp"
-#include "macros.hpp"
 
 extern terminal* term; // Declared in init.cpp
 

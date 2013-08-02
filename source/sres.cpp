@@ -56,7 +56,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	int constraint = 0;
 	int dim = ip.num_dims;
 	int miu = ip.pop_parents;
-	int lambda = ip.pop_children;
+	int lambda = ip.pop_total;
 	int gen = ip.generations;
 	double gamma = esDefGamma;
 	double alpha = esDefAlpha;

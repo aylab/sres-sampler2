@@ -95,12 +95,12 @@ void usage (const char* message) {
 	}
 	cout << "Usage: [-option [value]]. . . [--option [value]]. . ." << endl;
 	cout << "-r, --ranges-file        [filename]   : the relative filename of the ranges input file, default=none" << endl;
-	cout << "-f, --simulation         [filename]   : the relative filename of the simulation executable, default=deterministic" << endl;
+	cout << "-f, --simulation         [filename]   : the relative filename of the simulation executable, default=simulation" << endl;
 	cout << "-o, --print-good-sets    [filename]   : the relative filename of the good sets output file, default=none" << endl;
 	cout << "-G, --good-set-threshold [float]      : the worst score a set must receive to be printed to the good sets file, default=0.0" << endl;
 	cout << "-d, --dimensions         [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=45" << endl;
 	cout << "-P, --parent-population  [int]        : the population of parent simulations to use each generation, min=1, default=30" << endl;
-	cout << "-p, --child-population   [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
+	cout << "-p, --total-population   [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
 	cout << "-g, --generations        [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;
 	cout << "-s, --seed               [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
 	cout << "-e, --printing-precision [int]        : how many digits of precision parameters should be printed with, min=1, default=6" << endl;

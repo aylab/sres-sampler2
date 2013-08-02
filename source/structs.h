@@ -158,7 +158,7 @@ struct input_params {
 	// libSRES parameters
 	int num_dims; // The number of dimensions (i.e. rate parameters) to explore, default=45
 	int pop_parents; // The population of parent simulations to use each generation, default=30
-	int pop_children; // The population of child simulations to use each generation, default=200
+	int pop_total; // The total population of simulations to use each generation, default=200
 	int generations; // The number of generations to run before returning results, default=1
 	int seed; // The seed used in the evolutionary strategy, default=current UNIX time
 	
@@ -181,7 +181,7 @@ struct input_params {
 		this->good_set_threshold = 0.0;
 		this->num_dims = 45; 
 		this->pop_parents = 30;
-		this->pop_children = 200;
+		this->pop_total = 200;
 		this->generations = 1;
 		this->seed = time(0);
 		this->sim_args = NULL;

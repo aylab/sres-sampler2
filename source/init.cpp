@@ -126,11 +126,11 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				if (ip.pop_parents < 1) {
 					usage("The parent population must be at least one simulation. Set -P or --parent-population to at least 1.");
 				}
-			} else if (option_set(option, "-p", "--child-population")) {
+			} else if (option_set(option, "-p", "--total-population")) {
 				ensure_nonempty(option, value);
-				ip.pop_children = atoi(value);
-				if (ip.pop_children < 1) {
-					usage("The child population must be at least one simulation. Set -p or --child-population to at least 1.");
+				ip.pop_total = atoi(value);
+				if (ip.pop_total < 1) {
+					usage("The total population must be at least one simulation. Set -p or --child-population to at least 1.");
 				}
 			} else if (option_set(option, "-g", "--generations")) {
 				ensure_nonempty(option, value);

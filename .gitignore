@@ -1,7 +1,7 @@
 *.o
 *~
 .sconsign.dblite
-sres-sampler
+sres
 input.*
 output.*
 *.gradients

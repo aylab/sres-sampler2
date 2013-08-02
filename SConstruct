@@ -41,4 +41,4 @@ if ARGUMENTS.get('mpi', 0):
 	sources += ['libsres-mpi/ESES.c', 'libsres-mpi/ESSRSort.c', 'libsres-mpi/sharefunc.c']
 else:
 	sources += ['libsres/ESES.c', 'libsres/ESSRSort.c', 'libsres/sharefunc.c']
-env.Program(target='sres-sampler', source=sources)
+env.Program(target='sres', source=sources)

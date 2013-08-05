@@ -276,7 +276,7 @@ void create_good_sets_file (input_params& ip) {
 */
 void init_sim_args (input_params& ip) {
 	if (ip.num_sim_args == 0) { // If the arguments were not initialized in accept_input_params (i.e. the user did not specify simulation arguments with -a or --arguments)
-		ip.num_sim_args = NUM_IMPLICIT_SIM_ARGS; // "deterministic --pipe-in x --pipe-out y" takes 5 terms and the final NULL element makes the sum 6
+		ip.num_sim_args = NUM_IMPLICIT_SIM_ARGS; // "simulation --pipe-in x --pipe-out y" takes 5 terms and the final NULL element makes the sum 6
 		ip.sim_args = (char**)mallocate(sizeof(char*) * NUM_IMPLICIT_SIM_ARGS);
 	}
 	

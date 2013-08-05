@@ -281,7 +281,7 @@ void init_sim_args (input_params& ip) {
 	}
 	
 	// Initialize the implicit arguments
-	ip.sim_args[0] = copy_str("deterministic");
+	ip.sim_args[0] = copy_str("simulation");
 	ip.sim_args[ip.num_sim_args - 5] = copy_str("--pipe-in");
 	ip.sim_args[ip.num_sim_args - 4] = copy_str("0");
 	ip.sim_args[ip.num_sim_args - 3] = copy_str("--pipe-out");

@@ -16,16 +16,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRES_H
-#define SRES_H
+/*
+main.hpp contains function declarations for main.cpp.
+*/
 
-#include "structs.h"
+#ifndef MAIN_HPP
+#define MAIN_HPP
 
-void init_sres(input_params&, sres_params&); // (AAy: ??? Initiate SRES)
-void run_sres(sres_params&); // (AAy: ??? Run SRES)
-void free_sres(sres_params&); // (AAy: ??? Free SRES)
-void fitness(double*, double*, double*); // (AAy: ??? Fitness function)
-double transform(double); // (AAy: ??? Why is this function important?)
+void usage(const char*);
+void licensing();
 
 #endif
 

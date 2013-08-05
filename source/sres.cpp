@@ -16,9 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.	If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <ctime>
-#include <stdio.h>
+/*
+sres.cpp contains function to interact with libSRES.
+Avoid placing I/O functions here and add them to io.cpp instead.
+*/
 
+#include <ctime> // Needed for time_t in libSRES (they don't include time.h for some reason)
+
+// libSRES has different files for MPI and non-MPI versions
 #if defined(MPI)
 	#include "../libsres-mpi/sharefunc.h"
 	#include "../libsres-mpi/ESSRSort.h"
@@ -29,18 +34,29 @@ along with this program.	If not, see <http://www.gnu.org/licenses/>.
 	#include "../libsres/ESES.h"
 #endif
 
-#include "sres.h"
-#include "macros.h"
-#include "io.h"
+#include "sres.hpp" // Function declarations
 
-extern terminal* term;
+#include "io.hpp"
 
+extern terminal* term; // Declared in init.cpp
+
+/* init_sres initializes libSRES functionality, including population data, generations, ranges, etc.
+	parameters:
+		ip: the program's input parameters
+		sp: parameters required by libSRES
+	returns: nothing
+	notes:
+		Excuse the awful variable names. They are named according to libSRES conventions for the sake of consistency.
+		Many of the parameters required by libSRES are not configurable via the command-line because they haven't needed to be changed but this does not mean they aren't significant.
+	todo:
+*/
 void init_sres (input_params& ip, sres_params& sp) {
+	// Initialize parameters required by libSRES
 	int es = esDefESSlash;
 	int constraint = 0;
 	int dim = ip.num_dims;
 	int miu = ip.pop_parents;
-	int lambda = ip.pop_children;
+	int lambda = ip.pop_total;
 	int gen = ip.generations;
 	double gamma = esDefGamma;
 	double alpha = esDefAlpha;
@@ -48,43 +64,40 @@ void init_sres (input_params& ip, sres_params& sp) {
 	int retry = 0;
 	sp.pf = essrDefPf;
 	
+	// Transform is a dummy function f(x)->x but is still required to fit libSRES's code structure
 	sp.trsfm = (ESfcnTrsfm*)mallocate(sizeof(ESfcnTrsfm) * dim);
-	
 	for (int i = 0; i < dim; i++) {
 		sp.trsfm[i] = transform;
 	}
 	
-	sp.lb = (double*)mallocate(sizeof(double) * dim);
-	sp.ub = (double*)mallocate(sizeof(double) * dim);
-	double* lb = sp.lb;
-	double* ub = sp.ub;
-	for (int i = 0; i < dim; i++) {
-		lb[i] = 0;
-		ub[i] = 0;
-	}
-	
-	if (dim == 3) {
-		lb[0] = 0,	ub[0] = 45;
-		lb[1] = 0,	ub[1] = 3;
-		lb[2] = 5,	ub[2] = 300;
-	} else {
-		cout << term->red << "The given number of dimensions does not have ranges programmed in! Please check that the given number (" << dim << ") is correct or add ranges to sres.cpp." << term->reset << endl;
-		exit(EXIT_INPUT_ERROR);
-	}
-	
+	// Call libSRES's initialize function
 	ESInitial(
-	#if defined(MPI)
+	#if defined(MPI) // The MPI version of libSRES requires the program's command-line arguments for MPI initialization
 		&(ip.argc), &(ip.argv),
-	#endif
-		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, ub, lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	#endif // The non-MPI version of libSREs does not accept the first two arguments of the MPI version
+		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 }
 
+/* run_sres iterates through every specified generation of libSRES
+	parameters:
+		sp: parameters required by libSRES
+	returns: nothing
+	notes:
+	todo:
+*/
 void run_sres (sres_params& sp) {
 	while (sp.stats->curgen < sp.param->gen) {
 		ESStep(sp.population, sp.param, sp.stats, sp.pf);
 	}
 }
 
+/* free_sres frees parameters required by libSRES and calls libSRES's deinitialization function
+	parameters:
+		sp: parameters required by libSRES
+	returns: nothing
+	notes:
+	todo:
+*/
 void free_sres (sres_params& sp) {
 	mfree(sp.trsfm);
 	mfree(sp.lb);
@@ -92,6 +105,16 @@ void free_sres (sres_params& sp) {
 	ESDeInitial(sp.param, sp.population, sp.stats);
 }
 
+/* fitness runs a simulation and stores its resulting score in a variable libSRES then accesses
+	parameters:
+		parameters: the parameters provided by libSRES
+		score: a pointer to store the score the simulation received
+		constraints: parameter constraints (not used but required by libSRES's code structure)
+	returns: nothing
+	notes:
+		This function is called by libSRES for every population member every generation.
+	todo:
+*/
 void fitness (double* parameters, double* score, double* constraints) {
 	parameters[0] = (int)parameters[0];
 	if (parameters[1] < 1) {
@@ -117,6 +140,13 @@ void fitness (double* parameters, double* score, double* constraints) {
 	*score = simulate_set(parameters);
 }
 
+/* transform is a dummy function required by libSRES's code structure
+	parameters:
+		x: a parameter to potentially transform
+	returns: the given parameter
+	notes:
+	todo:
+*/
 double transform (double x) {
 	return x;
 }

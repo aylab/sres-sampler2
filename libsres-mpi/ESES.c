@@ -42,6 +42,8 @@
 #include "ESSRSort.h"
 #include "ESES.h"
 
+extern int printing_precision; // Declared in main.cpp
+
 /*********************************************************************
  ** Initialize: parameters,populations and random seed              **
  ** ESInitial( argc, argv,                                          **
@@ -365,21 +367,21 @@ void ESPrintOp(ESIndividual *indvdl, ESParameter *param)
   dim = param->dim;
 
   if (trsfm == NULL) {
-    printf("%f", indvdl->op[0]);
+    printf("%.*f", printing_precision, indvdl->op[0]);
     for (i=1; i<dim; i++) {
-      printf(",%f", indvdl->op[i]);
+      printf(",%.*f", printing_precision, indvdl->op[i]);
     }
   } else {
     if (trsfm[0] == NULL) {
-      printf("%f", (trsfm[i])(indvdl->op[0]));
+      printf("%.*f", printing_precision, (trsfm[i])(indvdl->op[0]));
     } else {
-      printf("%f", indvdl->op[0]);
+      printf("%.*f", printing_precision, indvdl->op[0]);
     }
     for (i=1; i<dim; i++) {
       if (trsfm[i] == NULL) {
-        printf(",%f", indvdl->op[i]);
+        printf(",%.*f", printing_precision, indvdl->op[i]);
       } else {
-        printf(",%f", (trsfm[i])(indvdl->op[i]));
+        printf(",%.*f", printing_precision, (trsfm[i])(indvdl->op[i]));
       }
     }
   }
@@ -533,7 +535,7 @@ void ESDoStat(ESStatistics *stats, ESPopulation *population,   \
 void ESPrintStat(ESStatistics *stats, ESParameter *param)
 {
   
-  printf("current generation: %d, best generation: %d, best fitness: %f\nbest individual:",  \
+  printf("current generation: %d, best generation: %d, best fitness: %f\nbest individual: ",  \
           stats->curgen,stats->bestgen,stats->bestindvdl->f);
   ESPrintOp(stats->bestindvdl, param);
   printf("\n");

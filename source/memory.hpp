@@ -16,24 +16,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MACROS_H
-#define MACROS_H
+/*
+memory.hpp contains function declarations for memory.cpp
+*/
 
-// Exit statuses
-#define EXIT_SUCCESS			0
-#define EXIT_MEMORY_ERROR		1
-#define EXIT_PIPE_CREATE_ERROR	2
-#define EXIT_PIPE_READ_ERROR	3
-#define EXIT_PIPE_WRITE_ERROR	4
-#define EXIT_FORK_ERROR			5
-#define EXIT_EXEC_ERROR			6
-#define EXIT_CHILD_ERROR		7
-#define EXIT_INPUT_ERROR		8
-#define EXIT_FILE_ERROR			9
+#ifndef MEMORY_HPP
+#define MEMORY_HPP
 
-// Macros for commonly used functions small enough to inject directly into the code
-#define square(x) ((x) * (x))
-#define cube(x) ((x) * (x) * (x))
+#include <stdlib.h> // Needed for size_t
+
+// These memory functions have been added to the libSRES code, which is compiled as C code, so 'extern "C"' must be added to prevent C++'s signature mangling from hiding the names from C
+#ifdef __cplusplus
+extern "C" {
+#endif
+void* mallocate(size_t);
+void* callocate(size_t, size_t);
+void* reallocate(void*, size_t);
+void mfree(void*);
+#ifdef __cplusplus
+}
+#endif
+#if defined(MEMTRACK)
+	void print_heap_usage();
+#endif
 
 #endif
 

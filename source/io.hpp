@@ -16,24 +16,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MEMORY_H
-#define MEMORY_H
+/*
+io.hpp contains function declarations for io.cpp.
+*/
 
-#include <stdlib.h>
+#ifndef IO_HPP
+#define IO_HPP
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-void* mallocate(size_t);
-void* callocate(size_t, size_t);
-void* reallocate(void*, size_t);
-void mfree(void*);
-#ifdef __cplusplus
-}
-#endif
-#if defined(MEMTRACK)
-	void print_heap_usage();
-#endif
+#include "structs.hpp"
+
+void store_filename(char**, const char*);
+void read_file(input_data*);
+void parse_ranges_file (char*, input_params&, sres_params&);
+void open_file(ofstream*, char*, bool);
+double simulate_set(double[]);
+void write_pipe(int, double[]);
+void write_pipe_int(int, int);
+void read_pipe(int, int*, int*);
+void read_pipe_int(int, int*);
+void close_if_open(ofstream&);
 
 #endif
 

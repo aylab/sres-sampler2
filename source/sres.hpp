@@ -16,14 +16,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef IO_H
-#define IO_H
+/*
+sres.hpp contains function declarations for sres.cpp.
+*/
 
-double simulate_set(double[]);
-void write_pipe(int, double[]);
-void write_pipe_int(int, int);
-void read_pipe(int, int*, int*);
-void read_pipe_int(int, int*);
+#ifndef SRES_HPP
+#define SRES_HPP
+
+#include "structs.hpp"
+
+void init_sres(input_params&, sres_params&);
+void run_sres(sres_params&);
+void free_sres(sres_params&);
+void fitness(double*, double*, double*);
+double transform(double);
 
 #endif
 

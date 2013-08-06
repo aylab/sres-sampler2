@@ -92,7 +92,9 @@ void init_sres (input_params& ip, sres_params& sp) {
 	}
 	
 	// Call libSRES's initialize function
+	cout << term->blue << "Starting libSRES initialization simulations " << term->reset << ". . ." << endl;
 	ESInitial(ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	cout << term->blue << "Done with libSRES initialization simulations" << term->reset << endl;
 }
 
 /* run_sres iterates through every specified generation of libSRES

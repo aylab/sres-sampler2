@@ -83,7 +83,7 @@ struct terminal {
 	}
 	
 	// Prints two spaces and then the given MPI rank in parentheses
-	void rank_step (int rank) {
+	void rank (int rank) {
 		cout << this->yellow << "  (" << rank << ") " << this->reset;
 	}
 	

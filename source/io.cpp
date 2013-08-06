@@ -175,11 +175,14 @@ void open_file (ofstream* file_pointer, char* file_name, bool append) {
 double simulate_set (double parameters[]) {
 	// Create a pipe
 	int pipes[2];
+	cout << term->blue << "Creating a pipe " << term->reset << ". . . ";
 	if (pipe(pipes) == -1) {
 		term->failed_pipe_create();
 		exit(EXIT_PIPE_CREATE_ERROR);
 	}
+	cout << term->blue << "Done: " << term->reset << "using file descriptors " << pipes[0] << " and " << pipes[1] << endl;
 	
+	cout << term->blue << "Forking the process " << term->reset << ". . . ";
 	pid_t pid = fork();
 	if (pid == -1) {
 		term->failed_fork();
@@ -189,6 +192,7 @@ double simulate_set (double parameters[]) {
 	int child_pid;
 	if (pid == 0) {
 		child_pid = getpid();
+		cout << term->blue << "Done: " << term->reset << "the child process's PID is " << child_pid << endl;
 	} else {
 		child_pid = pid;
 	}
@@ -204,7 +208,8 @@ double simulate_set (double parameters[]) {
 		store_pipe(sim_args, ip.num_sim_args - 4, pipes[1]);
 		sim_args[ip.num_sim_args - 2] = grad_fname;
 		
-		ofstream grad_file(grad_fname);
+		ofstream grad_file;
+		open_file(&grad_file, grad_fname, false);
 		grad_file << "2 (11 1) (35 0)\n";
 		int loc_start = parameters[0];
 		int loc_end = parameters[1];
@@ -215,18 +220,26 @@ double simulate_set (double parameters[]) {
 			gi = gi->next;
 		}
 		grad_file.close();
-
+		
+		cout << term->blue << "Checking that the simulation file exists and can be executed " << term->reset << ". . .";
+		if (access(ip.sim_file, X_OK) == -1) {
+			term->failed_exec();
+			exit(EXIT_EXEC_ERROR);
+		}
+		term->done();
 		if (execv(ip.sim_file, sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
 		}
 	} else {
 		double par_set[45] = {43.293101,35.644504,59.878872,33.936686,0.223278,0.329523,0.132647,0.444597,29.458387,11.188829,57.157834,31.077192,0.150681,0.337684,0.211113,0.273550,0.023943,0.004624,0.029139,0.014844,0.018960,0.015933,0.022060,0.155977,0.189065,0.086577,0.018705,0.153521,0.325447,0.249461,0.159769,0.260633,0.254341,0.113651,10.412648,8.563572,0.000000,9.775344,1.310268,1.698853,1.786119,10.892998,599.559977,253.564367,241.127021};
+		cout << term->blue << "Writing to pipe " << term->reset << "(file descriptor " << pipes[1] << ") . . .";
 		write_pipe(pipes[1], par_set);
+		term->done();
 	}
 	
 	// Wait for the child to finish simulating
-	int status = 0; 
+	int status = 0;
 	waitpid(pid, &status, WUNTRACED);
 	if (WIFEXITED(status) == 0) {
 		term->failed_child();
@@ -242,7 +255,9 @@ double simulate_set (double parameters[]) {
 	// Pipe in the simulation's score
 	int max_score;
 	int score;
+	cout << term->blue << "Reading pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . .";
 	read_pipe(pipes[0], &max_score, &score);
+	term->done();
 	
 	// Close the reading end of the pipe
 	if (close(pipes[0]) == -1) {

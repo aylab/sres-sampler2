@@ -65,7 +65,7 @@ struct terminal {
 	terminal () {
 		this->code_blue = "\x1b[34m";
 		this->code_red = "\x1b[31m";
-		this->code_gray = "\x1b[30m";
+		this->code_gray = "\x1b[37m";
 		this->code_reset = "\x1b[0m";
 		this->blue = copy_str(this->code_blue);
 		this->red = copy_str(this->code_red);

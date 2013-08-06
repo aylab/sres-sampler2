@@ -192,9 +192,9 @@ double simulate_set (double parameters[]) {
 	int child_pid;
 	if (pid == 0) {
 		child_pid = getpid();
-		cout << term->blue << "Done: " << term->reset << "the child process's PID is " << child_pid << endl;
 	} else {
 		child_pid = pid;
+		cout << term->blue << "Done: " << term->reset << "the child process's PID is " << child_pid << endl;
 	}
 	int pid_strlen = log10(child_pid > 0 ? child_pid : 1) + 1;
 	time_t cur_time = time(0);

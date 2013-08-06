@@ -24,6 +24,10 @@ io.cpp contains functions for input and output of files and pipes. All I/O relat
 #include <sys/wait.h> // Needed for waitpid
 #include <unistd.h> // Needed for pipe, read, write, close, fork, execv
 
+#if defined(MPI)
+	#include <mpi.h> // Needed for MPI_Comm_rank, MPI_COMM_WORLD
+#endif
+
 #include "io.hpp" // Function declarations
 
 #include "init.hpp"

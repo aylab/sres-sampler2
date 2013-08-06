@@ -27,6 +27,7 @@ io.cpp contains functions for input and output of files and pipes. All I/O relat
 #if defined(MPI)
 	#undef MPI
 	#include <mpi.h> // Needed for MPI_Comm_rank, MPI_COMM_WORLD
+	#define MPI 1
 #endif
 
 #include "io.hpp" // Function declarations

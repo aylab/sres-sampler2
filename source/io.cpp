@@ -193,8 +193,10 @@ double simulate_set (double parameters[]) {
 		child_pid = pid;
 	}
 	int pid_strlen = log10(child_pid > 0 ? child_pid : 1) + 1;
-	char* grad_fname = (char*)mallocate(sizeof(char) * (strlen("input-.gradients") + pid_strlen + 1));
-	sprintf(grad_fname, "input-%d.gradients", child_pid);
+	time_t cur_time = time(0);
+	int time_strlen = log10(cur_time > 0 ? cur_time : 1) + 1;
+	char* grad_fname = (char*)mallocate(sizeof(char) * (strlen("input--.gradients") + pid_strlen + time_strlen + 1));
+	sprintf(grad_fname, "input-%d-%ld.gradients", child_pid, cur_time);
 	
 	if (pid == 0) {
 		char** sim_args = copy_args(ip.sim_args, ip.num_sim_args);

@@ -230,7 +230,6 @@ double simulate_set (double parameters[]) {
 		term->failed_child();
 		exit(EXIT_CHILD_ERROR);
 	}
-	cerr << "hi i'm here" << endl;
 	
 	// Close the writing end of the pipe
 	if (close(pipes[1]) == -1) {

@@ -273,7 +273,7 @@ double simulate_set (double parameters[]) {
 	term->rank(rank);
 	cout << term->blue << "Reading the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
 	read_pipe(pipes[0], &max_score, &score);
-	cout << term->blue << "Done: " << term->reset << "returned a raw score of " << score << " / " << max_score << endl;
+	cout << term->blue << "Done: " << term->reset << "(raw score " << score << " / " << max_score << ")" << endl;
 	
 	// Close the reading end of the pipe
 	cout << "  ";

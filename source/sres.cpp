@@ -23,10 +23,11 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 
 #include <ctime> // Needed for time_t in libSRES (they don't include time.h for some reason)
 
+// Include MPI if compiled with it
 #if defined(MPI)
-	#undef MPI
+	#undef MPI // MPI uses this macro as well, so temporarily undefine it
 	#include <mpi.h> // Needed for MPI_Comm_rank, MPI_COMM_WORLD
-	#define MPI 1
+	#define MPI 1 // The MPI macro should only be checked for definition, not value, i.e. don't rely on it equaling 1
 #endif
 
 // libSRES has different files for MPI and non-MPI versions

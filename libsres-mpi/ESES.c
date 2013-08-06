@@ -107,11 +107,11 @@ void ESInitial(/*int *argc, char ***argv,   */\
   ESInitialPopulation(population, (*param));
   ESInitialStat(stats, (*population), (*param));
 
-  if(myid == 0)
+  /*if(myid == 0)
   {
     printf("\n========\nseed = %u\n========\n", outseed);
     fflush(NULL);
-  }
+  }*/
 
   return;
 }

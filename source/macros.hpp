@@ -43,6 +43,7 @@ macros.hpp contains every constant and macro function used in the program.
 // Macros for commonly used functions small enough to inject directly into the code
 #define SQUARE(x) ((x) * (x))
 #define CUBE(x) ((x) * (x) * (x))
+#define INT_STRLEN(x) (log10((x) > 0 ? (x) : 1) + 1)
 
 #endif
 

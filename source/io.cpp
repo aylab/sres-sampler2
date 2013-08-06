@@ -196,11 +196,11 @@ double simulate_set (double parameters[]) {
 		child_pid = pid;
 		cout << term->blue << "Done: " << term->reset << "the child process's PID is " << child_pid << endl;
 	}
-	int pid_strlen = log10(child_pid > 0 ? child_pid : 1) + 1;
-	time_t cur_time = time(0);
-	int time_strlen = log10(cur_time > 0 ? cur_time : 1) + 1;
-	char* grad_fname = (char*)mallocate(sizeof(char) * (strlen("input--.gradients") + pid_strlen + time_strlen + 1));
-	sprintf(grad_fname, "input-%d-%ld.gradients", child_pid, cur_time);
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	int rank_strlen = INT_STRLEN(rank);
+	char* grad_fname = (char*)mallocate(sizeof(char) * (strlen("input-.gradients") + pid_strlen + time_strlen + 1));
+	sprintf(grad_fname, "input-%d.gradients", rank);
 	
 	if (pid == 0) {
 		char** sim_args = copy_args(ip.sim_args, ip.num_sim_args);

@@ -288,7 +288,7 @@ double simulate_set (double parameters[]) {
 	
 	// Print the score if the user specified printing good sets and this set is good enough
 	if (ip.print_good_sets && score_final <= ip.good_set_threshold) {
-		cout << term->blue << "Found a good set " << term->reset << " (score " << score_final << ")" << endl;
+		cout << term->blue << "Found a good set " << term->reset << "(score " << score_final << ")" << endl;
 		ip.good_sets_stream << parameters[0];
 		for (int i = 1; i < ip.num_dims; i++) {
 			ip.good_sets_stream << "," << parameters[i];

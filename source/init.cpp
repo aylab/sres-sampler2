@@ -251,12 +251,7 @@ void check_input_params (input_params& ip) {
 	gradient_index* gi = ip.gradient_indices;
 	while (gi != NULL) {
 		if (gi->index >= ip.num_dims) {
-			const char* message_0 = "Parameter indices to be altered by gradients must be less than the number of dimensions! Set each instance of -i or --gradient-index to between 0 and ";
-			const char* message_1 = ".";
-			int num_dims_len = log10(ip.num_dims > 0 ? ip.num_dims : 1) + 1;
-			char* message = (char*)mallocate(sizeof(char) * (strlen(message_0) + num_dims_len + strlen(message_1) + 1));
-			sprintf(message, "%s%d%s", message_0, ip.num_dims, message_1);
-			usage(message);
+			usage("Parameter indices to be altered by gradients must be less than the number of parameters! Set each instance of -i or --gradient-index to between 0 and 44 (inclusive)");
 		}
 		gi = gi->next;
 	}

@@ -185,7 +185,6 @@ double simulate_set (double parameters[]) {
 		term->failed_pipe_create();
 		exit(EXIT_PIPE_CREATE_ERROR);
 	}
-	term->rank_step(rank);
 	cout << term->blue << "Done: " << term->reset << "using file descriptors " << pipes[0] << " and " << pipes[1] << endl;
 	
 	term->rank_step(rank);
@@ -201,7 +200,6 @@ double simulate_set (double parameters[]) {
 		child_pid = getpid();
 	} else {
 		child_pid = pid;
-		term->rank_step(rank);
 		cout << term->blue << "Done: " << term->reset << "the child process's PID is " << child_pid << endl;
 	}
 	int rank_strlen = INT_STRLEN(rank);
@@ -242,7 +240,7 @@ double simulate_set (double parameters[]) {
 	} else {
 		double par_set[45] = {43.293101,35.644504,59.878872,33.936686,0.223278,0.329523,0.132647,0.444597,29.458387,11.188829,57.157834,31.077192,0.150681,0.337684,0.211113,0.273550,0.023943,0.004624,0.029139,0.014844,0.018960,0.015933,0.022060,0.155977,0.189065,0.086577,0.018705,0.153521,0.325447,0.249461,0.159769,0.260633,0.254341,0.113651,10.412648,8.563572,0.000000,9.775344,1.310268,1.698853,1.786119,10.892998,599.559977,253.564367,241.127021};
 		term->rank_step(rank);
-		cout << term->blue << "Writing to pipe " << term->reset << "(file descriptor " << pipes[1] << ") . . . ";
+		cout << term->blue << "Writing to the pipe " << term->reset << "(file descriptor " << pipes[1] << ") . . . ";
 		write_pipe(pipes[1], par_set);
 		term->done();
 	}
@@ -265,28 +263,35 @@ double simulate_set (double parameters[]) {
 	int max_score;
 	int score;
 	term->rank_step(rank);
-	cout << term->blue << "Reading pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
+	cout << term->blue << "Reading the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
 	read_pipe(pipes[0], &max_score, &score);
-	term->done();
+	cout << term->blue << "Done: " << term->reset << "returned a raw score of " << score << " / " << max_score << endl;
 	
 	// Close the reading end of the pipe
+	term->rank_step(rank);
+	cout << term->blue << "Closing the reading end of the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
 	if (close(pipes[0]) == -1) {
 		term->failed_pipe_read();
 		exit(EXIT_PIPE_WRITE_ERROR);
 	}
+	term->done();
 	
-	// Free the gradient file
+	// Remove the gradient file
+	term->rank_step(rank);
+	cout << term->blue << "Removing " << term->reset << grad_fname << " . . . ";
 	if (remove(grad_fname) != 0) {
 		term->failed_file_remove(grad_fname);
 		exit(EXIT_FILE_REMOVE_ERROR);
 	}
 	mfree(grad_fname);
+	term->done();
 	
 	// libSRES requires scores from 0 to 1 with 0 being a perfect score so convert the simulation's score format into libSRES's
 	double score_final = 1 - ((double)score / max_score);
 	
 	// Print the score if the user specified printing good sets and this set is good enough
 	if (ip.print_good_sets && score_final <= ip.good_set_threshold) {
+		term->rank_step(rank);
 		cout << term->blue << "Found a good set " << term->reset << "(score " << score_final << ")" << endl;
 		ip.good_sets_stream << parameters[0];
 		for (int i = 1; i < ip.num_dims; i++) {

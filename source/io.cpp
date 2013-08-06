@@ -250,7 +250,7 @@ double simulate_set (double parameters[]) {
 	
 	// Free the gradient file
 	if (remove(grad_fname) != 0) {
-		cout << term->red << "Couldn't remove '" << grad_fname << "'! Make sure gradient files are not moved or removed during the simulations." << endl;
+		term->failed_file_remove(grad_fname);
 		exit(EXIT_FILE_REMOVE_ERROR);
 	}
 	mfree(grad_fname);

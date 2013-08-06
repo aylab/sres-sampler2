@@ -92,6 +92,11 @@ struct terminal {
 		cout << this->red << "Not enough memory!" << this->reset << endl;
 	}
 	
+	// Indicates the program couldn't remove the given file
+	void failed_file_remove (const char* filename) {
+		cout << this->red << "Couldn't remove '" << filename << "'! Make sure files are not moved or removed during the simulations." << this->reset << endl;
+	}
+	
 	// Indicates the program couldn't create a pipe
 	void failed_pipe_create () {
 		cout << this->red << "Couldn't create a pipe!" << this->reset << endl;

@@ -203,7 +203,9 @@ double simulate_set (double parameters[]) {
 		sim_args[ip.num_sim_args - 2] = grad_fname;
 		
 		ofstream grad_file(grad_fname);
-		grad_file << (int)parameters[0] << " (7 1) (" << (int)parameters[1] << " " << (int)parameters[2] << ")" << endl;
+		int loc = parameters[1];
+		int val = parameters[2];
+		grad_file << "42 (7 1) (" << loc << " " << val << ")\n43 (7 1) (" << loc << " " << val << ")" << endl;
 		grad_file.close();
 
 		if (execv(ip.sim_file, sim_args) == -1) {

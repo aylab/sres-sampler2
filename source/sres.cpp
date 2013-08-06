@@ -118,11 +118,10 @@ void free_sres (sres_params& sp) {
 void fitness (double* parameters, double* score, double* constraints) {
 	parameters[0] = (int)parameters[0];
 	parameters[1] = (int)parameters[1];
-	parameters[2] = (int)parameters[2];
-	if (parameters[1] > parameters[2]) {
-		int temp = parameters[1];
-		parameters[1] = parameters[2];
-		parameters[2] = temp;
+	if (parameters[0] > parameters[1]) {
+		int temp = parameters[0];
+		parameters[0] = parameters[1];
+		parameters[1] = temp;
 	}
 	*score = simulate_set(parameters);
 }

@@ -293,7 +293,7 @@ double simulate_set (double parameters[]) {
 		for (int i = 1; i < ip.num_dims; i++) {
 			ip.good_sets_stream << "," << parameters[i];
 		}
-		ip.good_sets_stream << "\n";
+		ip.good_sets_stream << endl;
 	}
 	
 	return score_final;

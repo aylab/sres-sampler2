@@ -205,7 +205,11 @@ double simulate_set (double parameters[]) {
 		ofstream grad_file(grad_fname);
 		int loc = parameters[1];
 		int val = parameters[2];
-		grad_file << "42 (7 1) (" << loc << " " << val << ")\n43 (7 1) (" << loc << " " << val << ")" << endl;
+		gradient_index* gi = ip.gradient_indices;
+		while (gi != NULL) {
+			grad_file << gi->index << " (7 1) (" << loc << " " << val << ")\n";
+			gi = gi->next;
+		}
 		grad_file.close();
 
 		if (execv(ip.sim_file, sim_args) == -1) {

@@ -151,6 +151,13 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				if (ip.printing_precision < 1) {
 					usage("The printing precision must be a positive integer. Set -e or --printing-precision to at least 1.");
 				}
+			} else if (option_set(option, "-i", "--gradient-index")) {
+				ensure_nonempty(option, value);
+				int index = atoi(value);
+				if (index < 1) {
+					usage("Gradient indices must be nonnegative integers. Set each -i or --gradient-index to at least 0.");
+				}
+				add_gradient_index(&(ip.gradient_indices), index);
 			} else if (option_set(option, "-a", "--arguments")) {
 				ensure_nonempty(option, value);
 				++i;
@@ -238,7 +245,42 @@ void check_input_params (input_params& ip) {
 	if (ip.ranges_file == NULL) {
 		usage("A ranges file must be specified! Set the ranges file with -r or --ranges-file.");
 	}
+	if (ip.gradient_indices == NULL) {
+		usage("At least one parameter index must be altered by gradients! Add at least one instance of -i or --gradient-index to an index to alter.");
+	}
+	gradient_index* gi = ip.gradient_indices;
+	while (gi != NULL) {
+		if (gi->index >= ip.num_dims) {
+			const char* message_0 = "Parameter indices to be altered by gradients must be less than the number of dimensions! Set each instance of -i or --gradient-index to between 0 and ";
+			const char* message_1 = ".";
+			int num_dims_len = log10(ip.num_dims > 0 ? ip.num_dims : 1) + 1;
+			char* message = (char*)mallocate(sizeof(char) * (strlen(message_0) + num_dims_len + strlen(message_1) + 1));
+			sprintf(message, "%s%d%s", message_0, ip.num_dims, message_1);
+			usage(message);
+		}
+		gi = gi->next;
+	}
 	printing_precision = ip.printing_precision; // ip cannot be imported into a C file so the printing precision must be its own global
+}
+
+/* add_gradient_index adds an index to the given list of gradient indices
+	parameters:
+		gi: a pointer to the list of gradients (or a pointer to NULL if the list is empty)
+		index: the index to add
+	returns: nothing
+	notes:
+	todo:
+*/
+void add_gradient_index (gradient_index** gi, int index) {
+	gradient_index* gi_new = (gradient_index*)mallocate(sizeof(gradient_index));
+	if (*gi == NULL) {
+		gi_new->next = NULL;
+		*gi = gi_new;
+	} else {
+		gi_new->next = *gi;
+		*gi = gi_new;
+	}
+	(*gi)->index = index;
 }
 
 /* init_verbosity sets the verbose stream to /dev/null if verbose mode is not enabled

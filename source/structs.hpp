@@ -134,6 +134,15 @@ struct terminal {
 	}
 };
 
+/* gradient_index contains an index and a next gradient_index (i.e. a linked list of indices)
+	notes:
+	todo:
+*/
+struct gradient_index {
+	int index; // The parameter index
+	gradient_index* next; // The next index in the list
+};
+
 /* input_params contains all of the program's input parameters (i.e. the given command-line arguments) as well as data associated with them
 	notes:
 		There should be only one instance of input_params at any time.
@@ -165,6 +174,7 @@ struct input_params {
 	// Simulation parameters
 	char** sim_args; // Arguments to be passed to the simulation
 	int num_sim_args; // The number of arguments to be passed to the simulation
+	gradient_index* gradient_indices; // The list of parameter indices to apply gradients to, default=none
 	
 	// Output stream data
 	int printing_precision; // The number of digits of precision parameters should be printed with, default=6
@@ -186,6 +196,7 @@ struct input_params {
 		this->seed = time(0);
 		this->sim_args = NULL;
 		this->num_sim_args = 0;
+		this->gradient_indices = NULL;
 		this->printing_precision = 6;
 		this->verbose = false;
 		this->quiet = false;
@@ -202,6 +213,12 @@ struct input_params {
 				mfree(this->sim_args[i]);
 			}
 			mfree(sim_args);
+		}
+		gradient_index* gi = this->gradient_indices;
+		while (gi != NULL) {
+			gradient_index* gi_next = gi->next;
+			mfree(gi);
+			gi = gi_next;
 		}
 		delete this->null_stream;
 	}

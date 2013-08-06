@@ -205,11 +205,13 @@ double simulate_set (double parameters[]) {
 		sim_args[ip.num_sim_args - 2] = grad_fname;
 		
 		ofstream grad_file(grad_fname);
-		int loc = parameters[1];
+		grad_file << "2 (11 1) (35 0)\n";
+		int loc_start = parameters[0];
+		int loc_end = parameters[1];
 		int val = parameters[2];
 		gradient_index* gi = ip.gradient_indices;
 		while (gi != NULL) {
-			grad_file << gi->index << " (7 1) (" << loc << " " << val << ")\n";
+			grad_file << gi->index << " (" << loc_start << " 1) (" << loc_end << " " << val << ")\n";
 			gi = gi->next;
 		}
 		grad_file.close();

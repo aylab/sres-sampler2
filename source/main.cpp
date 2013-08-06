@@ -45,6 +45,11 @@ int printing_precision; // ip cannot be imported into a C file
 	todo:
 */
 int main (int argc, char** argv) {
+	// Initialize MPI if compiled with it
+	#if defined(MPI)
+		MPI_Init(argc, argv);
+	#endif
+	
 	// Initialize the program's terminal functionality and input parameters
 	init_terminal();
 	accept_input_params(argc, argv, ip);

@@ -193,7 +193,7 @@ typedef struct
  ** free param and population                                       **
  ** finalize MPI                                                    **
  *********************************************************************/
-void ESInitial(int *, char ***,  \
+void ESInitial(/*int *, char ***,  */\
                unsigned int, ESParameter**, ESfcnTrsfm *,   \
                ESfcnFG,int, int,int,double*,double*,int,int,int,  \
                double, double, double, int,  \

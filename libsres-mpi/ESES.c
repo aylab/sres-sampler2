@@ -82,7 +82,7 @@ extern int printing_precision; // Declared in main.cpp
  ** free param and population                                       **
  ** finalize MPI                                                    **
  *********************************************************************/
-void ESInitial(int *argc, char ***argv,   \
+void ESInitial(/*int *argc, char ***argv,   */\
                unsigned int seed, ESParameter ** param,ESfcnTrsfm *trsfm,  \
                ESfcnFG fg, int es, int constraint, int dim, double* ub,   \
                double *lb, int miu, int lambda, int gen,  \
@@ -92,7 +92,7 @@ void ESInitial(int *argc, char ***argv,   \
   unsigned int outseed;
   int myid, numprocs;
 
-  MPI_Init(argc, argv);
+  //MPI_Init(argc, argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &myid);
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
   if(numprocs < 2)

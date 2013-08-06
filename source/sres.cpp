@@ -91,11 +91,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	}
 	
 	// Call libSRES's initialize function
-	ESInitial(
-	#if defined(MPI) // The MPI version of libSRES requires the program's command-line arguments for MPI initialization
-		&(ip.argc), &(ip.argv),
-	#endif // The non-MPI version of libSREs does not accept the first two arguments of the MPI version
-		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	ESInitial(ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 }
 
 /* run_sres iterates through every specified generation of libSRES

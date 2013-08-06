@@ -23,6 +23,12 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 
 #include <ctime> // Needed for time_t in libSRES (they don't include time.h for some reason)
 
+#if defined(MPI)
+	#undef MPI
+	#include <mpi.h> // Needed for MPI_Comm_rank, MPI_COMM_WORLD
+	#define MPI 1
+#endif
+
 // libSRES has different files for MPI and non-MPI versions
 #if defined(MPI)
 	#include "../libsres-mpi/sharefunc.h"
@@ -39,6 +45,20 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 #include "io.hpp"
 
 extern terminal* term; // Declared in init.cpp
+
+/* get_rank gets the MPI rank of the process or returns 0 if MPI is not active
+	parameters:
+	returns: the rank
+	notes:
+	todo:
+*/
+int get_rank () {
+	int rank = 0;
+	#if defined(MPI)
+		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	#endif
+	return rank;
+}
 
 /* init_sres initializes libSRES functionality, including population data, generations, ranges, etc.
 	parameters:
@@ -86,8 +106,21 @@ void init_sres (input_params& ip, sres_params& sp) {
 	todo:
 */
 void run_sres (sres_params& sp) {
+	#if defined(MPI)
+		int rank;
+		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	#else
+		int rank = 0;
+	#endif
 	while (sp.stats->curgen < sp.param->gen) {
+		int cur_gen = sp.stats->curgen;
+		if (rank == 0) {
+			cout << term->blue << "Starting generation " << term->reset << cur_gen << " . . .";
+		}
 		ESStep(sp.population, sp.param, sp.stats, sp.pf);
+		if (rank == 0) {
+			cout << "Done with generation " << cur_gen << endl;
+		}
 	}
 }
 

@@ -27,6 +27,7 @@ init.cpp contains initialization functions used before any simulations start.
 #include "io.hpp"
 #include "macros.hpp"
 #include "main.hpp"
+#include "sres.hpp"
 
 using namespace std; 
 
@@ -293,7 +294,10 @@ void init_verbosity (input_params& ip) {
 */
 void create_good_sets_file (input_params& ip) {
 	if (ip.print_good_sets) { // Print the good sets only if the user specified it
-		open_file(&(ip.good_sets_stream), ip.good_sets_file, false);
+		int rank = get_rank();
+		if (rank == 0) {
+			open_file(&(ip.good_sets_stream), ip.good_sets_file, false);
+		}
 	}
 }
 

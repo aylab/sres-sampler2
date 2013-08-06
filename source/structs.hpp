@@ -49,11 +49,13 @@ struct terminal {
 	// Escape codes
 	const char* code_blue;
 	const char* code_red;
+	const char* code_gray;
 	const char* code_reset;
 	
 	// Colors
 	char* blue;
 	char* red;
+	char* gray;
 	char* reset;
 	
 	// Verbose stream
@@ -63,9 +65,11 @@ struct terminal {
 	terminal () {
 		this->code_blue = "\x1b[34m";
 		this->code_red = "\x1b[31m";
+		this->code_gray = "\x1b[30m";
 		this->code_reset = "\x1b[0m";
 		this->blue = copy_str(this->code_blue);
 		this->red = copy_str(this->code_red);
+		this->gray = copy_str(this->code_gray);
 		this->reset = copy_str(this->code_reset);
 		this->verbose_stream = new ostream(cout.rdbuf());
 	}
@@ -73,8 +77,14 @@ struct terminal {
 	~terminal () {
 		mfree(this->blue);
 		mfree(this->red);
+		mfree(this->gray);
 		mfree(this->reset);
 		delete verbose_stream;
+	}
+	
+	// Prints two spaces and then the given MPI rank in parentheses
+	void rank_step (int rank) {
+		cout << this->gray << "  (" << rank << ") " << this->reset;
 	}
 	
 	// Indicates a process is done (pass terminal->verbose() into this function to print only with verbose mode on)

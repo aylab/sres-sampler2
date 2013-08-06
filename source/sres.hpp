@@ -25,6 +25,7 @@ sres.hpp contains function declarations for sres.cpp.
 
 #include "structs.hpp"
 
+int get_rank();
 void init_sres(input_params&, sres_params&);
 void run_sres(sres_params&);
 void free_sres(sres_params&);

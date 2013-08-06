@@ -118,7 +118,7 @@ void run_sres (sres_params& sp) {
 		}
 		ESStep(sp.population, sp.param, sp.stats, sp.pf);
 		if (rank == 0) {
-			cout << "Done with generation " << cur_gen << endl;
+			cout << term->blue << "Done with generation " << term->reset << cur_gen << endl;
 		}
 	}
 }

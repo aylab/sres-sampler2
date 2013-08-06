@@ -173,6 +173,7 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			} else if (option_set(option, "-c", "--no-color")) {
 				term->blue = copy_str("");
 				term->red = copy_str("");
+				term->yellow = copy_str("");
 				term->reset = copy_str("");
 				i--;
 			} else if (option_set(option, "-v", "--verbose")) {

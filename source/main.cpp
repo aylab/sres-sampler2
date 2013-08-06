@@ -54,7 +54,7 @@ int printing_precision; // ip cannot be imported into a C file
 int main (int argc, char** argv) {
 	// Initialize MPI if compiled with it
 	#if defined(MPI)
-		MPI_Init(argc, argv);
+		MPI_Init(&argc, &argv);
 	#endif
 	
 	// Initialize the program's terminal functionality and input parameters

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 if ARGUMENTS.get('mpi', 0):
-	compiler = 'mpicxx'
+	compiler = 'mpic++'
 else:
 	compiler = 'g++'
 

@@ -154,8 +154,8 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			} else if (option_set(option, "-i", "--gradient-index")) {
 				ensure_nonempty(option, value);
 				int index = atoi(value);
-				if (index < 1) {
-					usage("Gradient indices must be nonnegative integers. Set each -i or --gradient-index to at least 0.");
+				if (index < 0 || index > 44) {
+					usage("Gradient indices must be valid parameter indices. Set each -i or --gradient-index to between 0 and 44 (inclusive).");
 				}
 				add_gradient_index(&(ip.gradient_indices), index);
 			} else if (option_set(option, "-a", "--arguments")) {
@@ -247,13 +247,6 @@ void check_input_params (input_params& ip) {
 	}
 	if (ip.gradient_indices == NULL) {
 		usage("At least one parameter index must be altered by gradients! Add at least one instance of -i or --gradient-index to an index to alter.");
-	}
-	gradient_index* gi = ip.gradient_indices;
-	while (gi != NULL) {
-		if (gi->index >= ip.num_dims) {
-			usage("Parameter indices to be altered by gradients must be less than the number of parameters! Set each instance of -i or --gradient-index to between 0 and 44 (inclusive)");
-		}
-		gi = gi->next;
 	}
 	printing_precision = ip.printing_precision; // ip cannot be imported into a C file so the printing precision must be its own global
 }

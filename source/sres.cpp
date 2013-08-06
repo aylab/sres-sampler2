@@ -106,12 +106,7 @@ void init_sres (input_params& ip, sres_params& sp) {
 	todo:
 */
 void run_sres (sres_params& sp) {
-	#if defined(MPI)
-		int rank;
-		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	#else
-		int rank = 0;
-	#endif
+	int rank = get_rank();
 	while (sp.stats->curgen < sp.param->gen) {
 		int cur_gen = sp.stats->curgen;
 		if (rank == 0) {

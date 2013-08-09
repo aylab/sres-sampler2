@@ -154,19 +154,21 @@ void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
 	todo:
 */
 void open_file (ofstream* file_pointer, char* file_name, bool append) {
+	ostream& v = term->verbose();
+	
 	try {
 		if (append) {
-			term->verbose() << term->blue << "Opening " << term->reset << file_name << " . . . ";
+			v << term->blue << "Opening " << term->reset << file_name << " . . . ";
 			file_pointer->open(file_name, fstream::app);
 		} else {
-			term->verbose() << term->blue << "Creating " << term->reset << file_name << " . . . ";
+			v << term->blue << "Creating " << term->reset << file_name << " . . . ";
 			file_pointer->open(file_name, fstream::out);
 		}
 	} catch (ofstream::failure) {
 		cout << term->red << "Couldn't write to " << file_name << "!" << term->reset << endl;
 		exit(EXIT_FILE_WRITE_ERROR);
 	}
-	term->done(term->verbose());
+	term->done(v);
 }
 
 /* simulate_set performs the required piping to setup and run a simulation with the given parameters

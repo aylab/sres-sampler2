@@ -88,8 +88,8 @@ void ESInitial(unsigned int seed, ESParameter ** param,ESfcnTrsfm *trsfm,  \
   ESInitialPopulation(population, (*param));
   ESInitialStat(stats, (*population), (*param));
 
-  printf("\n========\nseed = %u\n========\n", outseed);
-  fflush(NULL);
+  /*printf("\n========\nseed = %u\n========\n", outseed);
+  fflush(NULL);*/
 
   return;
 }

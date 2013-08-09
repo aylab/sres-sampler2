@@ -57,8 +57,9 @@ void store_filename (char** field, const char* value) {
 */
 void read_file (input_data* ifd) {
 	int rank = get_rank();
-	term->rank(rank);
-	cout << term->blue << "Reading file " << term->reset << ifd->filename << " . . . ";
+	ostream& v = term->verbose();
+	term->rank(rank, v);
+	v << term->blue << "Reading file " << term->reset << ifd->filename << " . . . ";
 	
 	// Open the file for reading
 	FILE* file = fopen(ifd->filename, "r");
@@ -90,7 +91,7 @@ void read_file (input_data* ifd) {
 		exit(EXIT_FILE_READ_ERROR);
 	}
 	
-	term->done();
+	term->done(v);
 }
 
 /* parse_ranges_file reads the given buffer and stores every range found in the given ranges array
@@ -155,17 +156,17 @@ void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
 void open_file (ofstream* file_pointer, char* file_name, bool append) {
 	try {
 		if (append) {
-			cout << term->blue << "Opening " << term->reset << file_name << " . . . ";
+			term->verbose() << term->blue << "Opening " << term->reset << file_name << " . . . ";
 			file_pointer->open(file_name, fstream::app);
 		} else {
-			cout << term->blue << "Creating " << term->reset << file_name << " . . . ";
+			term->verbose() << term->blue << "Creating " << term->reset << file_name << " . . . ";
 			file_pointer->open(file_name, fstream::out);
 		}
 	} catch (ofstream::failure) {
 		cout << term->red << "Couldn't write to " << file_name << "!" << term->reset << endl;
 		exit(EXIT_FILE_WRITE_ERROR);
 	}
-	term->done();
+	term->done(term->verbose());
 }
 
 /* simulate_set performs the required piping to setup and run a simulation with the given parameters
@@ -178,21 +179,22 @@ void open_file (ofstream* file_pointer, char* file_name, bool append) {
 double simulate_set (double parameters[]) {
 	// Get the MPI rank of the process
 	int rank = get_rank();
+	ostream& v = term->verbose();
 	
 	// Create a pipe
 	int pipes[2];
-	cout << "  ";
-	term->rank(rank);
-	cout << term->blue << "Creating a pipe " << term->reset << ". . . ";
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Creating a pipe " << term->reset << ". . . ";
 	if (pipe(pipes) == -1) {
 		term->failed_pipe_create();
 		exit(EXIT_PIPE_CREATE_ERROR);
 	}
-	cout << term->blue << "Done: " << term->reset << "using file descriptors " << pipes[0] << " and " << pipes[1] << endl;
+	v << term->blue << "Done: " << term->reset << "using file descriptors " << pipes[0] << " and " << pipes[1] << endl;
 	
-	cout << "  ";
-	term->rank(rank);
-	cout << term->blue << "Forking the process " << term->reset << ". . . ";
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Forking the process " << term->reset << ". . . ";
 	pid_t pid = fork();
 	if (pid == -1) {
 		term->failed_fork();
@@ -204,7 +206,7 @@ double simulate_set (double parameters[]) {
 		child_pid = getpid();
 	} else {
 		child_pid = pid;
-		cout << term->blue << "Done: " << term->reset << "the child process's PID is " << child_pid << endl;
+		v << term->blue << "Done: " << term->reset << "the child process's PID is " << child_pid << endl;
 	}
 	int rank_strlen = INT_STRLEN(rank);
 	char* grad_fname = (char*)mallocate(sizeof(char) * (strlen("input-.gradients") + rank_strlen + 1));
@@ -217,8 +219,8 @@ double simulate_set (double parameters[]) {
 		sim_args[ip.num_sim_args - 2] = grad_fname;
 		
 		ofstream grad_file;
-		cout << "  ";
-		term->rank(rank);
+		v << "  ";
+		term->rank(rank, v);
 		open_file(&grad_file, grad_fname, false);
 		grad_file << "2 (11 100) (35 0)\n";
 		int loc_start = parameters[0];
@@ -231,25 +233,25 @@ double simulate_set (double parameters[]) {
 		}
 		grad_file.close();
 		
-		cout << "  ";
-		term->rank(rank);
-		cout << term->blue << "Checking that the simulation file exists and can be executed " << term->reset << ". . . ";
+		v << "  ";
+		term->rank(rank, v);
+		v << term->blue << "Checking that the simulation file exists and can be executed " << term->reset << ". . . ";
 		if (access(ip.sim_file, X_OK) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
 		}
-		term->done();
+		term->done(v);
 		if (execv(ip.sim_file, sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
 		}
 	} else {
 		double par_set[45] = {43.293101,35.644504,59.878872,33.936686,0.223278,0.329523,0.132647,0.444597,29.458387,11.188829,57.157834,31.077192,0.150681,0.337684,0.211113,0.273550,0.023943,0.004624,0.029139,0.014844,0.018960,0.015933,0.022060,0.155977,0.189065,0.086577,0.018705,0.153521,0.325447,0.249461,0.159769,0.260633,0.254341,0.113651,10.412648,8.563572,0.000000,9.775344,1.310268,1.698853,1.786119,10.892998,599.559977,253.564367,241.127021};
-		cout << "  ";
-		term->rank(rank);
-		cout << term->blue << "Writing to the pipe " << term->reset << "(file descriptor " << pipes[1] << ") . . . ";
+		v << "  ";
+		term->rank(rank, v);
+		v << term->blue << "Writing to the pipe " << term->reset << "(file descriptor " << pipes[1] << ") . . . ";
 		write_pipe(pipes[1], par_set);
-		term->done();
+		term->done(v);
 	}
 	
 	// Wait for the child to finish simulating
@@ -269,32 +271,32 @@ double simulate_set (double parameters[]) {
 	// Pipe in the simulation's score
 	int max_score;
 	int score;
-	cout << "  ";
-	term->rank(rank);
-	cout << term->blue << "Reading the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Reading the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
 	read_pipe(pipes[0], &max_score, &score);
-	cout << term->blue << "Done: " << term->reset << "(raw score " << score << " / " << max_score << ")" << endl;
+	v << term->blue << "Done: " << term->reset << "(raw score " << score << " / " << max_score << ")" << endl;
 	
 	// Close the reading end of the pipe
-	cout << "  ";
-	term->rank(rank);
-	cout << term->blue << "Closing the reading end of the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Closing the reading end of the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
 	if (close(pipes[0]) == -1) {
 		term->failed_pipe_read();
 		exit(EXIT_PIPE_WRITE_ERROR);
 	}
-	term->done();
+	term->done(v);
 	
 	// Remove the gradient file
-	cout << "  ";
-	term->rank(rank);
-	cout << term->blue << "Removing " << term->reset << grad_fname << " . . . ";
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Removing " << term->reset << grad_fname << " . . . ";
 	if (remove(grad_fname) != 0) {
 		term->failed_file_remove(grad_fname);
 		exit(EXIT_FILE_REMOVE_ERROR);
 	}
 	mfree(grad_fname);
-	term->done();
+	term->done(v);
 	
 	// libSRES requires scores from 0 to 1 with 0 being a perfect score so convert the simulation's score format into libSRES's
 	double score_final = 1 - ((double)score / max_score);

@@ -83,8 +83,13 @@ struct terminal {
 	}
 	
 	// Prints two spaces and then the given MPI rank in parentheses
+	void rank (int rank, ostream& stream) {
+		stream << this->yellow << "(" << rank << ") " << this->reset;
+	}
+	
+	// Prints two spaces and then the given MPI rank in parentheses
 	void rank (int rank) {
-		cout << this->yellow << "(" << rank << ") " << this->reset;
+		this->rank(rank, cout);
 	}
 	
 	// Indicates a process is done (pass terminal->verbose() into this function to print only with verbose mode on)

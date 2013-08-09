@@ -93,12 +93,17 @@ void init_sres (input_params& ip, sres_params& sp) {
 	
 	// Call libSRES's initialize function
 	int rank = get_rank();
+	ostream& v = term->verbose();
 	if (rank == 0) {
-		cout << term->blue << "Starting libSRES initialization simulations " << term->reset << ". . ." << endl;
+		cout << term->blue << "Running libSRES initialization simulations " << term->reset << ". . . ";
+		cout.flush();
+		v << endl;
 	}
 	ESInitial(ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
 	if (rank == 0) {
-		cout << term->blue << "Done with libSRES initialization simulations" << term->reset << endl;
+		cout << term->blue << "Done";
+		v << " with libSRES initialization simulations";
+		cout << term->reset << endl;
 	}
 }
 

@@ -26,16 +26,8 @@
  **   http://cerium.raunvis.hi.is/~tpr/software/sres/               **
  *********************************************************************/
 
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <time.h>
-#include <math.h>
-#include <string.h>
-#include <stdio.h>
 #include "sharefunc.hpp"
-
-#include "../source/memory.hpp"
+#include "ESSRSort.hpp"
 
 /*********************************************************************
  ** void ESSRSort(f,phi,pf,eslambda,N,I)                            **
@@ -107,5 +99,4 @@ ESSRSort(double *f, double *phi, double pf, int eslambda, int N, int *I)
 
   return;
 }
-
 

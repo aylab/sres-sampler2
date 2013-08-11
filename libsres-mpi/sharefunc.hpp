@@ -158,6 +158,3 @@ void ShareChop(char *);
 
 #endif
 
-#ifdef __cplusplus
-}
-#endif

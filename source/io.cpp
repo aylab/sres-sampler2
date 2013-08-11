@@ -314,9 +314,7 @@ double simulate_set (double parameters[]) {
 */
 void print_good_set (double parameters[], double score) {
 	if (ip.print_good_sets && score <= ip.good_set_threshold) {
-		cout << "  ";
-		term->rank(get_rank());
-		cout << term->blue << "Found a good set " << term->reset << "(score " << score << ")" << endl;
+		cout << term->blue << "  Found a good set " << term->reset << "(score " << score << ")" << endl;
 		ip.good_sets_stream << parameters[0];
 		for (int i = 1; i < ip.num_dims; i++) {
 			ip.good_sets_stream << "," << parameters[i];

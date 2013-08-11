@@ -829,6 +829,7 @@ void ESMutate(ESPopulation * population, ESParameter *param)
         continue;
       MPI_Recv(gfphi,2+constraint,MPI_DOUBLE,j,i,MPI_COMM_WORLD,&status);
       indvdl = population->member[i];
+      cerr << get_rank() << ": " << gfphi[constraint] << endl;
       print_good_set(indvdl->op, gfphi[constraint]);
       for(k=0;k<constraint;k++)
         indvdl->g[k] = gfphi[k];

@@ -27,6 +27,7 @@ io.cpp contains functions for input and output of files and pipes. All I/O relat
 
 #include "init.hpp"
 #include "macros.hpp"
+#include "sres.hpp"
 
 extern terminal* term; // Declared in init.cpp
 extern input_params ip; // Declared in main.cpp
@@ -54,7 +55,10 @@ void store_filename (char** field, const char* value) {
 	todo:
 */
 void read_file (input_data* ifd) {
-	cout << term->blue << "Reading file " << term->reset << ifd->filename << " . . . ";
+	int rank = get_rank();
+	ostream& v = term->verbose();
+	term->rank(rank, v);
+	v << term->blue << "Reading file " << term->reset << ifd->filename << " . . . ";
 	
 	// Open the file for reading
 	FILE* file = fopen(ifd->filename, "r");
@@ -86,7 +90,7 @@ void read_file (input_data* ifd) {
 		exit(EXIT_FILE_READ_ERROR);
 	}
 	
-	term->done();
+	term->done(v);
 }
 
 /* parse_ranges_file reads the given buffer and stores every range found in the given ranges array
@@ -149,19 +153,20 @@ void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
 	todo:
 */
 void open_file (ofstream* file_pointer, char* file_name, bool append) {
+	ostream& v = term->verbose();
 	try {
 		if (append) {
-			cout << term->blue << "Opening " << term->reset << file_name << " . . . ";
+			v << term->blue << "Opening " << term->reset << file_name << " . . . ";
 			file_pointer->open(file_name, fstream::app);
 		} else {
-			cout << term->blue << "Creating " << term->reset << file_name << " . . . ";
+			v << term->blue << "Creating " << term->reset << file_name << " . . . ";
 			file_pointer->open(file_name, fstream::out);
 		}
 	} catch (ofstream::failure) {
 		cout << term->red << "Couldn't write to " << file_name << "!" << term->reset << endl;
 		exit(EXIT_FILE_WRITE_ERROR);
 	}
-	term->done();
+	term->done(v);
 }
 
 /* simulate_set performs the required piping to setup and run a simulation with the given parameters
@@ -172,12 +177,21 @@ void open_file (ofstream* file_pointer, char* file_name, bool append) {
 	todo:
 */
 double simulate_set (double parameters[]) {
+	// Get the MPI rank of the process
+	int rank = get_rank();
+	ostream& v = term->verbose();
+	
+	
 	// Create a pipe
 	int pipes[2];
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Creating a pipe " << term->reset << ". . . ";
 	if (pipe(pipes) == -1) {
 		term->failed_pipe_create();
 		exit(EXIT_PIPE_CREATE_ERROR);
 	}
+	v << term->blue << "Done: " << term->reset << "using file descriptors " << pipes[0] << " and " << pipes[1] << endl;
 	
 	// Copy the user-specified simulation arguments and fill the copy with the pipe's file descriptors
 	char** sim_args = copy_args(ip.sim_args, ip.num_sim_args);
@@ -185,22 +199,39 @@ double simulate_set (double parameters[]) {
 	store_pipe(sim_args, ip.num_sim_args - 2, pipes[1]);
 	
 	// Fork the process so the child can run the simulation
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Forking the process " << term->reset << ". . . ";
 	pid_t pid = fork();
 	if (pid == -1) {
 		term->failed_fork();
 		exit(EXIT_FORK_ERROR);
 	}
 	if (pid == 0) { // The child runs the simulation
+		v << "  ";
+		term->rank(rank, v);
+		v << term->blue << "Checking that the simulation file exists and can be executed " << term->reset << ". . . ";
+		if (access(ip.sim_file, X_OK) == -1) {
+			term->failed_exec();
+			exit(EXIT_EXEC_ERROR);
+			
+		}
+		term->done(v);
 		if (execv(ip.sim_file, sim_args) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
 		}
 	} else { // The parent pipes in the parameter set to run
+		v << term->blue << "Done: " << term->reset << "the child process's PID is " << pid << endl;
+		v << "  ";
+		term->rank(rank, v);
+		v << term->blue << "Writing to the pipe " << term->reset << "(file descriptor " << pipes[1] << ") . . . ";
 		write_pipe(pipes[1], parameters);
+		term->done(v);
 	}
 	
 	// Wait for the child to finish simulating
-	int status = 0; 
+	int status = 0;
 	waitpid(pid, &status, WUNTRACED);
 	if (WIFEXITED(status) == 0) {
 		term->failed_child();
@@ -216,13 +247,21 @@ double simulate_set (double parameters[]) {
 	// Pipe in the simulation's score
 	int max_score;
 	int score;
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Reading the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
 	read_pipe(pipes[0], &max_score, &score);
+	v << term->blue << "Done: " << term->reset << "(raw score " << score << " / " << max_score << ")" << endl;
 	
 	// Close the reading end of the pipe
+	v << "  ";
+	term->rank(rank, v);
+	v << term->blue << "Closing the reading end of the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
 	if (close(pipes[0]) == -1) {
 		term->failed_pipe_read();
 		exit(EXIT_PIPE_WRITE_ERROR);
 	}
+	term->done(v);
 	
 	// Free the simulation arguments
 	for (int i = 0; sim_args[i] != NULL; i++) {
@@ -231,18 +270,26 @@ double simulate_set (double parameters[]) {
 	mfree(sim_args);
 	
 	// libSRES requires scores from 0 to 1 with 0 being a perfect score so convert the simulation's score format into libSRES's
-	double score_final = 1 - ((double)score / max_score);
-	
-	// Print the score if the user specified printing good sets and this set is good enough
-	if (ip.print_good_sets && score_final <= ip.good_set_threshold) {
+	return 1 - ((double)score / max_score);
+}
+
+/* print_good_set prints the given parameter set if its score is good enough
+	parameters:
+		parameters: the set of parameters run
+		score: the received score
+	returns: nothing
+	notes:
+	todo:
+*/
+void print_good_set (double parameters[], double score) {
+	if (ip.print_good_sets && score <= ip.good_set_threshold) {
+		cout << term->blue << "  Found a good set " << term->reset << "(score " << score << ")" << endl;
 		ip.good_sets_stream << parameters[0];
 		for (int i = 1; i < ip.num_dims; i++) {
 			ip.good_sets_stream << "," << parameters[i];
 		}
-		ip.good_sets_stream << "\n";
+		ip.good_sets_stream << endl;
 	}
-	
-	return score_final;
 }
 
 /* write_pipe writes the given parameter set to the given pipe

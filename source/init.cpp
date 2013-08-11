@@ -27,6 +27,7 @@ init.cpp contains initialization functions used before any simulations start.
 #include "io.hpp"
 #include "macros.hpp"
 #include "main.hpp"
+#include "sres.hpp"
 
 using namespace std; 
 
@@ -163,8 +164,13 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 				}
 				i = num_args;
 			} else if (option_set(option, "-c", "--no-color")) {
+				mfree(term->blue);
+				mfree(term->red);
+				mfree(term->yellow);
+				mfree(term->reset);
 				term->blue = copy_str("");
 				term->red = copy_str("");
+				term->yellow = copy_str("");
 				term->reset = copy_str("");
 				i--;
 			} else if (option_set(option, "-v", "--verbose")) {
@@ -263,7 +269,9 @@ void init_verbosity (input_params& ip) {
 */
 void create_good_sets_file (input_params& ip) {
 	if (ip.print_good_sets) { // Print the good sets only if the user specified it
-		open_file(&(ip.good_sets_stream), ip.good_sets_file, false);
+		if (get_rank() == 0) {
+			open_file(&(ip.good_sets_stream), ip.good_sets_file, false);
+		}
 	}
 }
 

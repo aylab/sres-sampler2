@@ -49,11 +49,13 @@ struct terminal {
 	// Escape codes
 	const char* code_blue;
 	const char* code_red;
+	const char* code_yellow;
 	const char* code_reset;
 	
 	// Colors
 	char* blue;
 	char* red;
+	char* yellow;
 	char* reset;
 	
 	// Verbose stream
@@ -63,9 +65,11 @@ struct terminal {
 	terminal () {
 		this->code_blue = "\x1b[34m";
 		this->code_red = "\x1b[31m";
+		this->code_yellow = "\x1b[33m";
 		this->code_reset = "\x1b[0m";
 		this->blue = copy_str(this->code_blue);
 		this->red = copy_str(this->code_red);
+		this->yellow = copy_str(this->code_yellow);
 		this->reset = copy_str(this->code_reset);
 		this->verbose_stream = new ostream(cout.rdbuf());
 	}
@@ -73,8 +77,19 @@ struct terminal {
 	~terminal () {
 		mfree(this->blue);
 		mfree(this->red);
+		mfree(this->yellow);
 		mfree(this->reset);
 		delete verbose_stream;
+	}
+	
+	// Prints two spaces and then the given MPI rank in parentheses (pass terminal->verbose() into this function to print only with verbose mode on)
+	void rank (int rank, ostream& stream) {
+		stream << this->yellow << "(" << rank << ") " << this->reset;
+	}
+	
+	// Prints two spaces and then the given MPI rank in parentheses
+	void rank (int rank) {
+		this->rank(rank, cout);
 	}
 	
 	// Indicates a process is done (pass terminal->verbose() into this function to print only with verbose mode on)
@@ -90,6 +105,11 @@ struct terminal {
 	// Indicates the program is out of memory
 	void no_memory () {
 		cout << this->red << "Not enough memory!" << this->reset << endl;
+	}
+	
+	// Indicates the program couldn't remove the given file
+	void failed_file_remove (const char* filename) {
+		cout << this->red << "Couldn't remove '" << filename << "'! Make sure files are not moved or removed during the simulations." << this->reset << endl;
 	}
 	
 	// Indicates the program couldn't create a pipe

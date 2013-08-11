@@ -21,6 +21,13 @@ main.cpp contains the main, usage, and licensing functions.
 Avoid putting functions in main.cpp that could be put in a more specific file.
 */
 
+// Include MPI if compiled with it
+#if defined(MPI)
+	#undef MPI // MPI uses this macro as well, so temporarily undefine it
+	#include <mpi.h> // Needed for MPI_Comm_rank, MPI_COMM_WORLD
+	#define MPI // The MPI macro should be checked only for definition, not value
+#endif
+
 #include "main.hpp" // Function declarations
 
 #include "init.hpp"
@@ -45,6 +52,11 @@ int printing_precision; // ip cannot be imported into a C file
 	todo:
 */
 int main (int argc, char** argv) {
+	// Initialize MPI if compiled with it
+	#if defined(MPI)
+		MPI_Init(&argc, &argv);
+	#endif
+	
 	// Initialize the program's terminal functionality and input parameters
 	init_terminal();
 	accept_input_params(argc, argv, ip);

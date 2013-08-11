@@ -1,5 +1,6 @@
 /*********************************************************************
  ** Stochastic Ranking Evolution Strategy                           **
+ ** with MPI                                                        **
  ** (miu,lambda)-Evolution Strategy                                 **
  **                                                                 **
  ** For ACADEMIC RESEARCH, this is licensed with GPL license        **
@@ -18,8 +19,7 @@
  ** MA 02111-1307, USA.                                             **
  **                                                                 **
  ** Author: Xinglai Ji (jix1@ornl.gov)                              **
- ** Date:   Mar 2, 2005;  Mar 3, 2005; Mar 4, 2005; Mar 7, 2005;    **
- **         Mar 8, 2005;  Mar 21, 2005;  Mar 22, 2005;              **
+ ** Date:   Apr 5, 2005;                                            **
  ** Organization: Oak Ridge National Laboratory                     **
  ** Reference:                                                      **
  **   1. Thomas P. Runarsson and Xin Yao. 2000. Stochastic Ranking  **
@@ -28,8 +28,15 @@
  **   2. Thomas Philip Runarsson and Xin Yao. 2005. Search Biases   **
  **      in Constrained Evolutionary Optimization. IEEE             **
  **      Transactions on Systems, Man and Cybernetics -- Part C:    **
- **      Applications and Reviews. 35(2):233-234.                   **
+ **      Applications and Reviews. 35(2):233-243.                   **
+ **   3. MPICH                                                      **
+ **      http://www-unix.mcs.anl.gov/mpi/mpich/                     **
  *********************************************************************/
+#if defined(MPI)
+	#undef MPI
+	#include <mpi.h>
+	#define MPI 1
+#endif
 #include <math.h>
 #include <time.h>
 #include <stdio.h>
@@ -39,11 +46,14 @@
 #include "ESSRSort.h"
 #include "ESES.h"
 
+#include "../source/io.hpp"
+
 extern int printing_precision; // Declared in main.cpp
 
 /*********************************************************************
  ** Initialize: parameters,populations and random seed              **
- ** ESInitial(seed, param,trsfm, fg,es, constraint,                 **
+ ** ESInitial( argc, argv,                                          **
+ **            seed, param,trsfm, fg,es, constraint,                **
  **            dim,ub,lb,miu,lambda,gen,                            **
  **              gamma, alpha, varphi, retry, population, stats)    **
  ** seed: random seed, usually esDefSeed=0 (pid*time)               **
@@ -71,16 +81,31 @@ extern int printing_precision; // Declared in main.cpp
  ** population: point this population                               **
  ** stats: statistics for each generation                           **
  **                                                                 **
+ ** Initialize MPI                                                  **
+ ** processors >=2, print seed if master                            **
+ **                                                                 **
  ** ESDeInitial(param,population,stats)                             **
  ** free param and population                                       **
+ ** finalize MPI                                                    **
  *********************************************************************/
-void ESInitial(unsigned int seed, ESParameter ** param,ESfcnTrsfm *trsfm,  \
+void ESInitial(/*int *argc, char ***argv,   */\
+               unsigned int seed, ESParameter ** param,ESfcnTrsfm *trsfm,  \
                ESfcnFG fg, int es, int constraint, int dim, double* ub,   \
                double *lb, int miu, int lambda, int gen,  \
                double gamma, double alpha, double varphi, int retry,  \
                ESPopulation ** population, ESStatistics **stats)
 {
   unsigned int outseed;
+  int myid, numprocs;
+
+  //MPI_Init(argc, argv);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+  if(numprocs < 2)
+  {
+    printf("Requiring at least 2 processes!\n");
+    exit(1);
+  }
 
   ShareSeed(seed, &outseed);
   ESInitialParam(param, trsfm, fg, es, outseed,constraint, dim, ub, lb,   \
@@ -88,8 +113,11 @@ void ESInitial(unsigned int seed, ESParameter ** param,ESfcnTrsfm *trsfm,  \
   ESInitialPopulation(population, (*param));
   ESInitialStat(stats, (*population), (*param));
 
-  printf("\n========\nseed = %u\n========\n", outseed);
-  fflush(NULL);
+  /*if(myid == 0)
+  {
+    printf("\n========\nseed = %u\n========\n", outseed);
+    fflush(NULL);
+  }*/
 
   return;
 }
@@ -97,8 +125,10 @@ void ESDeInitial(ESParameter *param, ESPopulation *population,   \
                  ESStatistics *stats)
 {
   ESDeInitialPopulation(population, param);
-  ESDeInitialParam(param);
   ESDeInitialStat(stats);
+  ESDeInitialParam(param);
+
+  MPI_Finalize();
   return;
 }
 
@@ -335,7 +365,7 @@ void ESPrintIndividual(ESIndividual *indvdl, ESParameter *param)
 }
 void ESPrintOp(ESIndividual *indvdl, ESParameter *param)
 {
-  int i;
+  int i = 0;
   int dim;
   ESfcnTrsfm *trsfm;
 
@@ -361,7 +391,7 @@ void ESPrintOp(ESIndividual *indvdl, ESParameter *param)
       }
     }
   }
-
+  
   return;
 }
 void ESPrintSp(ESIndividual *indvdl, ESParameter *param)
@@ -468,7 +498,7 @@ void ESDeInitialStat(ESStatistics *stats)
 void ESDoStat(ESStatistics *stats, ESPopulation *population,   \
               ESParameter *param)
 {
-  int i,j;
+  int i;
   int eslambda;
   int flag,count;
 
@@ -515,7 +545,7 @@ void ESPrintStat(ESStatistics *stats, ESParameter *param)
           stats->curgen,stats->bestgen,stats->bestindvdl->f);
   ESPrintOp(stats->bestindvdl, param);
   printf("\n");
-  /*printf("      variance=");
+  /*printf("      variance:");
   ESPrintSp(stats->bestindvdl, param);
   printf("\n");*/
   fflush(NULL);
@@ -527,25 +557,41 @@ void ESPrintStat(ESStatistics *stats, ESParameter *param)
  ** stepwise evolution                                              **
  ** ESStep(population, param, stats, pf)                            **
  **                                                                 **
+ ** Master:                                                         **
  ** -> Stochastic ranking -> sort population based on ranking index **
- ** -> Mutate (recalculate f/g/phi) -> do statistics analysis on    **
+ ** -> send op to other processors  -> do statistics analysis on    **
  ** this generation -> print statistics information                 **
+ ** Slave:                                                          **
+ ** recalculate f/g/phi -> curgen+1                                 **
  *********************************************************************/
 void ESStep(ESPopulation *population, ESParameter *param,   \
             ESStatistics *stats, double pf)
 {
+  int myid;
 
-  ESSRSort(population->f, population->phi, pf, param->eslambda,   \
-           param->eslambda, population->index);
-  ESSortPopulation(population, param);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 
-  ESSelectPopulation(population, param);
+  if(myid == 0)
+  {
+    ESSRSort(population->f, population->phi, pf, param->eslambda,   \
+             param->eslambda, population->index);
+    ESSortPopulation(population, param);
 
-  ESMutate(population, param);    
+    ESSelectPopulation(population, param);
 
-  ESDoStat(stats, population, param);
+    ESMutate(population, param);
 
-  ESPrintStat(stats, param);
+    ESDoStat(stats, population, param);
+
+    ESPrintStat(stats, param);
+  }
+  else
+  {
+    ESMPIMutate(population, param);
+    stats->curgen +=1;
+  }
+
+  MPI_Barrier(MPI_COMM_WORLD);
 
   return;
 }
@@ -643,11 +689,12 @@ void ESSelectPopulation(ESPopulation *population, ESParameter *param)
  ** exponential smoothing                                           **
  ** sp(miu->lambda): sp = sp_ + alpha * (sp - sp_)                  **
  ** 
- ** re-calculate f/g/phi                                            **
+ ** Master: send op to other processors                             **
+ ** Slave:  re-calculate f/g/phi                                    **
  *********************************************************************/
 void ESMutate(ESPopulation * population, ESParameter *param)
 {
-  int i, j, k;
+  int i, j, k, l;
   int miu, dim,lambda, constraint;
   double gamma, alpha;
   double tau, tau_;
@@ -660,6 +707,13 @@ void ESMutate(ESPopulation * population, ESParameter *param)
   double tmp;
   ESfcnFG fg;
   
+  int numprocs,nummpi;
+  MPI_Status status;
+  double *gfphi;
+  char strOK[] = "OK";
+  int lenOK = 2;
+  lenOK = strlen(strOK);
+
   randvec = NULL;
   sp_ = NULL;
   op_ = NULL;
@@ -746,19 +800,46 @@ void ESMutate(ESPopulation * population, ESParameter *param)
       indvdl->sp[j] = sp_[i][j] + alpha *(indvdl->sp[j] - sp_[i][j]);
   }
 
-  for(i=0; i<lambda; i++)
+  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+  for(i=0,j=1; i<lambda; i++,j++)
   {
-    indvdl = population->member[i];
-    fg(indvdl->op, &(indvdl->f), indvdl->g);
-    indvdl->phi = 0.0;
-    for(j=0; j<constraint; j++)
-    {
-      if(indvdl->g[j] > 0.0)
-        indvdl->phi += (indvdl->g[j] * indvdl->g[j]);
-    }
-    population->f[i] = indvdl->f;
-    population->phi[i] = indvdl->phi;
+    if(j==numprocs)
+      j=1;
+    MPI_Send(population->member[i]->op,dim,MPI_DOUBLE,j,i,MPI_COMM_WORLD);
+    MPI_Recv(population->member[i]->op,dim,MPI_DOUBLE,j,i,MPI_COMM_WORLD,&status);
   }
+  gfphi = ShareMallocM1d(2+constraint);
+  for(l=1; l<numprocs; l++)
+  {
+    for(i=0,j=1,nummpi=0; i<lambda; i++,j++)
+    {
+      if(j==numprocs)
+        j=1;
+      if(j==l)
+        nummpi++;
+    }
+    if(nummpi<=0)
+      break;
+    MPI_Send(strOK,lenOK,MPI_BYTE,l,l,MPI_COMM_WORLD);
+    for(i=0,j=1; i<lambda; i++,j++)
+    {
+      if(j==numprocs)
+        j=1;
+      if(j!=l)
+        continue;
+      MPI_Recv(gfphi,2+constraint,MPI_DOUBLE,j,i,MPI_COMM_WORLD,&status);
+      indvdl = population->member[i];
+      print_good_set(indvdl->op, gfphi[constraint]);
+      for(k=0;k<constraint;k++)
+        indvdl->g[k] = gfphi[k];
+      indvdl->f = gfphi[k++];
+      indvdl->phi = gfphi[k++];
+      population->f[i] = indvdl->f;
+      population->phi[i] = indvdl->phi;
+    }
+  }
+  ShareFreeM1d(gfphi);
+  gfphi = NULL;
 
   ShareFreeM1d(randvec);
   randvec = NULL;
@@ -766,6 +847,76 @@ void ESMutate(ESPopulation * population, ESParameter *param)
   sp_ = NULL;
   ShareFreeM2d(op_, lambda);
   op_ = NULL;
+
+  return;
+}
+
+void ESMPIMutate(ESPopulation *population, ESParameter *param)
+{
+  int i,j,k,l;
+  int lambda, dim, constraint;
+
+  double *op, **gfphi;
+  int nummpi;
+  int myid, numprocs;
+  MPI_Status status;
+  char buf[10];
+  char strOK[] = "OK";
+  int lenOK = 2;
+  lenOK = strlen(strOK);
+
+  lambda = param->lambda;
+  dim = param->dim;
+  constraint = param->constraint;
+
+  MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+  for(i=0,j=1,nummpi=0; i<lambda; i++,j++)
+  {
+    if(j==numprocs)
+      j = 1;
+    if(j==myid)
+      nummpi++;
+  }
+  if(nummpi<=0)
+    return;
+
+  op = ShareMallocM1d(dim);
+  gfphi = ShareMallocM2d(nummpi,2+constraint);
+
+  for(i=0,j=1,l=0; i<lambda; i++,j++)
+  {
+    if(j==numprocs)
+      j = 1;
+    if(j!=myid)
+      continue;
+    MPI_Recv(op, dim, MPI_DOUBLE, 0,i,MPI_COMM_WORLD,&status);
+    param->fg(op, &(gfphi[l][constraint]),gfphi[l]);
+    MPI_Send(op, dim, MPI_DOUBLE, 0,i,MPI_COMM_WORLD);
+    gfphi[l][constraint+1] = 0.0;
+    for(k=0;k<constraint;k++)
+    {
+      if(gfphi[l][k]>0.0)
+        gfphi[l][constraint+1] += (gfphi[l][k]*gfphi[l][k]);
+    }
+    l++;
+  }
+
+  MPI_Recv(buf,lenOK,MPI_BYTE,0,myid,MPI_COMM_WORLD, &status);
+  for(i=0,j=1,l=0; i<lambda; i++,j++)
+  {
+    if(j==numprocs)
+      j = 1;
+    if(j!=myid)
+      continue;
+    MPI_Send(gfphi[l], 2+constraint, MPI_DOUBLE, 0,i,MPI_COMM_WORLD);
+    l++;
+  }
+
+  ShareFreeM1d(op);
+  op = NULL;
+  ShareFreeM2d(gfphi,nummpi);
+  gfphi = NULL;
 
   return;
 }

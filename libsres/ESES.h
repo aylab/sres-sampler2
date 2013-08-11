@@ -31,10 +31,6 @@
  **      Applications and Reviews. 35(2):233-243.                   **
  *********************************************************************/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef _es_es_h
 #define _es_es_h
 
@@ -348,9 +344,5 @@ void ESSelectPopulation(ESPopulation *, ESParameter *);
  *********************************************************************/
 void ESMutate(ESPopulation *, ESParameter *);
 
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 

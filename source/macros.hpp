@@ -31,17 +31,19 @@ macros.hpp contains every constant and macro function used in the program.
 #define EXIT_MEMORY_ERROR		1
 #define EXIT_FILE_READ_ERROR	2
 #define EXIT_FILE_WRITE_ERROR	3
-#define EXIT_PIPE_CREATE_ERROR	4
-#define EXIT_PIPE_READ_ERROR	5
-#define EXIT_PIPE_WRITE_ERROR	6
-#define EXIT_FORK_ERROR			7
-#define EXIT_EXEC_ERROR			8
-#define EXIT_CHILD_ERROR		9
-#define EXIT_INPUT_ERROR		10
+#define EXIT_FILE_REMOVE_ERROR	4
+#define EXIT_PIPE_CREATE_ERROR	5
+#define EXIT_PIPE_READ_ERROR	6
+#define EXIT_PIPE_WRITE_ERROR	7
+#define EXIT_FORK_ERROR			8
+#define EXIT_EXEC_ERROR			9
+#define EXIT_CHILD_ERROR		10
+#define EXIT_INPUT_ERROR		11
 
 // Macros for commonly used functions small enough to inject directly into the code
 #define SQUARE(x) ((x) * (x))
 #define CUBE(x) ((x) * (x) * (x))
+#define INT_STRLEN(x) (log10((x) > 0 ? (x) : 1) + 1)
 
 #endif
 

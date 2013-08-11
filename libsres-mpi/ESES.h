@@ -33,10 +33,6 @@
  **      http://www-unix.mcs.anl.gov/mpi/mpich/                     **
  *********************************************************************/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef _es_es_h
 #define _es_es_h
 
@@ -193,7 +189,7 @@ typedef struct
  ** free param and population                                       **
  ** finalize MPI                                                    **
  *********************************************************************/
-void ESInitial(int *, char ***,  \
+void ESInitial(/*int *, char ***,  */\
                unsigned int, ESParameter**, ESfcnTrsfm *,   \
                ESfcnFG,int, int,int,double*,double*,int,int,int,  \
                double, double, double, int,  \
@@ -362,9 +358,5 @@ void ESSelectPopulation(ESPopulation *, ESParameter *);
 void ESMutate(ESPopulation *, ESParameter *);
 void ESMPIMutate(ESPopulation *, ESParameter *);
 
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 

@@ -23,6 +23,13 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 
 #include <ctime> // Needed for time_t in libSRES (they don't include time.h for some reason)
 
+// Include MPI if compiled with it
+#if defined(MPI)
+	#undef MPI // MPI uses this macro as well, so temporarily undefine it
+	#include <mpi.h> // Needed for MPI_Comm_rank, MPI_COMM_WORLD
+	#define MPI // The MPI macro should be checked only for definition, not value
+#endif
+
 // libSRES has different files for MPI and non-MPI versions
 #if defined(MPI)
 	#include "../libsres-mpi/sharefunc.h"
@@ -39,6 +46,20 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 #include "io.hpp"
 
 extern terminal* term; // Declared in init.cpp
+
+/* get_rank gets the MPI rank of the process or returns 0 if MPI is not active
+	parameters:
+	returns: the rank
+	notes:
+	todo:
+*/
+int get_rank () {
+	int rank = 0;
+	#if defined(MPI)
+		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	#endif
+	return rank;
+}
 
 /* init_sres initializes libSRES functionality, including population data, generations, ranges, etc.
 	parameters:
@@ -70,154 +91,20 @@ void init_sres (input_params& ip, sres_params& sp) {
 		sp.trsfm[i] = transform;
 	}
 	
-	/*if (dim == 27) { // Corresponding deterministic branch: nodimers
-		lb[0] = 30,		ub[0] = 65;
-		lb[1] = 30,		ub[1] = 65;
-		lb[2] = 30,		ub[2] = 65;
-		lb[3] = 30,		ub[3] = 65;
-		lb[4] = 0.1,	ub[4] = 0.46;
-		lb[5] = 0.1,	ub[5] = 0.46;
-		lb[6] = 0.1,	ub[6] = 0.46;
-		lb[7] = 0.1,	ub[7] = 0.46;
-		lb[8] = 10,		ub[8] = 60;
-		lb[9] = 10,		ub[9] = 60;
-		lb[10] = 10,	ub[10] = 60;
-		lb[11] = 20,	ub[11] = 60;
-		lb[12] = 0.11,	ub[12] = 0.35;
-		lb[13] = 0.11,	ub[13] = 0.35;
-		lb[14] = 0.11,	ub[14] = 0.35;
-		lb[15] = 0.07,	ub[15] = 0.35;
-		lb[16] = 8,		ub[16] = 12;
-		lb[17] = 8,		ub[17] = 12;
-		lb[18] = 0,		ub[18] = 0;
-		lb[19] = 6,		ub[19] = 12;
-		lb[20] = 0.4,	ub[20] = 2;
-		lb[21] = 0.4,	ub[21] = 2;
-		lb[22] = 0.4,	ub[22] = 2;
-		lb[23] = 10,	ub[23] = 25;
-		lb[24] = 150,	ub[24] = 900;
-		lb[25] = 150,	ub[25] = 900;
-		lb[26] = 200,	ub[26] = 800;
-	} else if (dim == 45) { // Corresponding deterministic branch: fewergenes
-		lb[0] = 30,		ub[0] = 65;
-		lb[1] = 30,		ub[1] = 65;
-		lb[2] = 30,		ub[2] = 65;
-		lb[3] = 30,		ub[3] = 65;
-		lb[4] = 0.1,	ub[4] = 0.46;
-		lb[5] = 0.1,	ub[5] = 0.46;
-		lb[6] = 0.1,	ub[6] = 0.46;
-		lb[7] = 0.1,	ub[7] = 0.46;
-		lb[8] = 10,		ub[8] = 60;
-		lb[9] = 10,		ub[9] = 60;
-		lb[10] = 10,	ub[10] = 60;
-		lb[11] = 20,	ub[11] = 60;
-		lb[12] = 0.11,	ub[12] = 0.35;
-		lb[13] = 0.11,	ub[13] = 0.35;
-		lb[14] = 0.11,	ub[14] = 0.35;
-		lb[15] = 0.07,	ub[15] = 0.35;
-		lb[16] = 0.0003,ub[16] = 0.03;
-		lb[17] = 0.0003,ub[17] = 0.03;
-		lb[18] = 0.0003,ub[18] = 0.03;
-		lb[19] = 0.0003,ub[19] = 0.03;
-		lb[20] = 0.0003,ub[20] = 0.03;
-		lb[21] = 0.0003,ub[21] = 0.03;
-		lb[22] = 0.003,	ub[22] = 0.3;
-		lb[23] = 0.003,	ub[23] = 0.3;
-		lb[24] = 0.003,	ub[24] = 0.3;
-		lb[25] = 0.003,	ub[25] = 0.3;
-		lb[26] = 0.003,	ub[26] = 0.3;
-		lb[27] = 0.003,	ub[27] = 0.3;
-		lb[28] = 0.11,	ub[28] = 0.35;
-		lb[29] = 0.11,	ub[29] = 0.35;
-		lb[30] = 0.11,	ub[30] = 0.35;
-		lb[31] = 0.11,	ub[31] = 0.35;
-		lb[32] = 0.11,	ub[32] = 0.35;
-		lb[33] = 0.11,	ub[33] = 0.35;
-		lb[34] = 8,		ub[34] = 12;
-		lb[35] = 8,		ub[35] = 12;
-		lb[36] = 0,		ub[36] = 0;
-		lb[37] = 6,		ub[37] = 12;
-		lb[38] = 0.4,	ub[38] = 2;
-		lb[39] = 0.4,	ub[39] = 2;
-		lb[40] = 0.4,	ub[40] = 2;
-		lb[41] = 10,	ub[41] = 25;
-		lb[42] = 150,	ub[42] = 900;
-		lb[43] = 150,	ub[43] = 900;
-		lb[44] = 200,	ub[44] = 800;
-	} else if (dim == 65) { // Corresponding deterministic branch: her12
-		lb[0] = 30, 	ub[0] = 65;
-		lb[1] = 30, 	ub[1] = 65;
-		lb[2] = 30, 	ub[2] = 65;
-		lb[3] = 30, 	ub[3] = 65;
-		lb[4] = 30, 	ub[4] = 65;
-		lb[5] = 0.1, 	ub[5] = 0.46;
-		lb[6] = 0.1, 	ub[6] = 0.46;
-		lb[7] = 0.1, 	ub[7] = 0.46;
-		lb[8] = 0.1, 	ub[8] = 0.46;
-		lb[9] = 0.1, 	ub[9] = 0.46;
-		lb[10] = 10, 	ub[10] = 60;
-		lb[11] = 10, 	ub[11] = 60;
-		lb[12] = 10, 	ub[12] = 60;
-		lb[13] = 10, 	ub[13] = 60;
-		lb[14] = 20, 	ub[14] = 60;
-		lb[15] = 0.11, 	ub[15] = 0.35;
-		lb[16] = 0.11, 	ub[16] = 0.35;
-		lb[17] = 0.11, 	ub[17] = 0.35;
-		lb[18] = 0.11, 	ub[18] = 0.35;
-		lb[19] = 0.07, 	ub[19] = 0.35;
-		lb[20] = 0.0003,ub[20] = 0.03;
-		lb[21] = 0.0003,ub[21] = 0.03;
-		lb[22] = 0.0003,ub[22] = 0.03;
-		lb[23] = 0.0003,ub[23] = 0.03;
-		lb[24] = 0.0003,ub[24] = 0.03;
-		lb[25] = 0.0003,ub[25] = 0.03;
-		lb[26] = 0.0003,ub[26] = 0.03;
-		lb[27] = 0.0003,ub[27] = 0.03;
-		lb[28] = 0.0003,ub[28] = 0.03;
-		lb[29] = 0.0003,ub[29] = 0.03;
-		lb[30] = 0.003,	ub[30] = 0.3;
-		lb[31] = 0.003,	ub[31] = 0.3;
-		lb[32] = 0.003,	ub[32] = 0.3;
-		lb[33] = 0.003,	ub[33] = 0.3;
-		lb[34] = 0.003,	ub[34] = 0.3;
-		lb[35] = 0.003,	ub[35] = 0.3;
-		lb[36] = 0.003,	ub[36] = 0.3;
-		lb[37] = 0.003,	ub[37] = 0.3;
-		lb[38] = 0.003,	ub[38] = 0.3;
-		lb[39] = 0.003,	ub[39] = 0.3;
-		lb[40] = 0.11,	ub[40] = 0.35;
-		lb[41] = 0.11,	ub[41] = 0.35;
-		lb[42] = 0.11,	ub[42] = 0.35;
-		lb[43] = 0.11,	ub[43] = 0.35;
-		lb[44] = 0.11,	ub[44] = 0.35;
-		lb[45] = 0.11,	ub[45] = 0.35;
-		lb[46] = 0.11,	ub[46] = 0.35;
-		lb[47] = 0.11,	ub[47] = 0.35;
-		lb[48] = 0.11,	ub[48] = 0.35;
-		lb[49] = 0.11,	ub[49] = 0.35;
-		lb[50] = 8,		ub[50] = 12;
-		lb[51] = 8,		ub[51] = 12;
-		lb[52] = 8,		ub[52] = 12;
-		lb[53] = 0,		ub[53] = 0;
-		lb[54] = 6,		ub[54] = 12;
-		lb[55] = 0.4,	ub[55] = 2;
-		lb[56] = 0.4,	ub[56] = 2;
-		lb[57] = 0.4,	ub[57] = 2;
-		lb[58] = 0.4,	ub[58] = 2;
-		lb[59] = 10,	ub[59] = 25;
-		lb[60] = 150,	ub[60] = 900;
-		lb[61] = 150,	ub[61] = 900;
-		lb[62] = 1000,	ub[62] = 9000;
-		lb[63] = 1000,	ub[63] = 9000;
-		lb[64] = 200,	ub[64] = 800;
-	}*/
-	
 	// Call libSRES's initialize function
-	ESInitial(
-	#if defined(MPI) // The MPI version of libSRES requires the program's command-line arguments for MPI initialization
-		&(ip.argc), &(ip.argv),
-	#endif // The non-MPI version of libSREs does not accept the first two arguments of the MPI version
-		ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	int rank = get_rank();
+	ostream& v = term->verbose();
+	if (rank == 0) {
+		cout << term->blue << "Running libSRES initialization simulations " << term->reset << ". . . ";
+		cout.flush();
+		v << endl;
+	}
+	ESInitial(ip.seed, &(sp.param), sp.trsfm, fitness, es, constraint, dim, sp.ub, sp.lb, miu, lambda, gen, gamma, alpha, varphi, retry, &(sp.population), &(sp.stats));
+	if (rank == 0) {
+		cout << term->blue << "Done";
+		v << " with libSRES initialization simulations";
+		cout << term->reset << endl;
+	}
 }
 
 /* run_sres iterates through every specified generation of libSRES
@@ -228,8 +115,16 @@ void init_sres (input_params& ip, sres_params& sp) {
 	todo:
 */
 void run_sres (sres_params& sp) {
+	int rank = get_rank();
 	while (sp.stats->curgen < sp.param->gen) {
+		int cur_gen = sp.stats->curgen;
+		if (rank == 0) {
+			cout << term->blue << "Starting generation " << term->reset << cur_gen << " . . ." << endl;
+		}
 		ESStep(sp.population, sp.param, sp.stats, sp.pf);
+		if (rank == 0) {
+			cout << term->blue << "Done with generation " << term->reset << cur_gen << endl;
+		}
 	}
 }
 

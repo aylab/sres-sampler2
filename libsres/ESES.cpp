@@ -35,9 +35,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "sharefunc.h"
-#include "ESSRSort.h"
-#include "ESES.h"
+#include "sharefunc.hpp"
+#include "ESSRSort.hpp"
+#include "ESES.hpp"
 
 #include "../source/io.hpp"
 

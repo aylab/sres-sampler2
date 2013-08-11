@@ -32,13 +32,13 @@ Avoid placing I/O functions here and add them to io.cpp instead.
 
 // libSRES has different files for MPI and non-MPI versions
 #if defined(MPI)
-	#include "../libsres-mpi/sharefunc.h"
-	#include "../libsres-mpi/ESSRSort.h"
-	#include "../libsres-mpi/ESES.h"
+	#include "../libsres-mpi/sharefunc.hpp"
+	#include "../libsres-mpi/ESSRSort.hpp"
+	#include "../libsres-mpi/ESES.hpp"
 #else
-	#include "../libsres/sharefunc.h"
-	#include "../libsres/ESSRSort.h"
-	#include "../libsres/ESES.h"
+	#include "../libsres/sharefunc.hpp"
+	#include "../libsres/ESSRSort.hpp"
+	#include "../libsres/ESES.hpp"
 #endif
 
 #include "sres.hpp" // Function declarations

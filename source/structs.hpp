@@ -82,7 +82,7 @@ struct terminal {
 		delete verbose_stream;
 	}
 	
-	// Prints two spaces and then the given MPI rank in parentheses
+	// Prints two spaces and then the given MPI rank in parentheses (pass terminal->verbose() into this function to print only with verbose mode on)
 	void rank (int rank, ostream& stream) {
 		stream << this->yellow << "(" << rank << ") " << this->reset;
 	}

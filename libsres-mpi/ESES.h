@@ -33,10 +33,6 @@
  **      http://www-unix.mcs.anl.gov/mpi/mpich/                     **
  *********************************************************************/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef _es_es_h
 #define _es_es_h
 
@@ -362,9 +358,5 @@ void ESSelectPopulation(ESPopulation *, ESParameter *);
 void ESMutate(ESPopulation *, ESParameter *);
 void ESMPIMutate(ESPopulation *, ESParameter *);
 
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 

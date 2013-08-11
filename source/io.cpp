@@ -155,7 +155,6 @@ void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
 */
 void open_file (ofstream* file_pointer, char* file_name, bool append) {
 	ostream& v = term->verbose();
-	
 	try {
 		if (append) {
 			v << term->blue << "Opening " << term->reset << file_name << " . . . ";
@@ -194,6 +193,7 @@ double simulate_set (double parameters[]) {
 	}
 	v << term->blue << "Done: " << term->reset << "using file descriptors " << pipes[0] << " and " << pipes[1] << endl;
 	
+	// Fork the process so the child can run the simulation
 	v << "  ";
 	term->rank(rank, v);
 	v << term->blue << "Forking the process " << term->reset << ". . . ";

@@ -25,7 +25,7 @@ Avoid putting functions in main.cpp that could be put in a more specific file.
 #if defined(MPI)
 	#undef MPI // MPI uses this macro as well, so temporarily undefine it
 	#include <mpi.h> // Needed for MPI_Comm_rank, MPI_COMM_WORLD
-	#define MPI 1 // The MPI macro should only be checked for definition, not value, i.e. don't rely on it equaling 1
+	#define MPI // The MPI macro should be checked only for definition, not value
 #endif
 
 #include "main.hpp" // Function declarations

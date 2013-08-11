@@ -295,10 +295,8 @@ void init_verbosity (input_params& ip) {
 */
 void create_good_sets_file (input_params& ip) {
 	if (ip.print_good_sets) { // Print the good sets only if the user specified it
-		int rank = get_rank();
-		if (rank == 0) {
-			open_file(&(ip.good_sets_stream), ip.good_sets_file, false);
-		}
+		term->verbose() << term->yellow << "  (" << get_rank() << ") ";
+		open_file(&(ip.good_sets_stream), ip.good_sets_file, false);
 	}
 }
 

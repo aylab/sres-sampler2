@@ -452,3 +452,4 @@ void ShareChop(char *source)
   if ( source[nLen-2] == 10 || source[nLen-2] == 13 )
     source[nLen-2] = 0;
 }
+

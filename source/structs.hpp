@@ -29,9 +29,9 @@ structs.hpp contains every struct used in the program.
 
 // libSRES has different files for MPI and non-MPI versions
 #if defined(MPI)
-	#include "../libsres-mpi/ESES.h" 
+	#include "../libsres-mpi/ESES.hpp" 
 #else
-	#include "../libsres/ESES.h"
+	#include "../libsres/ESES.hpp"
 #endif
 
 #include "memory.hpp"

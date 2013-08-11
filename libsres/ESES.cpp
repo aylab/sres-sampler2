@@ -30,14 +30,15 @@
  **      Transactions on Systems, Man and Cybernetics -- Part C:    **
  **      Applications and Reviews. 35(2):233-234.                   **
  *********************************************************************/
+ 
 #include <math.h>
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "sharefunc.h"
-#include "ESSRSort.h"
-#include "ESES.h"
+#include "sharefunc.hpp"
+#include "ESSRSort.hpp"
+#include "ESES.hpp"
 
 #include "../source/io.hpp"
 

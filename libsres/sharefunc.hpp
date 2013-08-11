@@ -22,8 +22,8 @@
  ** Organization: Oak Ridge National Laboratory                     **
  *********************************************************************/
 
-#ifndef SHARE_FUNC_HPP
-#define SHARE_FUNC_HPP
+#ifndef SHAREFUNC_HPP
+#define SHAREFUNC_HPP
 
 #define shareDefSeed 0
 #define shareDefTrue 1

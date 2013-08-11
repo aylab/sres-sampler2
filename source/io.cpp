@@ -301,21 +301,28 @@ double simulate_set (double parameters[]) {
 	term->done(v);
 	
 	// libSRES requires scores from 0 to 1 with 0 being a perfect score so convert the simulation's score format into libSRES's
-	double score_final = 1 - ((double)score / max_score);
-	
-	// Print the score if the user specified printing good sets and this set is good enough
-	if (ip.print_good_sets && score_final <= ip.good_set_threshold) {
+	return 1 - ((double)score / max_score);
+}
+
+/* print_good_set prints the given parameter set if its score is good enough
+	parameters:
+		parameters: the set of parameters run
+		score: the received score
+	returns: nothing
+	notes:
+	todo:
+*/
+void print_good_set (double parameters[], double score) {
+	if (ip.print_good_sets && score <= ip.good_set_threshold) {
 		cout << "  ";
-		term->rank(rank);
-		cout << term->blue << "Found a good set " << term->reset << "(score " << score_final << ")" << endl;
+		term->rank(get_rank());
+		cout << term->blue << "Found a good set " << term->reset << "(score " << score << ")" << endl;
 		ip.good_sets_stream << parameters[0];
 		for (int i = 1; i < ip.num_dims; i++) {
 			ip.good_sets_stream << "," << parameters[i];
 		}
 		ip.good_sets_stream << endl;
 	}
-	
-	return score_final;
 }
 
 /* write_pipe writes the given parameter set to the given pipe

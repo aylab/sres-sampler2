@@ -38,7 +38,7 @@ env.Append(CXXFLAGS=compile_flags, LINKFLAGS=link_flags)
 
 sources = ['source/main.cpp', 'source/init.cpp', 'source/memory.cpp', 'source/sres.cpp', 'source/io.cpp']
 if ARGUMENTS.get('mpi', 0):
-	sources += ['libsres-mpi/ESES.c', 'libsres-mpi/ESSRSort.c', 'libsres-mpi/sharefunc.c']
+	sources += ['libsres-mpi/ESES.cpp', 'libsres-mpi/ESSRSort.c', 'libsres-mpi/sharefunc.c']
 else:
-	sources += ['libsres/ESES.c', 'libsres/ESSRSort.c', 'libsres/sharefunc.c']
+	sources += ['libsres/ESES.cpp', 'libsres/ESSRSort.c', 'libsres/sharefunc.c']
 env.Program(target='sres', source=sources)

@@ -22,12 +22,8 @@
  ** Organization: Oak Ridge National Laboratory                     **
  *********************************************************************/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifndef _share_func_h
-#define _share_func_h
+#ifndef SHAREFUNC_HPP
+#define SHAREFUNC_HPP
 
 #define shareDefSeed 0
 #define shareDefTrue 1
@@ -162,6 +158,3 @@ void ShareChop(char *);
 
 #endif
 
-#ifdef __cplusplus
-}
-#endif

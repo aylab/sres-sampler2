@@ -29,7 +29,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
-#include "sharefunc.h"
+#include "sharefunc.hpp"
 
 #include "../source/memory.hpp"
 

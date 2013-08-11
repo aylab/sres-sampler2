@@ -32,19 +32,20 @@
  **   3. MPICH                                                      **
  **      http://www-unix.mcs.anl.gov/mpi/mpich/                     **
  *********************************************************************/
+
 #if defined(MPI)
 	#undef MPI
 	#include <mpi.h>
-	#define MPI 1
+	#define MPI
 #endif
 #include <math.h>
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "sharefunc.h"
-#include "ESSRSort.h"
-#include "ESES.h"
+#include "sharefunc.hpp"
+#include "ESSRSort.hpp"
+#include "ESES.hpp"
 
 #include "../source/io.hpp"
 

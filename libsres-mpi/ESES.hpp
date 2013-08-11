@@ -33,8 +33,8 @@
  **      http://www-unix.mcs.anl.gov/mpi/mpich/                     **
  *********************************************************************/
 
-#ifndef _es_es_h
-#define _es_es_h
+#ifndef ESES_HPP
+#define ESES_HPP
 
 #define esDefPopsize 300
 #define esDefGeneration 500

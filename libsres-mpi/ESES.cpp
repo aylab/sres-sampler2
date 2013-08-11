@@ -829,6 +829,7 @@ void ESMutate(ESPopulation * population, ESParameter *param)
         continue;
       MPI_Recv(gfphi,2+constraint,MPI_DOUBLE,j,i,MPI_COMM_WORLD,&status);
       indvdl = population->member[i];
+      print_good_set(indvdl->op, gfphi[constraint]);
       for(k=0;k<constraint;k++)
         indvdl->g[k] = gfphi[k];
       indvdl->f = gfphi[k++];
@@ -891,7 +892,6 @@ void ESMPIMutate(ESPopulation *population, ESParameter *param)
       continue;
     MPI_Recv(op, dim, MPI_DOUBLE, 0,i,MPI_COMM_WORLD,&status);
     param->fg(op, &(gfphi[l][constraint]),gfphi[l]);
-    print_good_set(op, gfphi[l][constraint]);
     MPI_Send(op, dim, MPI_DOUBLE, 0,i,MPI_COMM_WORLD);
     gfphi[l][constraint+1] = 0.0;
     for(k=0;k<constraint;k++)

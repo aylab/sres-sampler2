@@ -180,7 +180,7 @@ double simulate_set (double parameters[]) {
 	// Get the MPI rank of the process
 	int rank = get_rank();
 	ostream& v = term->verbose();
-		
+	
 	// Create a pipe
 	int pipes[2];
 	v << "  ";

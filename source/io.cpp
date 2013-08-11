@@ -180,8 +180,7 @@ double simulate_set (double parameters[]) {
 	// Get the MPI rank of the process
 	int rank = get_rank();
 	ostream& v = term->verbose();
-	
-	
+		
 	// Create a pipe
 	int pipes[2];
 	v << "  ";
@@ -214,7 +213,6 @@ double simulate_set (double parameters[]) {
 		if (access(ip.sim_file, X_OK) == -1) {
 			term->failed_exec();
 			exit(EXIT_EXEC_ERROR);
-			
 		}
 		term->done(v);
 		if (execv(ip.sim_file, sim_args) == -1) {

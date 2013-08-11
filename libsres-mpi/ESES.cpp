@@ -365,7 +365,7 @@ void ESPrintIndividual(ESIndividual *indvdl, ESParameter *param)
 }
 void ESPrintOp(ESIndividual *indvdl, ESParameter *param)
 {
-  int i;
+  int i = 0;
   int dim;
   ESfcnTrsfm *trsfm;
 
@@ -498,7 +498,7 @@ void ESDeInitialStat(ESStatistics *stats)
 void ESDoStat(ESStatistics *stats, ESPopulation *population,   \
               ESParameter *param)
 {
-  int i,j;
+  int i;
   int eslambda;
   int flag,count;
 

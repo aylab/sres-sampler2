@@ -32,7 +32,11 @@
  **   3. MPICH                                                      **
  **      http://www-unix.mcs.anl.gov/mpi/mpich/                     **
  *********************************************************************/
-#include <mpi.h>
+#if defined(MPI)
+	#undef MPI
+	#include <mpi.h>
+	#define MPI 1
+#endif
 #include <math.h>
 #include <time.h>
 #include <stdio.h>

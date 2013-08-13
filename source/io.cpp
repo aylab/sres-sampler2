@@ -28,10 +28,23 @@ io.cpp contains functions for input and output of files and pipes. All I/O relat
 
 #include "init.hpp"
 #include "macros.hpp"
+#include "main.hpp"
 #include "sres.hpp"
 
 extern terminal* term; // Declared in init.cpp
 extern input_params ip; // Declared in main.cpp
+
+/* not_EOL returns whether or not a given character is the end of a line or file (i.e. '\n' or '\0', respectively)
+	parameters:
+		c: the character to check
+	returns: true if c is the end of a line or file, false otherwise
+	notes:
+		When reading input file strings, use this instead of a straight newline check to avoid EOF (end of file) issues.
+	todo:
+*/
+bool not_EOL (char c) {
+	return c != '\n' && c != '\0';
+}
 
 /* store_filename stores the given value in the given field
 	parameters:
@@ -144,6 +157,53 @@ void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
 	}
 }
 
+/* parse_param_line reads a line in the given parameter sets buffer and stores it in the given array of doubles
+	parameters:
+		params: the array of doubles to store the parameters in
+		buffer_line: the buffer with the line to read
+		index_buffer: the index of the buffer to start from
+	returns: true if a line was found, false if the end of the file was reached without finding a valid line
+	notes:
+		The buffer should contain one parameter set per line, each set containing comma-separated floating point parameters.
+		Blank lines and lines starting with # will be ignored.
+		Each line must contain the correct number of parameters or the program will exit.
+		index_buffer is a reference, allowing this function to store where it finished parsing.
+	todo:
+*/
+bool parse_param_line (double* params, char* buffer_line, int& index_buffer) {
+	static const char* usage_message = "There was an error reading the given parameter sets file.";
+	int index_params = 0; // Current index in params
+	int index_digits = index_buffer; // Index of the start of the digits to read
+	int i = index_buffer; // Current index in buffer_line
+	int line_start = i; // The start of the line, used to tell whether or not a line is empty
+	for (; not_EOL(buffer_line[i]); i++) {
+		if (buffer_line[i] == '#') { // Skip any lines starting with #
+			for(; not_EOL(buffer_line[i]); i++);
+			i++;
+		} else if (buffer_line[i] == ',') { // Indicates the end of the digits to read
+			if (sscanf(buffer_line + index_digits, "%lf", &(params[index_params++])) < 1) { // Convert the string of digits to a double when storing it in params
+				usage(usage_message);
+			}
+			index_digits = i + 1;
+		}
+	}
+	index_buffer = i + 1;
+	if (i - line_start > 0) { // This line has content
+		if (sscanf(buffer_line + index_digits, "%lf", &(params[index_params++])) < 1) {
+			usage(usage_message);
+		}
+		if (index_params != NUM_PARS) {
+			cout << term->red << "The given parameter sets file contains sets with an incorrect number of rates! This simulation requires " << NUM_PARS << " per set but at least one line contains " << index_params << " per set." << term->reset << endl;
+			exit(EXIT_INPUT_ERROR);
+		}
+		return true;
+	} else if (buffer_line[index_buffer] != '\0') { // There are more lines to try to parse
+		return parse_param_line(params, buffer_line, index_buffer);
+	} else { // The end of the buffer was found
+		return false;
+	}
+}
+
 /* open_file opens the file with the given name and stores it in the given output file stream
 	parameters:
 		file_pointer: a pointer to the output file stream to open the file with
@@ -248,11 +308,10 @@ double simulate_set (double parameters[]) {
 			exit(EXIT_EXEC_ERROR);
 		}
 	} else {
-		double par_set[45] = {43.293101,35.644504,59.878872,33.936686,0.223278,0.329523,0.132647,0.444597,29.458387,11.188829,57.157834,31.077192,0.150681,0.337684,0.211113,0.273550,0.023943,0.004624,0.029139,0.014844,0.018960,0.015933,0.022060,0.155977,0.189065,0.086577,0.018705,0.153521,0.325447,0.249461,0.159769,0.260633,0.254341,0.113651,10.412648,8.563572,0.000000,9.775344,1.310268,1.698853,1.786119,10.892998,599.559977,253.564367,241.127021};
 		v << "  ";
 		term->rank(rank, v);
 		v << term->blue << "Writing to the pipe " << term->reset << "(file descriptor " << pipes[1] << ") . . . ";
-		write_pipe(pipes[1], par_set);
+		write_pipe(pipes[1], ip.sets, ip.num_sets);
 		term->done(v);
 	}
 	
@@ -331,12 +390,14 @@ void print_good_set (double parameters[], double score) {
 	notes:
 	todo:
 */
-void write_pipe (int fd, double parameters[]) {
-	write_pipe_int(fd, 45);
-	write_pipe_int(fd, 1);
-	if (write(fd, parameters, sizeof(double) * 45) == -1) {
-		term->failed_pipe_write();
-		exit(EXIT_PIPE_WRITE_ERROR);
+void write_pipe (int fd, double* sets[], int num_sets) {
+	write_pipe_int(fd, NUM_PARS);
+	write_pipe_int(fd, num_sets);
+	for (int i = 0; i < num_sets; i++) {
+		if (write(fd, sets[i], sizeof(double) * NUM_PARS) == -1) {
+			term->failed_pipe_write();
+			exit(EXIT_PIPE_WRITE_ERROR);
+		}
 	}
 }
 

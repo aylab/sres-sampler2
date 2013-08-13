@@ -66,6 +66,8 @@ int main (int argc, char** argv) {
 	
 	// Read the specified input files
 	input_data ranges_data(ip.ranges_file);
+	input_data sets_data(ip.sets_file);
+	read_sets(ip, sets_data);
 	
 	// Create the specified output files
 	create_good_sets_file(ip);
@@ -117,6 +119,8 @@ void usage (const char* message) {
 	cout << "-s, --seed               [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
 	cout << "-e, --printing-precision [int]        : how many digits of precision parameters should be printed with, min=1, default=6" << endl;
 	cout << "-i, --gradient-index     [int]        : the index of a parameter to apply gradients to, can be entered multiple times, min=1, max=# of dimensions, default=none" << endl;
+	cout << "-S, --parameter-sets     [filename]   : the relative filename of the parameter sets input file, default=none" << endl;
+	cout << "-n, --number-of-sets     [int]        : the number of parameter sets to run each simulation" << endl;
 	cout << "-a, --arguments          [N/A]        : every argument following this will be sent to the deterministic simulation" << endl;
 	cout << "-c, --no-color           [N/A]        : disable coloring the terminal output, default=unused" << endl;
 	cout << "-v, --verbose            [N/A]        : print detailed messages about the program state" << endl;

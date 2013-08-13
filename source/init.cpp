@@ -159,6 +159,15 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 					usage("Gradient indices must be valid parameter indices. Set each -i or --gradient-index to between 0 and 44 (inclusive).");
 				}
 				add_gradient_index(&(ip.gradient_indices), index);
+			} else if (option_set(option, "-S", "--parameter-sets")) {
+				ensure_nonempty(option, value);
+				store_filename(&(ip.sets_file), value);
+			} else if (option_set(option, "-n", "--number-of-sets")) {
+				ensure_nonempty(option, value);
+				ip.num_sets = atoi(value);
+				if (ip.num_sets < 1) {
+					usage("The number of sets to simulate must be a positive integer. Set -n or --number-of-sets to at least 1.");
+				}
 			} else if (option_set(option, "-a", "--arguments")) {
 				ensure_nonempty(option, value);
 				++i;
@@ -275,6 +284,33 @@ void add_gradient_index (gradient_index** gi, int index) {
 		*gi = gi_new;
 	}
 	(*gi)->index = index;
+}
+
+/* read_sets fills in the parameter sets array via the method the user specified (piping from another program, a parameter sets file, or random generation from a ranges file)
+	parameters:
+		ip: the program's input parameters
+		params_data: the input_data for the parameter sets input file
+		sets: the array to add parameter sets to
+	returns: nothing
+	notes:
+		This function is responsible for filling in sets via whatever method the user specified so add any future input methods here.
+	todo:
+*/
+void read_sets (input_params& ip, input_data& params_data) {
+	cout << term->blue;
+	read_file(&params_data);
+	ip.sets = new double*[ip.num_sets];
+	for (int i = 0; i < ip.num_sets; i++) {
+		if (params_data.index < params_data.size) { // Parse only as many lines as specified, even if the file is longer
+			ip.sets[i] = new double[NUM_PARS];
+			memset(ip.sets[i], 0, sizeof(double) * NUM_PARS);
+			if(!parse_param_line(ip.sets[i], params_data.buffer, params_data.index)) { // Parse each line until the file is empty or the required number of sets have been found
+				ip.num_sets = i;
+			}
+		} else {
+			ip.num_sets = i;
+		}
+	}
 }
 
 /* init_verbosity sets the verbose stream to /dev/null if verbose mode is not enabled

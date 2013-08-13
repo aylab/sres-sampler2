@@ -33,9 +33,9 @@ bool parse_param_line(double*, char*, int&);
 void open_file(ofstream*, char*, bool);
 double simulate_set(double[]);
 void print_good_set(double[], double);
-void write_pipe(int, double**, int);
+void write_pipe(int, double*[], int);
 void write_pipe_int(int, int);
-void read_pipe(int, int*, int*);
+void read_pipe(int, int*, int[], int);
 void read_pipe_int(int, int*);
 void close_if_open(ofstream&);
 

@@ -331,12 +331,13 @@ double simulate_set (double parameters[]) {
 	
 	// Pipe in the simulation's score
 	int max_score;
-	int score;
+	int scores[ip.num_sets];
+	memset(scores, 0, sizeof(int) * ip.num_sets);
 	v << "  ";
 	term->rank(rank, v);
 	v << term->blue << "Reading the pipe " << term->reset << "(file descriptor " << pipes[0] << ") . . . ";
-	read_pipe(pipes[0], &max_score, &score);
-	v << term->blue << "Done: " << term->reset << "(raw score " << score << " / " << max_score << ")" << endl;
+	read_pipe(pipes[0], &max_score, scores, ip.num_sets);
+	v << term->blue << "Done: " << term->reset << "(raw score of set 0: " << scores[0] << " / " << max_score << ")" << endl;
 	
 	// Close the reading end of the pipe
 	v << "  ";
@@ -359,8 +360,15 @@ double simulate_set (double parameters[]) {
 	mfree(grad_fname);
 	term->done(v);
 	
+	// Calculate the average score of all the runs
+	int avg_score = 0;
+	for (int i = 0; i < ip.num_sets; i++) {
+		avg_score += scores[i];
+	}
+	avg_score /= ip.num_sets;
+	
 	// libSRES requires scores from 0 to 1 with 0 being a perfect score so convert the simulation's score format into libSRES's
-	return 1 - ((double)score / max_score);
+	return 1 - ((double)avg_score / max_score);
 }
 
 /* print_good_set prints the given parameter set if its score is good enough
@@ -425,9 +433,11 @@ void write_pipe_int (int fd, int value) {
 	notes:
 	todo:
 */
-void read_pipe (int fd, int* max_score, int* score) {
+void read_pipe (int fd, int* max_score, int scores[], int num_sets) {
 	read_pipe_int(fd, max_score);
-	read_pipe_int(fd, score);
+	for (int i = 0; i < num_sets; i++) {
+		read_pipe_int(fd, &(scores[i]));
+	}
 }
 
 /* read_pipe_int writes an integer from the given pipe

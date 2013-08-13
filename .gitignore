@@ -5,6 +5,8 @@ sres
 input.*
 output.*
 output-*
+*.ranges
+*.params
 *.gradients
 .DS_Store
 pbs-job

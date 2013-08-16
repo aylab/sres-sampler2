@@ -284,7 +284,9 @@ double simulate_set (double parameters[]) {
 		v << "  ";
 		term->rank(rank, v);
 		open_file(&grad_file, grad_fname, false);
-		grad_file << "2 (11 100) (35 0)\n";
+		if (ip.base_gradients != NULL) {
+			grad_file << ip.base_gradients << "\n";
+		}
 		int loc_start = parameters[0];
 		int loc_end = parameters[1];
 		int val = parameters[2];

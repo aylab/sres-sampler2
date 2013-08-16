@@ -178,6 +178,8 @@ struct input_params {
 	char* ranges_file; // The relative filename of the parameter ranges file, default=none
 	char* sets_file; // The relative filename of the parameter sets file, default=none
 	char* sim_file; // The relative filename of the simulation executable, default=simulation
+	char* gradients_file; // The relative filename of the base gradients file, default=none
+	bool read_gradients; // Whether or not to read the gradients file, default=false
 	char* good_sets_file; // The relative filename of the good sets file, default=none
 	bool print_good_sets; // Whether or not to print good sets to the good sets file, default=false
 	ofstream good_sets_stream; // The output file stream for the good sets file
@@ -196,8 +198,9 @@ struct input_params {
 	char** sim_args; // Arguments to be passed to the simulation
 	int num_sim_args; // The number of arguments to be passed to the simulation
 	gradient_index* gradient_indices; // The list of parameter indices to apply gradients to, default=none
-	int num_sets; // The number of parameter sets to run each simulation
-	double** sets; // The parameter sets to run each simulation
+	int num_sets; // The number of parameter sets to run each simulation, default=0
+	double** sets; // The parameter sets to run each simulation, default=NULL
+	char* base_gradients; // The base gradients to add to every generated gradients file, default=""
 	
 	// Output stream data
 	int printing_precision; // The number of digits of precision parameters should be printed with, default=6
@@ -209,7 +212,9 @@ struct input_params {
 	input_params () {
 		this->ranges_file = NULL;
 		this->sets_file = NULL;
-		this->sim_file = copy_str("deterministic");
+		this->sim_file = copy_str("simulation");
+		this->gradients_file = NULL;
+		this->read_gradients = false;
 		this->good_sets_file = NULL;
 		this->print_good_sets = false;
 		this->good_set_threshold = 0.0;
@@ -223,6 +228,7 @@ struct input_params {
 		this->gradient_indices = NULL;
 		this->num_sets = 0;
 		this->sets = NULL;
+		this->base_gradients = NULL;
 		this->printing_precision = 6;
 		this->verbose = false;
 		this->quiet = false;

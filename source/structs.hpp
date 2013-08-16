@@ -200,9 +200,9 @@ struct input_params {
 		this->print_good_sets = false;
 		this->good_set_threshold = 0.0;
 		this->num_dims = 45; 
-		this->pop_parents = 30;
-		this->pop_total = 200;
-		this->generations = 1;
+		this->pop_parents = 3;
+		this->pop_total = 20;
+		this->generations = 1750;
 		this->seed = time(0);
 		this->sim_args = NULL;
 		this->num_sim_args = 0;

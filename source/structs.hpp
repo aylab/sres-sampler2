@@ -195,7 +195,7 @@ struct input_params {
 	
 	input_params () {
 		this->ranges_file = NULL;
-		this->sim_file = copy_str("deterministic");
+		this->sim_file = copy_str("../simulation/simulation");
 		this->good_sets_file = NULL;
 		this->print_good_sets = false;
 		this->good_set_threshold = 0.0;

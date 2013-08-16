@@ -213,7 +213,7 @@ struct input_params {
 		this->good_sets_file = NULL;
 		this->print_good_sets = false;
 		this->good_set_threshold = 0.0;
-		this->num_dims = 45; 
+		this->num_dims = 3; 
 		this->pop_parents = 30;
 		this->pop_total = 200;
 		this->generations = 1;

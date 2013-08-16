@@ -112,10 +112,10 @@ void usage (const char* message) {
 	cout << "-f, --simulation         [filename]   : the relative filename of the simulation executable, default=simulation" << endl;
 	cout << "-o, --print-good-sets    [filename]   : the relative filename of the good sets output file, default=none" << endl;
 	cout << "-G, --good-set-threshold [float]      : the worst score a set must receive to be printed to the good sets file, default=0.0" << endl;
-	cout << "-d, --dimensions         [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=45" << endl;
-	cout << "-P, --parent-population  [int]        : the population of parent simulations to use each generation, min=1, default=30" << endl;
-	cout << "-p, --total-population   [int]        : the population of child simulations to use each generation, min=1, default=200" << endl;
-	cout << "-g, --generations        [int]        : the number of generations to run before returning results, min=1, default=1000" << endl;
+	cout << "-d, --dimensions         [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=3" << endl;
+	cout << "-P, --parent-population  [int]        : the population of parent simulations to use each generation, min=1, default=3" << endl;
+	cout << "-p, --total-population   [int]        : the population of child simulations to use each generation, min=1, default=20" << endl;
+	cout << "-g, --generations        [int]        : the number of generations to run before returning results, min=1, default=2000" << endl;
 	cout << "-s, --seed               [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
 	cout << "-e, --printing-precision [int]        : how many digits of precision parameters should be printed with, min=1, default=6" << endl;
 	cout << "-i, --gradient-index     [int]        : the index of a parameter to apply gradients to, can be entered multiple times, min=1, max=# of dimensions, default=none" << endl;
@@ -127,7 +127,7 @@ void usage (const char* message) {
 	cout << "-q, --quiet              [N/A]        : hide the terminal output, default=unused" << endl;
 	cout << "-l, --licensing          [N/A]        : view licensing information (no simulations will be run)" << endl;
 	cout << "-h, --help               [N/A]        : view usage information (i.e. this)" << endl;
-	cout << endl << term->blue << "Example: ./sres-sampler " << term->reset << endl << endl;
+	cout << endl << term->blue << "Example: ./sres-sampler -r input.ranges -f ../simulation/simulation --print-good-sets good-sets.params -G 0.05 --arguments -x 4 -w 4 -y 4 -G 1200" << term->reset << endl << endl;
 	if (error) {
 		exit(EXIT_INPUT_ERROR);
 	} else {

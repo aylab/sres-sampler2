@@ -212,7 +212,7 @@ struct input_params {
 	input_params () {
 		this->ranges_file = NULL;
 		this->sets_file = NULL;
-		this->sim_file = copy_str("simulation");
+		this->sim_file = copy_str("../simulation/simulation");
 		this->gradients_file = NULL;
 		this->read_gradients = false;
 		this->good_sets_file = NULL;

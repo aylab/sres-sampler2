@@ -124,7 +124,7 @@ void usage (const char* message) {
 	cout << "-i, --gradient-index     [int]        : the index of a parameter to apply gradients to, can be entered multiple times, min=1, max=# of dimensions, default=none" << endl;
 	cout << "-S, --params-file        [filename]   : the relative filename of the parameter sets input file, default=none" << endl;
 	cout << "-n, --number-of-sets     [int]        : the number of parameter sets to run each simulation" << endl;
-	cout << "-a, --arguments          [N/A]        : every argument following this will be sent to the deterministic simulation" << endl;
+	cout << "-a, --arguments          [N/A]        : every argument following this will be sent to the simulation" << endl;
 	cout << "-c, --no-color           [N/A]        : disable coloring the terminal output, default=unused" << endl;
 	cout << "-v, --verbose            [N/A]        : print detailed messages about the program state" << endl;
 	cout << "-q, --quiet              [N/A]        : hide the terminal output, default=unused" << endl;

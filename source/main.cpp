@@ -115,7 +115,7 @@ void usage (const char* message) {
 	cout << "-d, --dimensions         [int]        : the number of dimensions (i.e. rate parameters) to explore, min=1, default=3" << endl;
 	cout << "-P, --parent-population  [int]        : the population of parent simulations to use each generation, min=1, default=3" << endl;
 	cout << "-p, --total-population   [int]        : the population of child simulations to use each generation, min=1, default=20" << endl;
-	cout << "-g, --generations        [int]        : the number of generations to run before returning results, min=1, default=2000" << endl;
+	cout << "-g, --generations        [int]        : the number of generations to run before returning results, min=1, default=1750" << endl;
 	cout << "-s, --seed               [int]        : the seed used in the evolutionary strategy (not simulations), min=1, default=time" << endl;
 	cout << "-e, --printing-precision [int]        : how many digits of precision parameters should be printed with, min=1, default=6" << endl;
 	cout << "-i, --gradient-index     [int]        : the index of a parameter to apply gradients to, can be entered multiple times, min=1, max=# of dimensions, default=none" << endl;

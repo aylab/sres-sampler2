@@ -753,7 +753,6 @@ void ESMutate(ESPopulation * population, ESParameter *param)
   {
     indvdl = population->member[i];
     fg(indvdl->op, &(indvdl->f), indvdl->g);
-    print_good_set(indvdl->op, indvdl->f);
     indvdl->phi = 0.0;
     for(j=0; j<constraint; j++)
     {

@@ -320,18 +320,6 @@ void store_pipe (char** args, int index, int pipe) {
 	sprintf(args[index], "%d", pipe);
 }
 
-/* delete_file closes all of the used files and frees them from memory
-	parameters:
-		ip: the program's input parameters
-	returns: nothing
-	notes:
-	todo:
-		TODO: check if this function is still being used
-*/
-void delete_files (input_params& ip) {
-	close_if_open(ip.good_sets_stream);
-}
-
 /* reset_cout resets the cout buffer to its original stream if quiet mode was on and cout was therefore redirected to /dev/null
 	parameters:
 		ip: the program's input parameters

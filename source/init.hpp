@@ -37,7 +37,6 @@ void init_sim_args(input_params&);
 char** copy_args(char**, int);
 void read_ranges(input_params&, input_data&, sres_params&);
 void store_pipe(char**, int, int);
-void delete_files(input_params&);
 void reset_cout(input_params&);
 
 #endif

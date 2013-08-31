@@ -168,12 +168,6 @@ struct input_params {
 	// Input and output files' paths and names (either absolute or relative)
 	char* ranges_file; // The relative filename of the parameter ranges file, default=none
 	char* sim_file; // The relative filename of the simulation executable
-	char* good_sets_file; // The relative filename of the good sets file, default=none
-	bool print_good_sets; // Whether or not to print good sets to the good sets file, default=false
-	ofstream good_sets_stream; // The output file stream for the good sets file
-	
-	// Good set threshold
-	double good_set_threshold; // The worst score a set can receive to be printed to the good sets file, default=0.0
 	
 	// libSRES parameters
 	int num_dims; // The number of dimensions (i.e. rate parameters) to explore, default=45
@@ -196,9 +190,6 @@ struct input_params {
 	input_params () {
 		this->ranges_file = NULL;
 		this->sim_file = copy_str("../simulation/simulation");
-		this->good_sets_file = NULL;
-		this->print_good_sets = false;
-		this->good_set_threshold = 0.0;
 		this->num_dims = 45;
 		this->pop_parents = 3;
 		this->pop_total = 20;
@@ -216,7 +207,6 @@ struct input_params {
 	~input_params () {
 		mfree(this->ranges_file);
 		mfree(this->sim_file);
-		mfree(this->good_sets_file);
 		if (this->sim_args != NULL) {
 			for (int i = 0; i < this->num_sim_args; i++) {
 				mfree(this->sim_args[i]);

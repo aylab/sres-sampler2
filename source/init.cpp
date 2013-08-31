@@ -106,16 +106,6 @@ void accept_input_params (int num_args, char** args, input_params& ip) {
 			} else if (option_set(option, "-f", "--simulation")) {
 				ensure_nonempty(option, value);
 				store_filename(&(ip.sim_file), value);
-			} else if (option_set(option, "-o", "--print-good-sets")) {
-				ensure_nonempty(option, value);
-				store_filename(&(ip.good_sets_file), value);
-				ip.print_good_sets = true;
-			} else if (option_set(option, "-G", "--good-set-threshold")) {
-				ensure_nonempty(option, value);
-				ip.good_set_threshold = atof(value);
-				if (ip.good_set_threshold < 0 || ip.good_set_threshold > 1) {
-					usage("The threshold for a good set must be a possible score. Set -G or --good-set-threshold to between 0 and 1.");
-				}
 			} else if (option_set(option, "-d", "--dimensions")) {
 				ensure_nonempty(option, value);
 				ip.num_dims = atoi(value);
@@ -260,21 +250,6 @@ void init_verbosity (input_params& ip) {
 	}
 }
 
-/* create_good_sets_file creates a file to store the sets that received a good score
-	parameters:
-		ip: the program's input parameters
-	returns: nothing
-	notes:
-	todo:
-*/
-void create_good_sets_file (input_params& ip) {
-	if (ip.print_good_sets) { // Print the good sets only if the user specified it
-		if (get_rank() == 0) {
-			open_file(&(ip.good_sets_stream), ip.good_sets_file, false);
-		}
-	}
-}
-
 /* init_sim_args initializes the arguments to be passed into every simulation
 	parameters:
 		ip: the program's input parameters
@@ -351,6 +326,7 @@ void store_pipe (char** args, int index, int pipe) {
 	returns: nothing
 	notes:
 	todo:
+		TODO: check if this function is still being used
 */
 void delete_files (input_params& ip) {
 	close_if_open(ip.good_sets_stream);

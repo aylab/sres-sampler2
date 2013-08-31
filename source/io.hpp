@@ -30,7 +30,6 @@ void read_file(input_data*);
 void parse_ranges_file (char*, input_params&, sres_params&);
 void open_file(ofstream*, char*, bool);
 double simulate_set(double[]);
-void print_good_set(double[], double);
 void write_pipe(int, double[]);
 void write_pipe_int(int, int);
 void read_pipe(int, int*, int*);

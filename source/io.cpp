@@ -151,6 +151,7 @@ void parse_ranges_file (char* buffer, input_params& ip, sres_params& sp) {
 	returns: nothing
 	notes:
 	todo:
+		TODO: check if this function is still being used
 */
 void open_file (ofstream* file_pointer, char* file_name, bool append) {
 	ostream& v = term->verbose();
@@ -271,25 +272,6 @@ double simulate_set (double parameters[]) {
 	return 1 - ((double)score / max_score);
 }
 
-/* print_good_set prints the given parameter set if its score is good enough
-	parameters:
-		parameters: the set of parameters run
-		score: the received score
-	returns: nothing
-	notes:
-	todo:
-*/
-void print_good_set (double parameters[], double score) {
-	if (ip.print_good_sets && score <= ip.good_set_threshold) {
-		cout << term->blue << "  Found a good set " << term->reset << "(score " << score << ")" << endl;
-		ip.good_sets_stream << score << "," << parameters[0];
-		for (int i = 1; i < ip.num_dims; i++) {
-			ip.good_sets_stream << "," << parameters[i];
-		}
-		ip.good_sets_stream << endl;
-	}
-}
-
 /* write_pipe writes the given parameter set to the given pipe
 	parameters:
 		fd: the file descriptor of the pipe to write to
@@ -357,6 +339,7 @@ void read_pipe_int (int fd, int* address) {
 	returns: nothing
 	notes:
 	todo:
+		TODO: check if this function is still being used
 */
 void close_if_open (ofstream& file) {
 	if (file.is_open()) {
